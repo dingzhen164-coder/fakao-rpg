@@ -35,6 +35,7 @@ try{
   }
  }
  // 真正点击客观题，不在接口响应和页面上提前展示答案。
+ await click('[data-view="exam"]');await click('[data-do="add-exam"]');await ev(`document.querySelector('#e-title').value='表单录入验证';document.querySelector('#e-material').value='用于验证直接填写问题的流程';document.querySelector('.e-prompt').value='说明练习流程';document.querySelector('.e-reference').value='主动回忆、核对与练习';document.querySelector('.e-points').value='说明流程 | 2'`);await click('[data-do="exam-add-question"]');await ev(`document.querySelectorAll('.e-prompt')[1].value='说明复盘方法'`);await click('[data-do="exam-create"]');if(!(await api('exams')).some(x=>x.title==='表单录入验证'&&x.questions.length===2))throw Error('exam form creation failed');
  await click('[data-view="questions"]');await click('[data-question="'+q.id+'"]');await ev(`document.querySelector('input[value="B"]').click()`);await click('[data-do="question-submit"]');if(!await ev("document.querySelector('#question-result').textContent.includes('回答正确')"))throw Error('question UI failed');
  // 自动保存、分问切换、恢复、交卷后答案开放。
  await click('[data-view="exam"]');await click('[data-exam="'+ex.id+'"]');await ev(`const t=document.querySelector('#exam-answer');t.value='独立回忆后对照知识体系';t.dispatchEvent(new Event('input',{bubbles:true}))`);await pause(850);await click('[data-question-index="1"]');await click('[data-question-index="0"]');if(await ev("document.querySelector('#exam-answer').value")!=='独立回忆后对照知识体系')throw Error('autosave lost');
