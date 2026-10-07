@@ -134,7 +134,10 @@ def main():
     host='0.0.0.0' if service.settings.get('lan') else '127.0.0.1'
     http=make_server(service,host,args.port)
     url='http://127.0.0.1:%s' % http.server_port
-    print('法官成长记 %s · %s\n关闭本窗口可退出。' % (VERSION,url),flush=True)
+    if sys.stdout is not None:
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        print('法官成长记 %s · %s\n可在设置中退出程序。' % (VERSION,url),flush=True)
     if not args.no_browser:
         threading.Timer(.7,lambda:webbrowser.open(url)).start()
     try:

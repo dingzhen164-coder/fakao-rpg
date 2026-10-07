@@ -51,7 +51,7 @@ class Service:
         ranks = ['五级法官助理', '四级法官助理', '三级法官助理', '二级法官助理', '一级法官助理', '初任法官', '资深法官', '高级法官', '大法官', '首席大法官']
         index = 0
         for i in range(1, len(ranks)):
-            enough = xp >= 100 * i * i
+            enough = xp >= s['config']['rank_base'] * i * i
             if i >= 5:
                 enough = enough and len({a['question']['subject'] for a in s['attempts'] if a['correct'] and not a['repeat']}) >= min(i - 3, 4)
             if i >= 8:
@@ -62,7 +62,7 @@ class Service:
                 break
         date = today()
         first = [a for a in s['attempts'] if not a['repeat']]
-        return {'version': VERSION, 'subjects': SUBJECTS, 'config': s['config'], 'vault': str(self.store.root), 'demo': not bool(self.settings.get('vault') or self.explicit_vault), 'rank': ranks[index], 'next_rank': ranks[min(index + 1, 9)], 'next_xp': 100 * (index + 1) ** 2, 'xp': xp, 'seconds': s['activity'].get(date, 0), 'materials': len(s['materials']), 'cards': len(s['cards']), 'questions': len(s['questions']), 'correct_rate': round(100 * sum(a['correct'] for a in first) / len(first)) if first else None, 'due': len(self.card_queue()), 'ai_tokens': sum(u['usage']['total_tokens'] for u in s.get('ai_usage', [])), 'scheduled': date >= s['config']['start_date'], 'lan': bool(self.settings.get('lan')), 'ai_ready': bool(self.settings.get('api_key'))}
+        return {'version': VERSION, 'subjects': SUBJECTS, 'config': s['config'], 'vault': str(self.store.root), 'demo': not bool(self.settings.get('vault') or self.explicit_vault), 'rank': ranks[index], 'next_rank': ranks[min(index + 1, 9)], 'next_xp': s['config']['rank_base'] * (index + 1) ** 2, 'xp': xp, 'seconds': s['activity'].get(date, 0), 'materials': len(s['materials']), 'cards': len(s['cards']), 'questions': len(s['questions']), 'correct_rate': round(100 * sum(a['correct'] for a in first) / len(first)) if first else None, 'due': len(self.card_queue()), 'ai_tokens': sum(u['usage']['total_tokens'] for u in s.get('ai_usage', [])), 'scheduled': date >= s['config']['start_date'], 'lan': bool(self.settings.get('lan')), 'ai_ready': bool(self.settings.get('api_key'))}
 
     def card_queue(self):
         now = time.time()
@@ -133,6 +133,7 @@ class Service:
                     if not 0 <= n <= 1440 or (k == 'daily_minutes' and n < 1):
                         raise ValueError('数量必须在允许范围内')
                     s['config'][k] = n
+            atomic_json(self.store.rules_file, s['config'])
             return s['config']
         if action == 'sources':
             if not local:
@@ -183,7 +184,7 @@ class Service:
             ok = bool(b.get('passed'))
             m['practice'].append({'date': today(), 'text': text[:20000], 'passed': ok, 'assessment': 'self'})
             if ok:
-                self.add_xp('practice:' + m['id'] + ':' + today(), 10, '体系自评')
+                self.add_xp('practice:' + m['id'] + ':' + today(), s['config']['xp_system'], '体系自评')
             return {'ok': True, 'assessment': 'self'}
         if action == 'cards':
             return {'all': list(s['cards'].values()), 'queue': self.card_queue()}
@@ -219,7 +220,7 @@ class Service:
             c['due'] = now + (60 if g == 1 else fsrs.interval(c['s'], .9, 36500) * 86400)
             c['last'], c['reps'] = now, c['reps'] + 1
             s['reviews'].append({'card': c['id'], 'date': today(), 'rating': g, 'new': is_new})
-            self.add_xp('card:' + c['id'] + ':' + today(), 3 if g > 1 else 1, '背诵卡自评')
+            self.add_xp('card:' + c['id'] + ':' + today(), s['config']['xp_card_good'] if g > 1 else s['config']['xp_card_again'], '背诵卡自评')
             return c
         if action == 'questions':
             return [dict(self.public_question(q), wrong=next((not a['correct'] for a in reversed(s['attempts']) if a['qid'] == q['id']), False)) for q in s['questions'].values()]
@@ -252,7 +253,7 @@ class Service:
             a = {'id': ident(), 'qid': q['id'], 'question': copy.deepcopy(q), 'answer': answer, 'correct': answer == q['answer'], 'date': today(), 'repeat': repeat, 'assessment': 'program', 'request_id': b.get('request_id')}
             s['attempts'].append(a)
             if not repeat:
-                self.add_xp('question:' + q['id'], 5 if a['correct'] else 1, '客观题首次作答')
+                self.add_xp('question:' + q['id'], s['config']['xp_question_correct'] if a['correct'] else s['config']['xp_question_wrong'], '客观题首次作答')
             return a
         if action == 'exam_create':
             questions = b.get('questions') or []
@@ -308,7 +309,7 @@ class Service:
                 raise ValueError('请先开始作答')
             if not e['submitted']:
                 e['submitted'], e['ended'] = True, time.time()
-                self.add_xp('exam:' + e['id'], 10, '主观题提交（未评分）')
+                self.add_xp('exam:' + e['id'], s['config']['xp_exam_submit'], '主观题提交（未评分）')
             return self.exam_public(e)
         if action == 'notes':
             return list(s['notes'].values())
@@ -379,7 +380,7 @@ class Service:
                 total = sum(p['score'] for p in points)
                 score = sum(expected[p['id']]['score'] for p in got if p['hit'])
                 e.update({'assessment': 'ai', 'score': score, 'total': total, 'ratio': score/total, 'grading': got})
-                self.add_xp('graded:' + e['id'], min(20, round(score)), '主观题AI评阅')
+                self.add_xp('graded:' + e['id'], min(s['config']['xp_exam_ai_max'], round(score)), '主观题AI评阅')
                 result.update({'score':score, 'total':total})
             self.store.markdown('AI结果', ident(), json.dumps(result, ensure_ascii=False, indent=2))
             return result

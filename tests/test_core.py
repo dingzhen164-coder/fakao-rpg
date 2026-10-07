@@ -43,7 +43,7 @@ class Core(unittest.TestCase):
  def test_path_escape_and_symlink(self):
   for p in ['../private.md','训练/secret.md','/etc/passwd']:
    with self.assertRaises(ValueError):safe_source(self.s.store.root,p)
-  train=self.s.store.train;train.mkdir(parents=True);(train/'资料整理').symlink_to(self.root)
+  train=self.s.store.train;train.mkdir(parents=True,exist_ok=True);(train/'资料整理').symlink_to(self.root)
   with self.assertRaises(ValueError):self.material()
  def test_draft_learning_blocked(self):
   m=self.material()
@@ -88,6 +88,14 @@ class Core(unittest.TestCase):
  def test_settings_remote_restricted(self):
   with self.assertRaises(ValueError):self.call('settings_save',{'api_key':'secret'},False)
   self.call('settings_save',{'api_key':'secret'});r=self.call('settings',local=False);self.assertNotIn('api_key',r);self.assertEqual(r['lan_code'],'');self.assertEqual(r['vault'],'')
+
+ def test_config_failure_rolls_back(self):
+  before=copy.deepcopy(self.s.state['config'])
+  with self.assertRaises(ValueError):self.call('config',{'start_date':'2026-12-02','daily_minutes':-1})
+  self.assertEqual(self.s.state['config'],before)
+ def test_rules_external_change(self):
+  rules=json.loads(self.s.store.rules_file.read_text());rules['daily_minutes']=210;self.s.store.rules_file.write_text(json.dumps(rules));r=Service(self.root/'settings',self.root/'vault');self.assertEqual(r.state['config']['daily_minutes'],210)
+
 class HttpTests(unittest.TestCase):
  setUp=Core.setUp
  def test_origin_and_host(self):
@@ -97,4 +105,14 @@ class HttpTests(unittest.TestCase):
   with self.assertRaises(urllib.error.HTTPError) as e:urllib.request.urlopen(req)
   self.assertEqual(e.exception.code,403)
   with self.assertRaises(urllib.error.HTTPError):urllib.request.urlopen(urllib.request.Request(base+'/',headers={'Host':'evil.test'}))
+ def test_lan_login_and_local_settings(self):
+  srv=make_server(self.s,'127.0.0.1',0);srv.RequestHandlerClass.local=lambda _:False
+  threading.Thread(target=srv.serve_forever,daemon=True).start();self.addCleanup(srv.server_close);self.addCleanup(srv.shutdown);base='http://127.0.0.1:'+str(srv.server_port)
+  def post(action,body,cookie=''):
+   return urllib.request.urlopen(urllib.request.Request(base+'/api/'+action,data=json.dumps(body).encode(),headers={'Content-Type':'application/json','Cookie':cookie}))
+  with self.assertRaises(urllib.error.HTTPError) as e:post('dashboard',{})
+  self.assertEqual(e.exception.code,401)
+  with post('login',{'code':self.s.settings['lan_code']}) as r:cookie=r.headers['Set-Cookie'].split(';')[0]
+  with post('settings',{},cookie) as r:self.assertEqual(json.load(r)['lan_code'],'')
+  with self.assertRaises(urllib.error.HTTPError):post('settings_save',{'api_key':'bad'},cookie)
 if __name__=='__main__':unittest.main()

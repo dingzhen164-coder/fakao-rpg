@@ -7,7 +7,7 @@ import secrets
 import threading
 from pathlib import Path
 
-DEFAULT_CONFIG = {'start_date': '2026-12-01', 'target_date': '2027-09-10', 'subjective_date': '', 'daily_minutes': 180, 'new_per_day': 20, 'reviews_per_day': 200}
+DEFAULT_CONFIG = {'start_date': '2026-12-01', 'target_date': '2027-09-10', 'subjective_date': '', 'daily_minutes': 180, 'new_per_day': 20, 'reviews_per_day': 200, 'rank_base': 100, 'xp_card_good': 3, 'xp_card_again': 1, 'xp_system': 10, 'xp_question_correct': 5, 'xp_question_wrong': 1, 'xp_exam_submit': 10, 'xp_exam_ai_max': 20}
 SUBJECTS = ['民法', '刑法', '民事诉讼法', '刑事诉讼法', '行政法与行政诉讼法', '商经知', '三国法', '理论法']
 
 
@@ -48,6 +48,22 @@ class Storage:
             self.state.setdefault(k, v)
         for k, v in DEFAULT_CONFIG.items():
             self.state['config'].setdefault(k, v)
+        self.rules_file = self.check(self.train / '规则.json')
+        if self.rules_file.exists():
+            rules = json.loads(self.rules_file.read_text(encoding='utf-8'))
+            if not isinstance(rules, dict):
+                raise ValueError('规则文件须为JSON对象')
+            for k in DEFAULT_CONFIG:
+                if k in rules:
+                    value = rules[k]
+                    if isinstance(DEFAULT_CONFIG[k], int):
+                        if type(value) is not int or value < 0 or value > 10000:
+                            raise ValueError('规则数值无效：' + k)
+                    elif not isinstance(value, str):
+                        raise ValueError('规则日期格式无效')
+                    self.state['config'][k] = value
+        else:
+            atomic_json(self.rules_file, self.state['config'])
 
     def check(self, path):
         path = Path(path)

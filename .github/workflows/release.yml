@@ -63,13 +63,11 @@ jobs:
       - name: Mac package
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --noconfirm --onedir --name FaguanGrowth --add-data "web:web" server.py
-          python scripts/smoke.py dist/FaguanGrowth/FaguanGrowth
-          mkdir -p "dist/法官成长记.app/Contents/MacOS"
-          cp -R dist/FaguanGrowth "dist/法官成长记.app/Contents/MacOS/"
-          cp scripts/mac-launch "dist/法官成长记.app/Contents/MacOS/launch"
-          chmod +x "dist/法官成长记.app/Contents/MacOS/launch"
-          cp scripts/Info.plist "dist/法官成长记.app/Contents/Info.plist"
+          pyinstaller --noconfirm --windowed --name FaguanGrowth --osx-bundle-identifier com.fakao.growth --add-data "web:web" server.py
+          python scripts/smoke.py dist/FaguanGrowth.app/Contents/MacOS/FaguanGrowth
+          mv dist/FaguanGrowth.app "dist/法官成长记.app"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleName 法官成长记" "dist/法官成长记.app/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.0" "dist/法官成长记.app/Contents/Info.plist"
           codesign --force --deep --sign - "dist/法官成长记.app"
           codesign --verify --deep "dist/法官成长记.app"
           ditto -c -k --sequesterRsrc --keepParent "dist/法官成长记.app" "dist/faguan-growth-mac-arm64.zip"

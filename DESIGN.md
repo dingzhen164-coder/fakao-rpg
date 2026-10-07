@@ -14,7 +14,7 @@ server.py提供HTTP与本机/局域网鉴权；rpg/service.py处理学习业务�
 
 ## schema_version 1
 
-- config: start_date、target_date、subjective_date、daily_minutes、new_per_day、reviews_per_day。
+- config: start_date、target_date、subjective_date、daily_minutes、new_per_day、reviews_per_day和各类经验值/晋升基数，可调规则另存训练/规则.json，重启后读取。
 - materials: source稳定摘要ID→{original,cleaned,meta,subject,title,chapter,teacher,edition,fingerprint,status:draft或verified,warnings,pages,question_draft,practice,history}。同来源更新稳定ID，旧整理稿记录版本；题目草稿不自动入库。
 - cards: 随机ID→{front,back,subject,material_id,source_version,reps,due,s,d,last}。due为UNIX秒；调度数学为参考项目FSRS-5，首版复习评分四档，重来1分钟后重学；其他分档按默认90%保留率排期，不声称完整兼容Anki的学习步进或参数训练。每日上限可调；同日同卡奖励最多一次。
 - questions: 随机ID→{stem,options,answer数组,type:single/multiple/indefinite,subject,point,explanation,source}。答案精确集合匹配；首版不采用特殊部分得分规则，不宣称正式整卷计分。questions读取与作答前响应不含答案、解析。
@@ -36,4 +36,4 @@ AI只做主动触发的整理、制卡、答疑、采分点判定。缓存key含
 
 ## 首版边界
 
-支持单篇导入和已核对题目人工录入，主观题试卷以JSON输入问题与采分点。没有预装法考题库，未把用户教材打包。PDF原资料可扫描，但自动提取和OCR另行讨论依赖；首版体系按科目章节考点列表与主动回忆呈现，图形导图编辑、整卷客观机考、正式电子法条查阅和程序内自动替换更新尚待后续迭代。更新使用Release下载后替换程序，训练数据独立。
+支持单篇导入和已核对题目人工录入，主观题试卷以表单输入问题、参考答案和采分点。没有预装法考题库，未把用户教材打包。PDF原资料可扫描，但自动提取和OCR另行讨论依赖；首版体系按科目章节考点列表与主动回忆呈现，图形导图编辑、整卷客观机考、正式电子法条查阅和程序内自动替换更新尚待后续迭代。更新使用Release下载后替换程序，训练数据独立。
