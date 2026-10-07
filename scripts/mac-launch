@@ -1,0 +1,3 @@
+#!/bin/bash
+cd "$(dirname "$0")"
+./FaguanGrowth/FaguanGrowth >> "$TMPDIR/fakao-rpg-launch.log" 2>&1 &

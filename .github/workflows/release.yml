@@ -1,0 +1,114 @@
+name: Test and release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+      - run: python -m unittest discover -s tests -v
+      - run: python scripts/smoke.py python server.py
+  ui:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Browser checks with runner Chrome
+        run: node scripts/ui-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-screenshots
+          path: screenshots
+  desktop:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            asset: faguan-growth-windows.exe
+          - os: macos-latest
+            asset: faguan-growth-mac-arm64.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build tool only
+        run: pip install pyinstaller
+      - name: Windows package
+        if: runner.os == 'Windows'
+        run: pyinstaller --noconfirm --onefile --name faguan-growth-windows --add-data "web;web" server.py
+      - name: Windows smoke
+        if: runner.os == 'Windows'
+        run: python scripts/smoke.py dist/faguan-growth-windows.exe
+      - name: Mac package
+        if: runner.os == 'macOS'
+        run: |
+          pyinstaller --noconfirm --onedir --name FaguanGrowth --add-data "web:web" server.py
+          python scripts/smoke.py dist/FaguanGrowth/FaguanGrowth
+          mkdir -p "dist/法官成长记.app/Contents/MacOS"
+          cp -R dist/FaguanGrowth "dist/法官成长记.app/Contents/MacOS/"
+          cp scripts/mac-launch "dist/法官成长记.app/Contents/MacOS/launch"
+          chmod +x "dist/法官成长记.app/Contents/MacOS/launch"
+          cp scripts/Info.plist "dist/法官成长记.app/Contents/Info.plist"
+          codesign --force --deep --sign - "dist/法官成长记.app"
+          codesign --verify --deep "dist/法官成长记.app"
+          ditto -c -k --sequesterRsrc --keepParent "dist/法官成长记.app" "dist/faguan-growth-mac-arm64.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: dist/${{ matrix.asset }}
+  android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: android/signing
+          key: fakao-debug-signing-v1
+      - run: bash android/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: faguan-growth-android.apk
+          path: android/build/faguan-growth-android.apk
+  publish:
+    needs: [desktop, android, ui]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publish complete release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V=$(python -c "from rpg.version import VERSION; print(VERSION)")
+          python -c "from pathlib import Path; t=Path('changelog.md').read_text(); Path('release-notes.md').write_text(t.split('## ',1)[1])"
+          if gh release view "v$V" >/dev/null 2>&1; then
+            gh release upload "v$V" dist/* --clobber
+          else
+            gh release create "v$V" dist/* --title "法官成长记 v$V" --notes-file release-notes.md
+          fi
+          gh release view "v$V" --json assets --jq '.assets[].name'
