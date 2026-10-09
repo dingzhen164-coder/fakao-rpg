@@ -677,9 +677,9 @@
     const fc = st.forecast.map((n, i) => `<div class="yj-fbar" title="${i === 0 ? "今天" : i + " 天后"}：${n} 张"><i style="height:${(n / fmax) * 100}%"></i><span>${i % 5 === 0 ? (i ? "+" + i : "今") : ""}</span></div>`).join("");
     const rt = st.ratings, rs = rt[1] + rt[2] + rt[3] + rt[4] || 1;
     s.innerHTML = head(`📊 ${esc(T("yj_stats"))}`, `<select id="sDeck"><option value="">全部${esc(T("yj_deck"))}</option>${deckOptions(deck)}</select>`) + `<div class="yj-stats">
-      <div class="yj-kpis"><div><b>${st.streak}</b><span>连续温简天数</span></div><div><b>${st.total_reviews}</b><span>累计温过</span></div>
+      <div class="yj-kpis"><div><b>${st.streak}</b><span>连续温习天数</span></div><div><b>${st.total_reviews}</b><span>累计温过</span></div>
         <div><b>${st.retention == null ? "—" : (st.retention * 100).toFixed(1) + "%"}</b><span>近 30 天记住率</span></div><div><b>${st.mature}</b><span>间隔 ≥21 天（已熟）</span></div></div>
-      <div class="card"><h3>温简热力（近半年）</h3><div class="yj-heat">${heat}</div></div>
+      <div class="card"><h3>温习热力（近半年）</h3><div class="yj-heat">${heat}</div></div>
       <div class="card"><h3>未来 30 天到期</h3><div class="yj-fc">${fc}</div></div>
       <div class="card yj-two"><div><h3>${esc(T("yj"))}现状</h3>${Object.entries(st.states).map(([k, v]) => `<div class="row small"><span>${esc(k)}</span><span class="spacer"></span><b>${v}</b></div>`).join("")}</div>
         <div><h3>近 30 天评分</h3>${[1, 2, 3, 4].map((k) => `<div class="yj-rbar r${k}"><span>${esc(T("yj_r" + k))}</span><i style="width:${(rt[k] / rs) * 100}%"></i><b>${rt[k]}</b></div>`).join("")}</div></div></div>`;

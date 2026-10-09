@@ -504,7 +504,7 @@ const views = {
     const P = progressParts(d);
     return `<div class="card ascend-card"><h3>🌈 ${esc(W("ascend"))}（法考） <small>真正的那一场：出分后在这里留下记录</small></h3>
         <div class="ascend-row">
-          <div class="ascend-list">${d.ascend.length ? d.ascend.map((b) => `<div><b>${esc(b.name)}</b> ${Math.round(b.score * 3)} 分（百分制 ${b.score}） <span class="faint small">${b.d}</span></div>`).join("") : '<p class="muted small">还没有飞升记录。</p>'}</div>
+          <div class="ascend-list">${d.ascend.length ? d.ascend.map((b) => `<div><b>${esc(b.name)}</b> ${Math.round(b.score * 3)} 分（百分制 ${b.score}） <span class="faint small">${b.d}</span></div>`).join("") : '<p class="muted small">还没有封神记录。</p>'}</div>
           <details class="fold form-fold"><summary>✍ 记录${esc(W("ascend"))}</summary><div class="row"><input id="asName" placeholder="如 2027 法考客观题" style="flex:2"><input id="asScore" placeholder="分数（满分 300）" style="flex:1">
           <select id="asResult" style="width:auto"><option>通过</option><option>未通过</option></select><button class="primary" id="asBtn">记录</button></div></details></div></div>
     <div class="log-cols">
@@ -1319,7 +1319,7 @@ async function cardsLibHtml() {
   try { ov = await api('/api/cards'); } catch (e) { return `<div class="card muted">${esc(e.message)}</div>`; }
   const tops = ov.decks.filter((d) => d.depth === 0);
   const subs = (name) => ov.decks.filter((d) => d.depth > 0 && d.name.startsWith(name + '::') && d.total);
-  return `${CARDS.toolsHtml()}<p class="small muted lib-tip">共 ${ov.cards} 枚${esc(W('yj'))}。点一个卷轴匣先看这一匣的目录（像${esc(W('yj_browse'))}），点哪一张就从哪一张翻起（只是看，不记温习进度）；想按记忆曲线背，到冒险大厅温简。</p>
+  return `${CARDS.toolsHtml()}<p class="small muted lib-tip">共 ${ov.cards} 枚${esc(W('yj'))}。点一个卷轴匣先看这一匣的目录（像${esc(W('yj_browse'))}），点哪一张就从哪一张翻起（只是看，不记温习进度）；想按记忆曲线背，到冒险大厅${esc(W("yj_review"))}。</p>
     <div class="tome-grid">${tops.map((d, i) => `<div class="tome-slot"><div class="slip" data-deck="${esc(d.name)}" style="--d:${(i % 6) * 0.7}s">
       <div class="slip-label">${vlabel(d.label)}</div><div class="slip-count">${d.total}</div></div>
       <div class="tome-cap">${d.total ? `${d.total} 枚 · 待温 ${d.review + d.learn} · 新 ${d.new}` : '空匣'}</div>
@@ -1432,7 +1432,7 @@ function bindLog() {
   $("#chatBtn").onclick = () => startTask({ task: { type: "chat", board: "", target: "", title: `💬 ${W("tutor_room")}` } });
   $("#leaveBtn").onclick = async () => { try { const r = await api("/api/leave", {}); handleEvents(r.events); render(); } catch (e) { showError(e); } };
   $("#asBtn").onclick = async () => {
-    try { const r = await api("/api/boss", { kind: "飞升", name: $("#asName").value || "国考", score: $("#asScore").value, scale: 300, result: $("#asResult").value }); handleEvents(r.events); render(); } catch (e) { showError(e); }
+    try { const r = await api("/api/boss", { kind: "飞升", name: $("#asName").value || "法考", score: $("#asScore").value, scale: 300, result: $("#asResult").value }); handleEvents(r.events); render(); } catch (e) { showError(e); }
   };
 }
 // 设置页：有输入框 / 下拉框的卡片都收成可展开的（默认收起，点标题展开）
