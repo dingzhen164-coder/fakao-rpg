@@ -1,10 +1,4 @@
 __pycache__/
 *.pyc
-dist/
-build/
-*.spec
-.local/
-screenshots/
-android/signing/
-*.keystore
-*.jks
+.DS_Store
+*.tmp
