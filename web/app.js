@@ -642,9 +642,9 @@ function timeCard(d) {
   const t = ts[TIME_SPAN] || ts.today;
   const total = t.lecture + t.practice + t.review;
   const orbs = [
-    ["lecture", "闻", "听课", "聆听", `网课、讲座（${W("lecture")}）`],
-    ["practice", "历", "做题", "历练", `试炼、${W("kill")}、${W("apply")}${t.self ? ` · 自练 ${t.self} 分` : " · 含自练"}`],
-    ["review", "温", "复习", "温习", `${W("teach")}、${W("recite")}、${W("feynman")}、${W("review")}${t.self_review ? ` · ${W("selfstudy")} ${t.self_review} 分` : ` · 含${W("selfstudy")}`}`],
+    ["lecture", "Ⅰ", "听课", "聆听", `网课、讲座（${W("lecture")}）`],
+    ["practice", "Ⅱ", "做题", "历练", `试炼、${W("kill")}、${W("apply")}${t.self ? ` · 自练 ${t.self} 分` : " · 含自练"}`],
+    ["review", "Ⅲ", "复习", "温习", `${W("teach")}、${W("recite")}、${W("feynman")}、${W("review")}${t.self_review ? ` · ${W("selfstudy")} ${t.self_review} 分` : ` · 含${W("selfstudy")}`}`],
   ].map(([k, seal, name, alias, hint]) => {
     const share = total ? t[k] / total : 0;
     return `<div class="orb orb-${k}" style="--share:${(share * 360).toFixed(1)}deg">
@@ -1009,8 +1009,8 @@ async function hubHtml() {
   const d = DASH || {};
   const tower = d.tower;
   const gates = `<div class="hall-gates">
-    <div class="gate ${HALL === 'xiulian' ? 'on' : ''}" data-hall="xiulian"><div class="gate-cloud"></div><div class="gate-icon">🧘</div>
-      <div class="gate-name">修 炼</div><div class="gate-sub">${esc(W('yj'))}温习 · 法阵图</div><div class="gate-stat">${esc(W('yj_review'))} · 卷轴匣规矩 · 法阵图</div></div>
+    <div class="gate ${HALL === 'xiulian' ? 'on' : ''}" data-hall="xiulian"><div class="gate-cloud"></div><div class="gate-icon">🔮</div>
+      <div class="gate-name">研 习</div><div class="gate-sub">${esc(W('yj'))}温习 · 法阵图</div><div class="gate-stat">${esc(W('yj_review'))} · 卷轴匣规矩 · 法阵图</div></div>
     <div class="gate ${HALL === 'shizhan' ? 'on' : ''}" data-hall="shizhan"><div class="gate-cloud"></div><div class="gate-icon">⚔</div>
       <div class="gate-name">实 战</div><div class="gate-sub">试炼塔 · 真题成套</div><div class="gate-stat">${tower ? (tower.summit ? '百层已登顶' : `正在攀登第 ${tower.current} 层`) : '真题试炼'}</div></div></div>`;
   const body = HALL === 'shizhan' ? await shizhanHtml() : await xiulianHtml();

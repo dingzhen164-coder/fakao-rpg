@@ -1,0 +1,206 @@
+/*
+  法师成长记 · 西方玄幻皮肤（2.1.0）。在 style.css 之后加载，只覆盖“长相”，不改布局和类名。
+  - 暗色：月夜下的魔法学院（深夜蓝紫底、星点、金色符文、紫色奥术光）；
+    亮色：羊皮纸与墨水（做旧的纸色、暗金描边、酒红标题）。两种都由 <html data-theme> 切换，变量在下面两段。
+  - 背景法阵：web/art/circle-*.svg（tools/make_circle.py 生成，边上一圈写着 FIAT IUSTITIA RUAT CAELUM），钉在页面右侧缓慢转动。
+  - 面板：一圈描边 + 向内 5px 的第二道细金线（outline-offset 负值），像书页的双线边框；不用 ::before / ::after，免得和各组件自己的装饰打架。
+  - 尽量用变量里写死的 rgba，少用 color-mix：老平板内核不认 color-mix（见 style.css 末尾 html.no-cmix 兜底）。
+*/
+:root {
+  --bg: #0c0a16; --panel: #17131f; --panel2: #211b2c; --line: #4b3d28;
+  --text: #efe6d2; --muted: #b4a68a; --faint: #7d7062;
+  --accent: #8b5cf6; --accent2: #4f8fd9; --gold: #e0b354; --green: #62c48b;
+  --red: #e05a52; --orange: #e8964a; --purple: #b48cff;
+  --title: #f0cf7a;
+  --frame: rgba(224, 179, 84, .42); --frame-in: rgba(224, 179, 84, .16);
+  --glow-gold: rgba(224, 179, 84, .35); --glow-arcane: rgba(139, 92, 246, .35);
+  --btn-from: #6d3fc4; --btn-to: #33206f; --btn-text: #fff4d6;
+  --top-from: #1c1528; --top-to: #120e1b;
+  --c-lecture: #5b8def; --c-practice: #d4475a; --c-review: #e0b354;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  --radius: 10px;
+  --display: "Cinzel", "Trajan Pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+             "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --serif: Georgia, "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --circle: url("art/circle-dark.svg");
+}
+:root[data-theme="light"] {
+  --bg: #e9dbb8; --panel: #f7eed6; --panel2: #eddfbd; --line: #bf9e63;
+  --text: #2b1c0e; --muted: #5e4a30; --faint: #8a7558;
+  --accent: #5a2d91; --accent2: #1f5a96; --gold: #94650f; --green: #2e7d4f;
+  --red: #9c2a26; --orange: #b05617; --purple: #5a2d91;
+  --title: #6b1f1f;
+  --frame: rgba(120, 82, 24, .5); --frame-in: rgba(148, 101, 15, .3);
+  --glow-gold: rgba(148, 101, 15, .25); --glow-arcane: rgba(90, 45, 145, .22);
+  --btn-from: #5a2d91; --btn-to: #2e1859; --btn-text: #fff1d0;
+  --top-from: #3a2717; --top-to: #2a1b0f;
+  --c-lecture: #2c5aa8; --c-practice: #9c2a3a; --c-review: #a8790f;
+  --shadow: 0 6px 20px rgba(70, 45, 10, .2);
+  --circle: url("art/circle-light.svg");
+}
+
+/* ---------------------------------------------------------------- 底：星空 / 羊皮纸 + 右侧法阵 */
+body { background: transparent !important; }   /* 底图只画在 html 上：body 有底色会盖住下面 z-index:-1 的法阵 */
+html {
+  background:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 240, 200, .7), transparent 60%),
+    radial-gradient(1px 1px at 68% 8%, rgba(255, 240, 200, .6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 84% 42%, rgba(200, 180, 255, .7), transparent 60%),
+    radial-gradient(1px 1px at 32% 64%, rgba(255, 240, 200, .5), transparent 60%),
+    radial-gradient(1px 1px at 52% 88%, rgba(255, 240, 200, .5), transparent 60%),
+    radial-gradient(1.5px 1.5px at 6% 82%, rgba(200, 180, 255, .6), transparent 60%),
+    radial-gradient(900px 600px at 85% -10%, rgba(139, 92, 246, .22), transparent 60%),
+    radial-gradient(800px 500px at -5% 105%, rgba(79, 143, 217, .16), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+html[data-theme="light"] {
+  background:
+    radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(110, 70, 20, .22) 100%),
+    radial-gradient(600px 300px at 20% 10%, rgba(255, 250, 230, .55), transparent 70%),
+    radial-gradient(500px 400px at 90% 90%, rgba(150, 100, 40, .12), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(120, 80, 30, .025) 0 2px, transparent 2px 5px),
+    var(--bg);
+  background-attachment: fixed;
+}
+body::before { content: ""; position: fixed; z-index: -1; pointer-events: none;
+  width: min(820px, 90vw); aspect-ratio: 1; right: max(-260px, -22vw); top: 50%; translate: 0 -50%;
+  background: var(--circle) center / contain no-repeat; opacity: .13; animation: ff-spin 240s linear infinite; }
+html[data-theme="light"] body::before { opacity: .14; }
+body.has-bg::before { display: none; }
+@keyframes ff-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
+
+/* ---------------------------------------------------------------- 顶栏：皮革横幅 + 金色压边 */
+.topbar { background: linear-gradient(180deg, var(--top-from), var(--top-to)); border-bottom: 2px solid var(--gold);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 4px 18px rgba(0, 0, 0, .35); backdrop-filter: none; }
+.topbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -7px; height: 4px; pointer-events: none;
+  background: radial-gradient(circle, var(--gold) 1.2px, transparent 1.6px) center / 14px 4px repeat-x; opacity: .7; }
+.brand { color: #f3d27c; font-family: var(--display); letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(243, 210, 124, .45), 0 1px 0 #3a2410; }
+nav a { color: #d9c9a6; font-family: var(--serif); letter-spacing: .08em; border-radius: 4px; position: relative; }
+nav a:hover { color: #fff3d0; background: rgba(243, 210, 124, .1); }
+nav a.active { color: #f3d27c; background: rgba(243, 210, 124, .12); box-shadow: inset 0 -2px 0 #f3d27c; }
+.today-pill { background: rgba(0, 0, 0, .25); color: #e6d6b3; border-color: rgba(243, 210, 124, .45); }
+.topbar .bgm-btn, .topbar button.ghost { color: #e6d6b3; background: rgba(0, 0, 0, .2); border-color: rgba(243, 210, 124, .4); }
+body.has-bg .topbar { background: linear-gradient(180deg, rgba(28, 21, 40, .88), rgba(18, 14, 27, .88)); }
+
+/* ---------------------------------------------------------------- 面板：双线金框 */
+.card { border: 1px solid var(--frame); border-radius: var(--radius);
+  outline: 1px solid var(--frame-in); outline-offset: -6px;
+  box-shadow: var(--shadow), inset 0 0 40px rgba(0, 0, 0, .12); }
+html[data-theme="light"] .card { box-shadow: var(--shadow), inset 0 0 36px rgba(140, 95, 30, .1); }
+.card h3, .lib-head h2, .sancai-head h3 { font-family: var(--display); color: var(--title); letter-spacing: .08em; }
+.card h3 small { font-family: var(--serif); letter-spacing: 0; }
+.stat { border-color: var(--frame) !important; }
+.hero { background: radial-gradient(120% 140% at 0% 0%, rgba(139, 92, 246, .2), transparent 60%), var(--panel); }
+html[data-theme="light"] .hero { background: radial-gradient(120% 140% at 0% 0%, rgba(90, 45, 145, .12), transparent 60%), var(--panel); }
+.hero-name, .realm-name { font-family: var(--display); }
+.realm-name { color: var(--title); }
+.hero-score .big { color: var(--gold); }
+
+/* 头像：外圈一枚慢转的符文环 */
+.avatar::before { content: ""; position: absolute; inset: -12px; border-radius: 50%; pointer-events: none;
+  background: var(--circle) center / contain no-repeat; opacity: .55; animation: ff-spin 60s linear infinite; }
+.avatar img, .avatar .def { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(0, 0, 0, .25), 0 0 26px var(--glow-arcane); }
+.avatar .def { background: radial-gradient(circle at 30% 25%, #b48cff, #5a2d91 50%, #1d1240); color: #f6dc94; }
+
+/* ---------------------------------------------------------------- 按钮：附魔紫 + 金边 / 羊皮纸 */
+button { border-radius: 6px; border-color: var(--frame); background: linear-gradient(180deg, var(--panel), var(--panel2)); }
+button:hover { border-color: var(--gold); box-shadow: 0 0 10px var(--glow-gold); }
+button.primary { background: linear-gradient(180deg, var(--btn-from), var(--btn-to)); color: var(--btn-text);
+  border: 1px solid var(--gold); text-shadow: 0 1px 0 rgba(0, 0, 0, .45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 2px 8px rgba(0, 0, 0, .3); }
+button.primary:hover { filter: brightness(1.12); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 0 14px var(--glow-arcane), 0 0 6px var(--glow-gold); }
+button.ghost { background: transparent; }
+input, textarea, select { border-radius: 6px; border-color: var(--frame); }
+input:focus, textarea:focus, select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--glow-gold); }
+.tag { border-radius: 4px; }
+
+/* 进度条：符文槽 */
+.bar { border-radius: 3px; border: 1px solid var(--frame-in); background: rgba(0, 0, 0, .25); }
+html[data-theme="light"] .bar { background: rgba(120, 80, 30, .12); }
+.bar > div { border-radius: 2px; background: linear-gradient(90deg, #4f8fd9, #8b5cf6 55%, #e0b354);
+  box-shadow: 0 0 10px var(--glow-arcane); }
+
+/* ---------------------------------------------------------------- 学习时长：三枚法阵印（Ⅰ 聆听 · Ⅱ 历练 · Ⅲ 温习） */
+.sancai, .shier { --seal-font: var(--display); }
+.orb-ring::before { inset: -14px; border: 0; border-radius: 50%; background: var(--circle) center / contain no-repeat; opacity: .35; }
+.orb-core { border-color: var(--frame); }
+.orbs:not(.orbs4) .orb-seal { display: none; }    /* 三系不再印大字（Ⅰ Ⅱ Ⅲ 印出来像几道竖杠）；各科时长仍印科目首字 */
+.orb-name { font-family: var(--display); letter-spacing: .15em; }
+
+/* ---------------------------------------------------------------- 冒险大厅两扇门、标签页 */
+:root { --jade: #8b5cf6; }
+:root[data-theme="light"] { --jade: #5a2d91; }
+.gate { border-radius: 10px; border-color: var(--frame); outline: 1px solid var(--frame-in); outline-offset: -6px; }
+.gate-name { font-family: var(--display); color: var(--title); }
+.gate-cloud { background: radial-gradient(60% 40% at 85% 20%, var(--glow-gold), transparent 70%),
+                          radial-gradient(50% 35% at 10% 110%, var(--glow-arcane), transparent 70%); }
+.lib-tabs { border-radius: 8px; border-color: var(--frame); }
+.lib-tabs button { border-radius: 6px; }
+.sancai-tabs a, .toc-chip { border-radius: 4px; }
+
+/* ---------------------------------------------------------------- 咒文书页：符文卡 = 皮面魔法书，教材 = 烫金典籍 */
+.slip { width: 104px; border-radius: 4px 10px 10px 4px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .35) 0 9px, transparent 9px),
+              radial-gradient(120% 90% at 30% 15%, #6a3fb0, #3b2070 55%, #1f1140);
+  box-shadow: inset 0 0 0 2px rgba(224, 179, 84, .55), inset 0 0 0 6px rgba(0, 0, 0, .25), inset 0 0 0 7px rgba(224, 179, 84, .35),
+              0 0 22px rgba(139, 92, 246, .35), 0 14px 24px rgba(0, 0, 0, .35); }
+.slip::before { top: auto; bottom: -22px; left: 68%; width: 8px; height: 30px; background: linear-gradient(#9c2a3a, #6b1626);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
+.slip::after { top: 12px; left: calc(50% - 6px); width: 12px; height: 12px; border-radius: 2px; transform: rotate(45deg);
+  background: radial-gradient(circle at 35% 35%, #fff3c4, #e0b354 45%, #8a5a12); box-shadow: 0 0 8px rgba(224, 179, 84, .7); }
+.slip:hover { box-shadow: inset 0 0 0 2px #e0b354, inset 0 0 0 6px rgba(0, 0, 0, .25), inset 0 0 0 7px rgba(224, 179, 84, .5),
+              0 0 36px rgba(180, 140, 255, .6), 0 18px 28px rgba(0, 0, 0, .4); }
+.slip-label { color: #f3dda0; text-shadow: 0 1px 2px rgba(0, 0, 0, .6); font-family: var(--display); }
+.slip-count { color: #2b1c0e; background: linear-gradient(#f6e7bf, #d9bc7a); border: 1px solid #8a5a12; }
+.tome { border-radius: 3px 8px 8px 3px; }
+.tome::before { left: 0; top: 0; bottom: 0; width: 12px;
+  background: repeating-linear-gradient(to bottom, transparent 0 20px, rgba(224, 179, 84, .9) 20px 23px, transparent 23px 44px); }
+.tome-label { color: #3a2410; background: linear-gradient(#f7ecd0, #e3cc95); border: 1px solid #9a6a10;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, .2), 0 0 0 3px rgba(224, 179, 84, .6); }
+.tome-seal { color: #fff1d0; background: #8e1f2b; border-color: #e0b354; border-radius: 50%; padding: 2px 4px; }
+
+/* ---------------------------------------------------------------- 弹窗、提示、导师气泡 */
+.modal-box, .levelup { border: 1px solid var(--frame); outline: 1px solid var(--frame-in); outline-offset: -6px; border-radius: var(--radius); }
+.toast { border-radius: 6px; border-color: var(--frame); }
+.npc .who { font-family: var(--display); color: var(--title); }
+.greet .face, .npc .face { box-shadow: 0 0 0 2px var(--gold), 0 0 14px var(--glow-arcane); }
+
+/* ---------------------------------------------------------------- 晋升按钮 */
+.rb-btn { border-radius: 6px; font-family: var(--display); }
+
+/* ---------------------------------------------------------------- 大典画面：夜空、城堡剪影、旋转法阵 */
+.ceremony { background: radial-gradient(ellipse at 50% 38%, #1d1638 0%, #0b0818 55%, #04030a 100%); color: #ece2c8;
+  --glow: #ffd98a; --jade: #b48cff;
+  --cal: "Palatino Linotype", Palatino, Georgia, "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --kai: Georgia, "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif; }
+.ceremony.tone-gold { --jade: #ffd98a; }
+.ceremony.tone-crimson { --jade: #ff8f8f; }
+.cer-sky b { width: 3px; height: 3px; border-radius: 50%; background: #fff3c4; box-shadow: 0 0 6px 2px rgba(255, 220, 140, .7);
+  animation-name: ff-star; }
+@keyframes ff-star { 0%, 100% { opacity: 0; } 40%, 60% { opacity: .9; } }
+.cer-circle { position: absolute; inset: -18%; pointer-events: none; opacity: 0; transition: opacity 1.6s ease .4s; }
+.cer-circle img { width: 100%; height: 100%; animation: ff-spin 60s linear infinite; filter: drop-shadow(0 0 6px rgba(255, 217, 138, .6)); }
+.ceremony.in .cer-circle { opacity: .85; }
+.cer-moon { background: radial-gradient(circle at 50% 45%, #fffaf0 0%, #ffe9b3 30%, #e9b75a 62%, #9a6a1c 100%); }
+.cer-mount { filter: drop-shadow(0 0 16px rgba(180, 140, 255, .25)); }
+.cer-ridge { filter: drop-shadow(0 -4px 14px rgba(180, 140, 255, .2)); }
+.cer-mist { background: rgba(200, 180, 255, .1); }
+.cer-fish { filter: drop-shadow(0 0 10px rgba(255, 217, 138, .8)); }
+.cer-title { font-weight: 700; color: #241338; letter-spacing: .08em; text-shadow: 0 0 2px rgba(255, 245, 220, .8), 0 2px 0 rgba(110, 70, 20, .35); }
+.cer-band { background: linear-gradient(180deg, rgba(30, 18, 60, .55), rgba(40, 24, 78, .85) 30%, rgba(40, 24, 78, .85) 70%, rgba(30, 18, 60, .55));
+  border-top: 1px solid rgba(224, 179, 84, .5); border-bottom: 1px solid rgba(224, 179, 84, .5); }
+.cer-sub span { color: #ffd98a; -webkit-text-stroke: 0; text-shadow: 0 0 10px rgba(255, 200, 120, .6); }
+.cer-ok { font-family: var(--cal); letter-spacing: .4em; color: #fff4d6; text-shadow: 0 1px 0 #2a1450;
+  background: linear-gradient(180deg, #8b5cf6 0%, #5a2d91 55%, #33206f 100%); box-shadow: inset 0 0 0 2px rgba(255, 217, 138, .7); }
+
+/* ---------------------------------------------------------------- 收功结算：法袍法师、奥术法阵 */
+.settle { --seal-font: var(--display); }
+.st-seal { display: none; }
+.st-word { letter-spacing: .15em; }
+.st-btn { border: 1px solid #e0b354 !important; }
+
+/* ---------------------------------------------------------------- 老内核兜底：不认 color-mix 时，面板底色照常 */
+html.no-cmix .topbar { background: var(--top-to); }

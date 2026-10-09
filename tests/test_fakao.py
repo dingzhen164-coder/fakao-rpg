@@ -97,6 +97,14 @@ class VaultTest(unittest.TestCase):
         api.settings_set({"vault": str(ok)})
         self.assertEqual(paths.find_vault(), ok.resolve())
 
+    def test_mindmap_lists_eight_subjects(self):
+        from rpg import mindmap
+        v = self.tmp / "法考"
+        v.mkdir()
+        p = paths.Paths(v)
+        p.ensure_train_dir()
+        self.assertEqual([x["board"] for x in mindmap.listing(p)["boards"]][:8], EIGHT)
+
     def test_subject_notes_folder_is_material(self):
         v = self.tmp / "法考"
         (v / "10-科目/民法/总则").mkdir(parents=True)

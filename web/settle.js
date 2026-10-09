@@ -1,16 +1,16 @@
-/* 收功结算：记一笔听道 / 自练，或者在修炼里做完一项复习、实战后，弹出一幕结算。
-   人物 = 营地头像（换了头像这里也跟着换）接一身道袍：听课、复习是悬空打坐，做题是站立；双手结印，
-   周身是三才时辰对应颜色的灵光（听课青、做题朱、复习金），脚下法阵缓转，灵气上升；
+/* 收功结算：记一笔听讲 / 自练，或者在冒险里做完一项复习、实战后，弹出一幕结算。
+   人物 = 营地头像（换了头像这里也跟着换）穿一身法袍、戴尖顶法师帽：听课、复习是悬空冥想，做题是站立施法；双手间一团魔力光，
+   周身是三系对应颜色的光（听课蓝、做题红、复习金），脚下奥术法阵缓转（刻着 Ⅰ–Ⅷ），光点上升；
    下面两条进度条从之前涨到之后：今日功行（+分钟）和修为（+修为）。
    用法：const s = SETTLE.snap(); …记录或做完… await refresh(); SETTLE.show({ kind, title, sub, before: s });
    点“收功”、点空白处或按 Esc 关闭。 */
 (function () {
   const KIND = {
-    lecture: { color: "#3f9e8f", glow: "#7fe0cf", pose: "sit", seal: "闻", word: "闻法圆满", cat: "听课" },
-    review: { color: "#c9a227", glow: "#ffe08a", pose: "sit", seal: "温", word: "温养功成", cat: "复习" },
-    practice: { color: "#c2463a", glow: "#ff9a7a", pose: "stand", seal: "历", word: "历练归来", cat: "做题" },
+    lecture: { color: "#3b5fc4", glow: "#9fb8ff", pose: "sit", seal: "Ⅰ", word: "聆听圆满", cat: "听课" },
+    review: { color: "#b8860b", glow: "#ffe08a", pose: "sit", seal: "Ⅲ", word: "温习功成", cat: "复习" },
+    practice: { color: "#a8283a", glow: "#ff9a9a", pose: "stand", seal: "Ⅱ", word: "历练归来", cat: "做题" },
   };
-  const TRIGRAMS = "☰☱☲☳☴☵☶☷";
+  const TRIGRAMS = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ"];   // 法阵外圈的刻字（原来是八卦）
 
   function snap() {
     const d = window.DASH_REF ? window.DASH_REF() : null;
@@ -21,7 +21,7 @@
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  // 道袍人物（SVG）。头部是圆形头像，没有头像时写名字的第一个字
+  // 法袍人物（SVG）。头部是圆形头像，没有头像时写名字的第一个字；头上一顶尖顶法师帽
   function figure(pose, k, avatar, letter) {
     const robe = `url(#robe-${pose})`;
     const head = avatar
@@ -30,9 +30,11 @@
       : `<circle cx="100" cy="64" r="25" fill="#f1e2c6"/><text x="100" y="73" text-anchor="middle" font-size="26" class="st-letter">${esc(letter)}</text>`;
     const defs = `<defs>
         <linearGradient id="robe-${pose}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#fbf7ee"/><stop offset=".55" stop-color="#e9e2d2"/><stop offset="1" stop-color="${k.color}" stop-opacity=".55"/></linearGradient>
+          <stop offset="0" stop-color="#4a2f86"/><stop offset=".6" stop-color="#2c1a57"/><stop offset="1" stop-color="${k.color}"/></linearGradient>
         <linearGradient id="sleeve-${pose}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#f6f1e6"/><stop offset="1" stop-color="${k.color}" stop-opacity=".35"/></linearGradient>
+          <stop offset="0" stop-color="#55369a"/><stop offset="1" stop-color="#24154a"/></linearGradient>
+        <linearGradient id="hat-${pose}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5d3ba8"/><stop offset="1" stop-color="#26164f"/></linearGradient>
         <radialGradient id="haloFill"><stop offset=".55" stop-color="${k.glow}" stop-opacity="0"/><stop offset=".8" stop-color="${k.glow}" stop-opacity=".35"/><stop offset="1" stop-color="${k.glow}" stop-opacity="0"/></radialGradient>
         <radialGradient id="spark"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${k.glow}"/><stop offset="1" stop-color="${k.glow}" stop-opacity="0"/></radialGradient>
       </defs>`;
@@ -46,33 +48,37 @@
         <circle cx="100" cy="64" r="34" fill="none" stroke="${k.glow}" stroke-width="1.4" opacity=".9"/>
         <circle cx="100" cy="64" r="38.5" fill="none" stroke="${k.glow}" stroke-width=".6" stroke-dasharray="1.5 3" opacity=".8"/></g>`;
     // 披帛：从肩后绕出、两端飘起
-    const ribbon = (y0, y1) => `<path class="st-ribbon" d="M74 ${y0} Q30 ${y0 + 20} 22 ${y1} Q16 ${y1 + 26} 6 ${y1 + 40}" fill="none" stroke="${k.glow}" stroke-width="4" stroke-linecap="round" opacity=".55"/>
-        <path class="st-ribbon r" d="M126 ${y0} Q170 ${y0 + 20} 178 ${y1} Q184 ${y1 + 26} 194 ${y1 + 40}" fill="none" stroke="${k.glow}" stroke-width="4" stroke-linecap="round" opacity=".55"/>`;
+    const ribbon = () => "";      // 法袍没有披帛
+    // 尖顶法师帽：帽檐压在头顶，帽尖往后弯，缀一颗星
+    const hat = `<g class="st-hat"><path d="M100 4 Q112 10 116 18 Q108 14 104 16 L126 46 L74 46 Z" fill="url(#hat-${pose})" stroke="#e0b354" stroke-width="1"/>
+        <ellipse cx="100" cy="47" rx="38" ry="7" fill="url(#hat-${pose})" stroke="#e0b354" stroke-width="1.2"/>
+        <path d="M76 42 Q100 36 124 42" stroke="#e0b354" stroke-width="3" fill="none"/>
+        <path d="M98 22 L100 16 L102 22 L108 23 L103 27 L105 33 L100 29 L95 33 L97 27 L92 23Z" fill="#ffe08a"/></g>`;
     if (pose === "sit") {
       return `<svg class="st-fig sit" viewBox="0 0 200 260" aria-hidden="true">${defs}
         <ellipse cx="100" cy="236" rx="76" ry="13" fill="${k.color}" opacity=".18"/>
         ${halo}${ribbon(120, 170)}
-        <path d="M30 232 Q36 196 100 192 Q164 196 170 232 Q100 246 30 232Z" fill="${robe}" stroke="#d8ccb3" stroke-width="1"/>
-        <path d="M58 214 Q100 206 142 214" stroke="#d8ccb3" stroke-width="1" fill="none"/>
-        <path d="M36 226 Q52 212 72 216 M164 226 Q148 212 128 216" stroke="#d8ccb3" stroke-width="1" fill="none"/>
-        <path d="M68 112 Q100 98 132 112 L150 206 Q100 216 50 206 Z" fill="${robe}" stroke="#d8ccb3" stroke-width="1"/>
+        <path d="M30 232 Q36 196 100 192 Q164 196 170 232 Q100 246 30 232Z" fill="${robe}" stroke="#e0b354" stroke-width="1"/>
+        <path d="M58 214 Q100 206 142 214" stroke="#e0b354" stroke-width="1" fill="none"/>
+        <path d="M36 226 Q52 212 72 216 M164 226 Q148 212 128 216" stroke="#e0b354" stroke-width="1" fill="none"/>
+        <path d="M68 112 Q100 98 132 112 L150 206 Q100 216 50 206 Z" fill="${robe}" stroke="#e0b354" stroke-width="1"/>
         <path d="M86 108 L100 140 L114 108" fill="none" stroke="${k.color}" stroke-width="2.4" opacity=".7"/>
-        <path d="M70 114 Q46 150 56 196 Q72 204 92 190 Q86 168 94 152 Q84 136 82 118Z" fill="url(#sleeve-sit)" stroke="#d8ccb3" stroke-width="1"/>
-        <path d="M130 114 Q154 150 144 196 Q128 204 108 190 Q114 168 106 152 Q116 136 118 118Z" fill="url(#sleeve-sit)" stroke="#d8ccb3" stroke-width="1"/>
+        <path d="M70 114 Q46 150 56 196 Q72 204 92 190 Q86 168 94 152 Q84 136 82 118Z" fill="url(#sleeve-sit)" stroke="#e0b354" stroke-width="1"/>
+        <path d="M130 114 Q154 150 144 196 Q128 204 108 190 Q114 168 106 152 Q116 136 118 118Z" fill="url(#sleeve-sit)" stroke="#e0b354" stroke-width="1"/>
         <rect x="93" y="84" width="14" height="16" rx="5" fill="#f1dcc0"/>
-        ${head}${mudra(150)}</svg>`;
+        ${head}${hat}${mudra(150)}</svg>`;
     }
     return `<svg class="st-fig stand" viewBox="0 0 200 300" aria-hidden="true">${defs}
       <ellipse cx="100" cy="288" rx="58" ry="9" fill="${k.color}" opacity=".2"/>
       ${halo}${ribbon(118, 190)}
-      <path d="M70 110 Q100 98 130 110 L152 280 Q100 292 48 280 Z" fill="${robe}" stroke="#d8ccb3" stroke-width="1"/>
+      <path d="M70 110 Q100 98 130 110 L152 280 Q100 292 48 280 Z" fill="${robe}" stroke="#e0b354" stroke-width="1"/>
       <path d="M78 168 Q100 174 122 168" stroke="${k.color}" stroke-width="5" opacity=".65" fill="none"/>
       <path d="M100 172 L96 196 M100 172 L105 194" stroke="${k.color}" stroke-width="1.6" opacity=".6"/>
       <path d="M86 106 L100 136 L114 106" fill="none" stroke="${k.color}" stroke-width="2.4" opacity=".7"/>
-      <path class="st-sleeve-l" d="M72 114 Q44 152 50 214 Q66 222 82 204 Q84 168 95 152 Q84 136 82 118Z" fill="url(#sleeve-stand)" stroke="#d8ccb3" stroke-width="1"/>
-      <path class="st-sleeve-r" d="M128 114 Q156 152 150 214 Q134 222 118 204 Q116 168 105 152 Q116 136 118 118Z" fill="url(#sleeve-stand)" stroke="#d8ccb3" stroke-width="1"/>
+      <path class="st-sleeve-l" d="M72 114 Q44 152 50 214 Q66 222 82 204 Q84 168 95 152 Q84 136 82 118Z" fill="url(#sleeve-stand)" stroke="#e0b354" stroke-width="1"/>
+      <path class="st-sleeve-r" d="M128 114 Q156 152 150 214 Q134 222 118 204 Q116 168 105 152 Q116 136 118 118Z" fill="url(#sleeve-stand)" stroke="#e0b354" stroke-width="1"/>
       <rect x="93" y="84" width="14" height="16" rx="5" fill="#f1dcc0"/>
-      ${head}${mudra(146)}</svg>`;
+      ${head}${hat}${mudra(146)}</svg>`;
   }
 
   function meter(label, from, to, unit, gainText, color) {
@@ -114,7 +120,7 @@
         <circle cx="100" cy="100" r="94" fill="none" stroke="${k.glow}" stroke-width="1.2" opacity=".8"/>
         <circle cx="100" cy="100" r="84" fill="none" stroke="${k.glow}" stroke-width=".6" stroke-dasharray="2 5" opacity=".9"/>
         <circle cx="100" cy="100" r="58" fill="none" stroke="${k.glow}" stroke-width=".8" opacity=".6"/>
-        ${[...TRIGRAMS].map((g, i) => { const a = i * Math.PI / 4 - Math.PI / 2; return `<text x="${(100 + 71 * Math.cos(a)).toFixed(1)}" y="${(100 + 71 * Math.sin(a) + 5).toFixed(1)}" text-anchor="middle" font-size="14" fill="${k.glow}" transform="rotate(${i * 45} ${(100 + 71 * Math.cos(a)).toFixed(1)} ${(100 + 71 * Math.sin(a)).toFixed(1)})">${g}</text>`; }).join("")}
+        ${TRIGRAMS.map((g, i) => { const a = i * Math.PI / 4 - Math.PI / 2; return `<text x="${(100 + 71 * Math.cos(a)).toFixed(1)}" y="${(100 + 71 * Math.sin(a) + 5).toFixed(1)}" text-anchor="middle" font-size="14" fill="${k.glow}" transform="rotate(${i * 45} ${(100 + 71 * Math.cos(a)).toFixed(1)} ${(100 + 71 * Math.sin(a)).toFixed(1)})">${g}</text>`; }).join("")}
         <path d="M100 42 L150 129 L50 129Z M100 158 L50 71 L150 71Z" fill="none" stroke="${k.glow}" stroke-width=".6" opacity=".5"/></svg>`;
     el = document.createElement("div");
     el.className = `settle st-${kind} st-${k.pose}`;

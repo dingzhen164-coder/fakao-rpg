@@ -130,9 +130,9 @@
         data: plain(data.root || { data: { text: board }, children: [] }),
         layout: data.layout || "logicalStructure",
         theme: data.theme?.template || "default",
-        themeConfig: Object.assign({ backgroundColor: "#fffdf6", lineColor: "#3fa48a", generalizationLineColor: "#3fa48a",
-          root: { fillColor: "#2f8f78", color: "#fff", borderColor: "#2f8f78", fontSize: 18 },
-          second: { fillColor: "#eef7f3", color: "#1d3d36", borderColor: "#3fa48a", fontSize: 15 } }, data.theme?.config || {}),
+        themeConfig: Object.assign({ backgroundColor: "#faf3e2", lineColor: "#8a6a2a", generalizationLineColor: "#8a6a2a",   // 羊皮纸 + 暗金线 + 紫色主节点
+          root: { fillColor: "#4a2a85", color: "#fff1d0", borderColor: "#c9962e", fontSize: 18 },
+          second: { fillColor: "#f2e6c8", color: "#3a2410", borderColor: "#a9822f", fontSize: 15 } }, data.theme?.config || {}),
         viewData: data.view || null,
         mousewheelAction: "zoom", mousewheelZoomActionReverse: true,
       });

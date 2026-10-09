@@ -53,6 +53,10 @@
 「天机简报」（时政，`rpg/tianji.py`）；咒文书页的「成语实词录」（`rpg/idioms.py`）；行测真题转换 `rpg/zhenti.py`、粉笔模考 PDF 拆分（importer）。
 模考成绩在编年史里手动记。程序自带的图推 / 资料分析功法（`AUTO_SKELETONS`）已清空。
 
+**界面皮肤**（2.1.0）：`web/fantasy.css` 在 style.css 之后加载，只改长相（配色变量、双线金框、皮革顶栏、按钮、魔法书卡匣、大典配色）；
+背景法阵 `web/art/circle-*.svg` 由 `tools/make_circle.py` 生成。大典 `web/ceremony.js` 的 MOUNT / FISH 现在画城堡和流星（类名沿用），
+收功 `web/settle.js` 的人物是法袍 + 法师帽、法阵刻 Ⅰ–Ⅷ。图标是紫底金法阵加「法」字（web/icons、android/res）。
+
 **AI 提示词**：出题、讲题、编咒文书、制卡、整理手写笔记、考情分析都改成法考口径（`prompts.py`、`cardgen.RULES`、`notes.py`）；
 要求以现行法律、司法解释为准，拿不准要说明。
 

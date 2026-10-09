@@ -1,4 +1,4 @@
-/* 大典画面：境界突破、渡劫成功、宗门大比出成绩时弹出的一整屏（仿“觅长生”那种：墨色夜空、一轮金月、青玉山峦与云雾、
+/* 大典画面：晋升、晋升试炼成功、竞技场出成绩时弹出的一整屏（法师成长记：星夜、金月与旋转法阵、城堡剪影、流星；原版是仿“觅长生”的墨色夜空、青玉山峦与云雾、
    灵鱼在空中游、落叶飘、月前一个大字，下面一条青色横幅写一段话，再是 ——◇ 小标题 ◇—— 和几行属性，最后一个橙色「确 定」）。
    全部用 SVG / CSS 画，不用图片。用法：
      CEREMONY.show({ title: "化神", subtitle: "化神初期", text: "…", stats: [["道行", "70 分"], …], tone: "jade" }) → Promise（点确定后 resolve）
@@ -31,23 +31,23 @@
     return k || name.replace(/\s*·.*$/, "");
   }
 
-  // 一条“灵鱼”：长鳍、分叉尾，青玉半透明
+  // 一道流星般的魔法光（原来是灵鱼，类名沿用 cer-fish）：发光的光点拖一条渐隐的尾巴
   const FISH = `<svg viewBox="0 0 220 110" class="cer-fish-svg"><defs>
-      <linearGradient id="cerFishG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bff5e8"/><stop offset=".55" stop-color="#5fc7b3"/><stop offset="1" stop-color="#1f6f66"/></linearGradient></defs>
-    <path d="M30 58 C55 30 120 26 160 48 C170 53 170 60 160 64 C122 82 58 84 30 58 Z" fill="url(#cerFishG)"/>
-    <path d="M158 54 L212 22 L196 56 L214 92 Z" fill="url(#cerFishG)" opacity=".85"/>
-    <path d="M78 44 C86 8 128 -2 142 8 C122 16 108 30 96 46 Z" fill="url(#cerFishG)" opacity=".75"/>
-    <path d="M86 70 C92 92 118 102 130 98 C116 90 104 80 98 70 Z" fill="url(#cerFishG)" opacity=".6"/>
-    <circle cx="48" cy="54" r="3.2" fill="#0d2f2b"/>
-    <path d="M40 62 C70 70 120 70 156 60" stroke="#e8fff9" stroke-width="1.2" fill="none" opacity=".5"/></svg>`;
+      <linearGradient id="cerTail" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffd98a" stop-opacity="0"/><stop offset=".7" stop-color="#ffe9b3" stop-opacity=".55"/><stop offset="1" stop-color="#fff8e6"/></linearGradient>
+      <radialGradient id="cerOrb"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ffe9b3"/><stop offset="1" stop-color="#b48cff" stop-opacity="0"/></radialGradient></defs>
+    <path d="M182 49 Q110 50 8 78 Q110 62 182 61 Z" fill="url(#cerTail)"/>
+    <circle cx="184" cy="55" r="22" fill="url(#cerOrb)"/><circle cx="184" cy="55" r="5" fill="#fff"/>
+    <path d="M184 38 L186 53 L201 55 L186 57 L184 72 L182 57 L167 55 L182 53Z" fill="#fff8e6" opacity=".9"/></svg>`;
 
-  // 一侧的山：两层青玉峰 + 亮边
+  // 一侧的城堡剪影：尖顶塔楼 + 带垛口的城墙，窗里亮着灯（原来是青玉山，类名沿用 cer-mount）
   const MOUNT = (flip) => `<svg viewBox="0 0 520 260" class="cer-mount ${flip ? "r" : "l"}" preserveAspectRatio="none"><defs>
-      <linearGradient id="cerM1${flip ? "r" : "l"}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd8c8"/><stop offset=".35" stop-color="#3c8f86"/><stop offset="1" stop-color="#0a2321"/></linearGradient>
-      <linearGradient id="cerM2${flip ? "r" : "l"}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb0a4"/><stop offset="1" stop-color="#061615"/></linearGradient></defs>
-    <path d="M0 260 L0 170 L60 120 L95 140 L150 60 L185 95 L215 40 L260 110 L300 90 L340 150 L400 140 L455 205 L520 258 L520 260 Z" fill="url(#cerM2${flip ? "r" : "l"})" opacity=".85"/>
-    <path d="M40 260 L90 180 L130 200 L190 110 L230 150 L270 95 L320 170 L370 160 L420 220 L470 230 L520 260 Z" fill="url(#cerM1${flip ? "r" : "l"})"/>
-    <path d="M190 110 L230 150 M270 95 L320 170" stroke="#d9fff5" stroke-width="2" opacity=".55" fill="none"/></svg>`;
+      <linearGradient id="cerM1${flip ? "r" : "l"}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b4a8c"/><stop offset=".45" stop-color="#2a1f4a"/><stop offset="1" stop-color="#0b0818"/></linearGradient>
+      <linearGradient id="cerM2${flip ? "r" : "l"}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2d63"/><stop offset="1" stop-color="#07050f"/></linearGradient></defs>
+    <path d="M0 260 L0 150 L70 120 L140 140 L220 90 L300 130 L380 110 L460 170 L520 200 L520 260 Z" fill="url(#cerM2${flip ? "r" : "l"})" opacity=".8"/>
+    <path d="M0 260 L0 200 L40 190 L60 186 L60 140 L56 140 L80 88 L104 140 L100 140 L100 172 L108 172 L108 166 L116 166 L116 172 L124 172 L124 166 L132 166 L132 172 L145 172 L145 82 L140 82 L175 8 L210 82 L205 82 L205 176 L214 176 L214 170 L222 170 L222 176 L230 176 L230 170 L238 170 L238 176 L246 176 L246 170 L254 170 L254 176 L262 176 L262 170 L270 170 L270 176 L300 176 L300 122 L296 122 L320 58 L344 122 L340 122 L340 186 L400 200 L460 222 L520 240 L520 260 Z" fill="url(#cerM1${flip ? "r" : "l"})"/>
+    <path d="M140 82 L175 8 L210 82 M56 140 L80 88 L104 140 M296 122 L320 58 L344 122" stroke="#e0b354" stroke-width="1.6" opacity=".55" fill="none"/>
+    <g fill="#ffd98a" opacity=".9"><rect x="171" y="104" width="7" height="12" rx="3"/><rect x="171" y="136" width="7" height="12" rx="3"/>
+      <rect x="77" y="156" width="6" height="10" rx="3"/><rect x="317" y="138" width="6" height="11" rx="3"/><rect x="230" y="190" width="5" height="8" rx="2"/></g></svg>`;
 
   function sparks(n) {
     return Array.from({ length: n }, () => {
@@ -68,10 +68,10 @@
     el.innerHTML = `
       <div class="cer-sky">${leaves(14)}</div>
       <div class="cer-stage">
-        <div class="cer-moon"><div class="cer-ring">${sparks(26)}</div></div>
+        <div class="cer-moon"><div class="cer-circle"><img src="art/circle-dark.svg" alt=""></div><div class="cer-ring">${sparks(26)}</div></div>
         ${MOUNT(false)}${MOUNT(true)}
         <svg class="cer-ridge" viewBox="0 0 1000 120" preserveAspectRatio="none"><defs>
-          <linearGradient id="cerRidge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfeee6" stop-opacity=".55"/><stop offset=".35" stop-color="#2e6d66" stop-opacity=".9"/><stop offset="1" stop-color="#071a18"/></linearGradient></defs>
+          <linearGradient id="cerRidge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a76c4" stop-opacity=".5"/><stop offset=".35" stop-color="#2a1f4a" stop-opacity=".95"/><stop offset="1" stop-color="#06040d"/></linearGradient></defs>
           <path d="M0 120 L0 70 C80 40 140 64 210 52 C290 38 340 70 420 58 C470 50 520 40 560 52 C640 74 700 44 780 54 C860 64 920 46 1000 60 L1000 120 Z" fill="url(#cerRidge)"/></svg>
         <div class="cer-mist m1"></div><div class="cer-mist m2"></div><div class="cer-mist m3"></div>
         <div class="cer-fish f1">${FISH}</div><div class="cer-fish f2">${FISH}</div><div class="cer-fish f3">${FISH}</div>

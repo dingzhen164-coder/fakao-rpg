@@ -10,8 +10,6 @@ import json
 import re
 from pathlib import Path
 
-BOARDS = ["政治理论", "常识判断", "逻辑填空", "片段阅读", "数量关系", "图形推理", "定义判断",
-          "类比推理", "论证逻辑", "形式逻辑", "一拖五", "资料分析"]
 EXPORT_EXT = {"xmind", "png", "md", "json", "svg", "pdf"}
 
 
@@ -43,11 +41,12 @@ def blank(title):
 
 
 def listing(paths):
-    """[{board, maps: [{name, nodes, updated}]}]：默认 12 个板块在前，自己建的其它板块（文件夹）在后"""
+    """[{board, maps: [{name, nodes, updated}]}]：默认科目（和符文卡的默认卷轴匣一样：法考八科）在前，自己建的其它文件夹在后"""
+    from .cards import DEFAULT_DECKS
     d = folder(paths)
-    boards = list(BOARDS)
+    boards = list(DEFAULT_DECKS)
     if d.is_dir():
-        boards += sorted(p.name for p in d.iterdir() if p.is_dir() and p.name not in BOARDS and p.name != "导出")
+        boards += sorted(p.name for p in d.iterdir() if p.is_dir() and p.name not in DEFAULT_DECKS and p.name != "导出")
     out = []
     for b in boards:
         maps = []

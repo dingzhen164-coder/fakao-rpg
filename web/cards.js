@@ -34,7 +34,7 @@
       <div class="yj-tree"><div class="yj-row yj-th"><span class="yj-fold"></span><span class="yj-name">${esc(T("yj_deck"))}</span>
         <span class="yj-n new">${esc(T("yj_new"))}</span><span class="yj-n learn">${esc(T("yj_learn"))}</span><span class="yj-n due">${esc(T("yj_due"))}</span><span class="yj-gear"></span></div>
         ${rows}</div>
-      ${OV.cards ? "" : `<p class="small muted yj-empty">还没有${esc(T("yj"))}。点「✍ ${esc(T("yj_add"))}」自己刻，或者「📥 导入」Anki 导出的文本；用 xingce-card skill 从 PDF / 笔记做的也会出现在这里。</p>`}
+      ${OV.cards ? "" : `<p class="small muted yj-empty">还没有${esc(T("yj"))}。点「✍ ${esc(T("yj_add"))}」自己刻，或者「📥 导入」Anki 导出的文本；「🧙 学姐制卡」可以从 PDF / 笔记直接做卡。</p>`}
       <div class="small faint yj-moved">✍ ${esc(T("yj_add"))}、🧙 学姐制卡、🏛 ${esc(T("yj_browse"))}、📊 ${esc(T("yj_stats"))}、📥 导入、＋ 新${esc(T("yj_deck"))} 在「${esc(NAV("skeleton"))} › ${esc(T("yj"))} · 知识点」里</div></div>`;
   }
   // 刻录符文 / 学姐制卡 / 灵识图 / 导入 / 新卷轴匣：放在咒文书「玉简 · 知识点」（藏简阁就是那里的一枚枚玉简）

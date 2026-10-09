@@ -1,13 +1,13 @@
 {
   "name": "法师成长记",
   "short_name": "法师成长记",
-  "description": "行测备考修仙 RPG",
+  "description": "法考备考 · 西方玄幻成长 RPG",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0e1412",
-  "theme_color": "#0e1412",
+  "background_color": "#140b2a",
+  "theme_color": "#140b2a",
   "lang": "zh-CN",
   "icons": [
     {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
