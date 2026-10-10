@@ -261,6 +261,19 @@ class CardGenTest(CardsApiTest):
         self.assertEqual((again["added"], again["duplicated"]), (0, 1))          # 同一本书导入两次不会翻倍
         self.assertEqual(api.cards_search({"deck": "国际法"})["total"], 2)
 
+    def test_pdf_upload_stream(self):
+        import io
+        from rpg import paths, pdfcards
+        if not pdfcards.available()[0]:
+            self.skipTest("没装 opencv / numpy")
+        raw = __import__("base64").b64decode(self._pdf().split(",", 1)[1])
+        r = pdfcards.load_stream(paths.SETTINGS_DIR, "民法讲义.pdf", io.BytesIO(raw), len(raw))
+        self.assertEqual((r["pages"], r["subject"], r["units"]["知识点"]), (1, "民法", 2))
+        with self.assertRaises(pdfcards.PdfCardError):
+            pdfcards.load_stream(paths.SETTINGS_DIR, "x.pdf", io.BytesIO(b"hello world"), 11)
+        with self.assertRaises(pdfcards.PdfCardError):
+            pdfcards.load_stream(paths.SETTINGS_DIR, "x.pdf", io.BytesIO(raw[:50]), len(raw))        # 没传完
+
     def test_pdf_cards_errors(self):
         with self.assertRaises(api.ApiError):
             api.cards_pdf_load({"name": "x.pdf", "data": "data:application/pdf;base64,"})

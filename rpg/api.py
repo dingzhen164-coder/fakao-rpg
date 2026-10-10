@@ -1369,6 +1369,19 @@ class Handler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         if self._gate(method, url):
             return
+        if method == "POST" and url.path == "/api/cards/pdf/upload":       # 整本 PDF：原始字节上传，不走 JSON / base64
+            try:
+                with open_game(save=False) as g:
+                    if not g.paths.vault:
+                        raise ApiError("还没找到法考库")
+                name = unquote(parse_qs(url.query).get("name", ["资料.pdf"])[0])
+                self._send(200, pdfcards.load_stream(paths_mod.SETTINGS_DIR, name, self.rfile, int(self.headers.get("Content-Length") or 0)))
+            except (ApiError, pdfcards.PdfCardError) as e:
+                self._send(400, {"error": str(e)})
+            except Exception as e:
+                traceback.print_exc()
+                self._send(500, {"error": f"程序出错：{e}（终端窗口里有详细信息）"})
+            return
         fn = ROUTES.get((method, url.path))
         if fn:
             try:
