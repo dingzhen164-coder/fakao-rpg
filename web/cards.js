@@ -742,10 +742,8 @@
     bindBack();
     document.getElementById("gFile").onchange = (e) => {
       const f = e.target.files[0]; if (!f) return;
-      const rd = new FileReader();
-      document.getElementById("gInfo").innerHTML = `<p class="small muted">读取「${esc(f.name)}」…</p>`;
-      rd.onload = () => loadSrc(f.name, rd.result);
-      rd.readAsDataURL(f);
+        document.getElementById("gInfo").innerHTML = `<p class="small muted">上传「${esc(f.name)}」（${(f.size / 1048576).toFixed(1)} MB）…</p>`;
+      loadSrc(f);
     };
     document.getElementById("gSubj").addEventListener("input", (e) => {                 // 科目名改了：有同名的简匣就跟着选上
       const hit = (OV?.decks || []).find((d) => d.name === e.target.value || d.name.split("::")[0] === e.target.value);
@@ -756,9 +754,13 @@
     document.getElementById("gGo").onclick = runGen;
     infoPane(); outPane();
   }
-  async function loadSrc(name, data) {
+  async function loadSrc(file) {
     try {
-      GEN.src = await api("/api/cards/pdf/load", { name, data });
+      // 整本 PDF 动辄上百 MB：直接把文件当二进制发过去，不转 base64（转了会把网页内存撑爆）
+      const r = await fetch("/api/cards/pdf/upload?name=" + encodeURIComponent(file.name), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: file });
+      const data = await r.json().catch(() => ({ error: "服务器没有返回数据（程序是不是关掉了？）" }));
+      if (!r.ok || data.error) throw new Error(data.error || r.statusText);
+      GEN.src = data;
       GEN.subject = GEN.src.subject || GEN.subject;
       const hit = (OV?.decks || []).find((d) => d.name === GEN.subject || d.name.split("::")[0] === GEN.subject);
       GEN.deck = hit ? hit.name : (GEN.subject || GEN.deck);       // 没有同名的卷轴匣就用科目名新建一个

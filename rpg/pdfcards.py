@@ -1150,28 +1150,58 @@ def _dir(settings_dir):
     return d
 
 
+MAX_UPLOAD = 400 * 1024 * 1024
+
+
+def load_stream(settings_dir, name, rfile, length):
+    """网页上传的 PDF（原始字节，一块一块写盘——整本几十上百 MB，不能先装成 base64 再塞进内存）
+    → 存到 设置目录/制卡/ → 页数、有没有文字层、按哪种标题能认出几个知识点"""
+    if length <= 0:
+        raise PdfCardError("文件是空的")
+    if length > MAX_UPLOAD:
+        raise PdfCardError("文件太大（超过 400MB），请先拆开")
+    d = _dir(settings_dir)
+    tmp = d / ("up-%d.tmp" % int(time.time() * 1000))
+    h, left, first = hashlib.sha1(), length, b""
+    try:
+        with tmp.open("wb") as out:
+            while left > 0:
+                chunk = rfile.read(min(1 << 20, left))
+                if not chunk:
+                    break
+                if not first:
+                    first = chunk[:4]
+                h.update(chunk)
+                out.write(chunk)
+                left -= len(chunk)
+        if left > 0:
+            raise PdfCardError("文件没传完，请重新选择")
+        if first != b"%PDF":
+            raise PdfCardError("这不是 PDF 文件")
+        sid = h.hexdigest()[:16]
+        f = d / (sid + ".pdf")
+        if f.exists():
+            tmp.unlink()
+        else:
+            tmp.replace(f)
+    finally:
+        tmp.unlink(missing_ok=True)
+    for old in sorted(d.glob("*.pdf"), key=lambda p: p.stat().st_mtime)[:-4]:   # 只留最近几份
+        old.unlink(missing_ok=True)
+    res = info(f)
+    res.update(src=sid, name=str(name or "资料.pdf"), subject=guess_subject(name))
+    return res
+
+
 def load(settings_dir, name, data):
-    """网页上传的 PDF（data: URL）→ 存到 设置目录/制卡/ → 页数、有没有文字层、按哪种标题能认出几个知识点"""
+    """data: URL 版（小文件 / 测试用）"""
+    import io
     m = re.match(r"^data:[^;]*;base64,(.+)$", str(data or ""), re.S)
     try:
         raw = base64.b64decode(m.group(1) if m else (data or ""))
     except ValueError:
         raise PdfCardError("文件没读进来，请重新选择")
-    if not raw:
-        raise PdfCardError("文件是空的")
-    if raw[:4] != b"%PDF":
-        raise PdfCardError("这不是 PDF 文件")
-    if len(raw) > 300 * 1024 * 1024:
-        raise PdfCardError("文件太大（超过 300MB），请先拆开")
-    sid = hashlib.sha1(raw).hexdigest()[:16]
-    f = _dir(settings_dir) / (sid + ".pdf")
-    if not f.exists():
-        f.write_bytes(raw)
-    for old in sorted(_dir(settings_dir).glob("*.pdf"), key=lambda p: p.stat().st_mtime)[:-6]:   # 只留最近几份
-        old.unlink(missing_ok=True)
-    res = info(f)
-    res.update(src=sid, name=str(name or "资料.pdf"), subject=guess_subject(name))
-    return res
+    return load_stream(settings_dir, name, io.BytesIO(raw), len(raw))
 
 
 def start(settings_dir, body):
