@@ -724,8 +724,9 @@
     const s = stage();
     s.innerHTML = head("📄 PDF 制卡", `<span class="small muted">按书里的「知识点」一个知识点做一张${esc(T("yj"))}，表格和示意图都带上；做完你审一遍再刻入</span>`) + `<div class="yj-gen">
       <div class="card"><h3>① 选 PDF</h3>
-        <label class="yj-drop"><input type="file" id="gFile" accept=".pdf" hidden><b>点这里选教材 PDF</b>
-          <span class="small muted">适合扫描版（带文字层）的法考讲义 / 教材；章节要有「知识点一」或「考点4：」这样的标题。第一次用建议先只做几页试试</span></label>
+        <label class="yj-drop" id="gPick"><input type="file" id="gFile" accept=".pdf" hidden><b>点这里选教材 PDF</b>
+          <span class="small muted">适合扫描版（带文字层）的法考讲义 / 教材；章节要有「知识点一」或「考点4：」这样的标题。程序直接读这个文件，不用上传；第一次用建议先只做几页试试</span></label>
+        <div class="row small" style="margin-top:8px"><span class="muted">或者把文件路径贴在这里：</span><input id="gPath" style="flex:1;min-width:200px" placeholder="D:\\讲义\\三国法.pdf"><button class="ghost small" id="gPathGo">用这个</button></div>
         <div id="gInfo"></div></div>
       <div class="card" id="gOpts" ${GEN.src ? "" : "hidden"}><h3>② 怎么做</h3>
         <div class="yj-form-row"><label>科目名（卡片标题的前缀）<input id="gSubj" value="${esc(GEN.subject)}"></label>
@@ -740,10 +741,19 @@
           <button class="primary" id="gGo" ${GEN.running ? "disabled" : ""}>📄 开始制卡</button></div></div>
       <div class="card" id="gOut" ${GEN.cards.length ? "" : "hidden"}></div></div>`;
     bindBack();
+    const note = (t) => { const b = document.getElementById("gInfo"); if (b) b.innerHTML = `<p class="small muted">${t}</p>`; };
+    // 窗口版：弹系统的文件选择框，程序直接读那个文件（几百 MB 的整本也不用搬运）；浏览器 / 平板里才退回上传
+    document.getElementById("gPick").addEventListener("click", async (e) => {
+      const nat = window.pywebview && window.pywebview.api && window.pywebview.api.pick_pdf;
+      if (!nat) return;                                       // 没有原生选择框：交给下面的 <input type=file>
+      e.preventDefault();
+      try { const p = await nat(); if (p) { note("打开「" + esc(p.split(/[\\/]/).pop()) + "」…"); openSrc("/api/cards/pdf/open", { path: p }); } } catch (err) { showError(err); }
+    });
+    document.getElementById("gPathGo").onclick = () => { const p = val("gPath").trim(); if (p) { note("打开…"); openSrc("/api/cards/pdf/open", { path: p }); } };
     document.getElementById("gFile").onchange = (e) => {
       const f = e.target.files[0]; if (!f) return;
-        document.getElementById("gInfo").innerHTML = `<p class="small muted">上传「${esc(f.name)}」（${(f.size / 1048576).toFixed(1)} MB）…</p>`;
-      loadSrc(f);
+      note(`上传「${esc(f.name)}」（${(f.size / 1048576).toFixed(1)} MB）…`);
+      openSrc(null, f);
     };
     document.getElementById("gSubj").addEventListener("input", (e) => {                 // 科目名改了：有同名的简匣就跟着选上
       const hit = (OV?.decks || []).find((d) => d.name === e.target.value || d.name.split("::")[0] === e.target.value);
@@ -754,12 +764,28 @@
     document.getElementById("gGo").onclick = runGen;
     infoPane(); outPane();
   }
-  async function loadSrc(file) {
+  // 登记一份 PDF（本机路径 或 上传的文件），再一边问进度一边等「数页数、认标题」做完
+  async function openSrc(url, arg) {
+    const note = (t) => { const b = document.getElementById("gInfo"); if (b) b.innerHTML = `<p class="small muted">${t}</p>`; };
     try {
-      // 整本 PDF 动辄上百 MB：直接把文件当二进制发过去，不转 base64（转了会把网页内存撑爆）
-      const r = await fetch("/api/cards/pdf/upload?name=" + encodeURIComponent(file.name), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: file });
-      const data = await r.json().catch(() => ({ error: "服务器没有返回数据（程序是不是关掉了？）" }));
-      if (!r.ok || data.error) throw new Error(data.error || r.statusText);
+      let reg;
+      if (url) reg = await api(url, arg);
+      else {                                                  // 浏览器 / 平板：把文件当二进制发过去（不转 base64，转了会把网页内存撑爆）
+        const r = await fetch("/api/cards/pdf/upload?name=" + encodeURIComponent(arg.name), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: arg });
+        reg = await r.json().catch(() => ({ error: "服务器没有返回数据（程序是不是关掉了？）" }));
+        if (!r.ok || reg.error) throw new Error(reg.error || r.statusText);
+      }
+      for (;;) {
+        const st = await api("/api/cards/pdf/src", { src: reg.src });
+        if (st.state === "error") throw new Error(st.error);
+        if (st.state === "done") { await loadSrc(st); return; }
+        note(`📘 ${esc(reg.name)}（${(st.size / 1048576).toFixed(0)} MB）：${esc(st.progress || "打开…")}`);
+        await new Promise((ok) => setTimeout(ok, 600));
+      }
+    } catch (e) { showError(e); const b = document.getElementById("gInfo"); if (b) b.innerHTML = ""; }
+  }
+  async function loadSrc(data) {
+    try {
       GEN.src = data;
       GEN.subject = GEN.src.subject || GEN.subject;
       const hit = (OV?.decks || []).find((d) => d.name === GEN.subject || d.name.split("::")[0] === GEN.subject);
@@ -778,6 +804,7 @@
   }
   async function runGen() {
     if (!GEN.src || GEN.running) return;
+    if (GEN.src.pages > 400 && !GEN.first && !GEN.last) return showError(new Error(`这本有 ${GEN.src.pages} 页，一次最多做 400 页：请在「只做哪几页」里填一段，比如 1 到 300，做完再做下一段`));
     GEN.cards = []; GEN.res = null; outPane();
     const body = { src: GEN.src.src, subject: GEN.subject, first: GEN.first, last: GEN.last, unit: GEN.unit === "custom" ? "auto" : GEN.unit,
                    unit_regex: GEN.unit === "custom" ? GEN.unit_regex : "", drop: GEN.drop, fixes: GEN.fixes };

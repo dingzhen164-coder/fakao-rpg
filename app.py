@@ -70,7 +70,17 @@ def main():
     try:
         data = Path.home() / ".fakao-rpg" / "webview"     # 窗口里的本机设置（对话框大小、音乐……）存这里，重开还在
         data.mkdir(parents=True, exist_ok=True)
-        webview.create_window("法师成长记", url, width=1440, height=920, min_size=(900, 600), text_select=True)
+        class Bridge:                       # 网页里 window.pywebview.api.* 能调到的原生功能
+            def pick_pdf(self):
+                """弹出系统的文件选择框，返回选中的 PDF 路径（取消返回空）——PDF 制卡直接读这个文件，不用上传"""
+                try:
+                    r = win.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=("PDF 文件 (*.pdf)",))
+                except Exception:
+                    traceback.print_exc()
+                    return ""
+                return str(r[0]) if r else ""
+
+        win = webview.create_window("法师成长记", url, width=1440, height=920, min_size=(900, 600), text_select=True, js_api=Bridge())
         webview.start(private_mode=False, storage_path=str(data))
     except Exception:
         traceback.print_exc()

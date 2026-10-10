@@ -237,12 +237,22 @@ class CardGenTest(CardsApiTest):
         p.insert_text((60, 460), "国家主权平等原则、不干涉内政原则。", **f)
         return "data:application/pdf;base64," + __import__("base64").b64encode(doc.tobytes()).decode()
 
+    def _src(self, sid):
+        import time
+        for _ in range(100):
+            st = api.cards_pdf_src({"src": sid})
+            if st["state"] != "running":
+                return st
+            time.sleep(0.1)
+        self.fail("数页数超时")
+
     def test_pdf_cards_end_to_end(self):
         import time
         from rpg import pdfcards
         if not pdfcards.available()[0]:
             self.skipTest("没装 opencv / numpy")
-        info = api.cards_pdf_load({"name": "国际法讲义.pdf", "data": self._pdf()})
+        reg = api.cards_pdf_load({"name": "国际法讲义.pdf", "data": self._pdf()})
+        info = self._src(reg["src"])
         self.assertEqual((info["pages"], info["subject"], info["units"]["知识点"]), (1, "国际法", 2))   # 编号和标题分成两个框也认得出
         job = api.cards_pdf_start({"src": info["src"], "subject": "国际法"})["job"]
         for _ in range(120):
@@ -267,8 +277,15 @@ class CardGenTest(CardsApiTest):
         if not pdfcards.available()[0]:
             self.skipTest("没装 opencv / numpy")
         raw = __import__("base64").b64decode(self._pdf().split(",", 1)[1])
-        r = pdfcards.load_stream(paths.SETTINGS_DIR, "民法讲义.pdf", io.BytesIO(raw), len(raw))
+        r = self._src(pdfcards.load_stream(paths.SETTINGS_DIR, "民法讲义.pdf", io.BytesIO(raw), len(raw))["src"])
         self.assertEqual((r["pages"], r["subject"], r["units"]["知识点"]), (1, "民法", 2))
+        # 直接读本机文件（不上传）
+        f = paths.SETTINGS_DIR / "本机.pdf"
+        f.write_bytes(raw)
+        r2 = self._src(api.cards_pdf_open({"path": str(f)})["src"])
+        self.assertEqual((r2["pages"], r2["units"]["知识点"]), (1, 2))
+        with self.assertRaises(api.ApiError):
+            api.cards_pdf_open({"path": str(paths.SETTINGS_DIR / "不存在.pdf")})
         with self.assertRaises(pdfcards.PdfCardError):
             pdfcards.load_stream(paths.SETTINGS_DIR, "x.pdf", io.BytesIO(b"hello world"), 11)
         with self.assertRaises(pdfcards.PdfCardError):

@@ -1045,7 +1045,7 @@ def _png(img):
     return buf.tobytes()
 
 
-def info(pdf_path):
+def info(pdf_path, progress=None):
     """快速看一眼：页数、有没有文字层、按哪种标题能认出多少个知识点（不做表格 / 图片分析）"""
     ok, why = available()
     if not ok:
@@ -1058,19 +1058,22 @@ def info(pdf_path):
     chars = sum(len(doc[i].get_text("text").strip()) for i in range(min(n, 6)))
     res = {"pages": n, "has_text": chars >= 50 * min(n, 6), "units": {}}
     clean = Cleaner(DEFAULT_DROP, [])
-    texts = _heading_texts(doc, clean)
+    texts = _heading_texts(doc, clean, progress)
     for key, (rx, lab) in UNIT_PRESETS.items():
         u = Unit(rx, lab)
         res["units"][lab] = sum(1 for t in texts if u.match(t))
     return res
 
 
-def _heading_texts(doc, clean):
+def _heading_texts(doc, clean, progress=None):
     texts = []
-    for pg in doc:  # 标题文字框先并成视觉行，再拿去判断是哪种标题
+    for k, pg in enumerate(doc):  # 标题文字框先并成视觉行，再拿去判断是哪种标题
+        if progress and k % 5 == 0:
+            progress("数标题 %d / %d 页…" % (k + 1, len(doc)))
+        # flags=0：不带页面里的大图（扫描页的整页底图），只要文字和位置，快很多
         raw = [{"text": "".join(sp["text"] for sp in ln["spans"]).strip(), "x0": ln["bbox"][0], "y0": ln["bbox"][1],
                 "x1": ln["bbox"][2], "y1": ln["bbox"][3]}
-               for b in pg.get_text("dict")["blocks"] for ln in b.get("lines", [])]
+               for b in pg.get_text("dict", flags=0)["blocks"] for ln in b.get("lines", [])]
         texts += [clean(l["text"]) for l in merge_heading_pieces([l for l in raw if l["text"]])]
     return texts
 
@@ -1150,16 +1153,50 @@ def _dir(settings_dir):
     return d
 
 
-MAX_UPLOAD = 400 * 1024 * 1024
+MAX_UPLOAD = 1024 * 1024 * 1024
+_SRC: dict = {}                            # 资料编号 → {path, name, state, progress, info, error}
+
+
+def _register(path, name):
+    """登记一份 PDF（原地读，不复制）并在后台线程里数页数、认标题——整本几百 MB 不能让网页干等"""
+    path = Path(path)
+    st = path.stat()
+    sid = hashlib.sha1(("%s|%d|%d" % (path, st.st_size, int(st.st_mtime))).encode("utf-8")).hexdigest()[:16]
+    src = _SRC.get(sid)
+    if src and src["state"] in ("running", "done"):
+        return sid
+    src = _SRC[sid] = {"path": path, "name": str(name or path.name), "state": "running", "progress": "打开 PDF…", "info": None,
+                       "error": "", "size": st.st_size}
+
+    def run():
+        try:
+            res = info(path, progress=lambda m: src.update(progress=m))
+            res.update(src=sid, name=src["name"], subject=guess_subject(src["name"]))
+            src.update(info=res, state="done", progress="")
+        except PdfCardError as e:
+            src.update(state="error", error=str(e))
+        except Exception as e:
+            src.update(state="error", error="打不开这份 PDF：%s: %s" % (type(e).__name__, e))
+    threading.Thread(target=run, daemon=True).start()
+    return sid
+
+
+def open_path(path):
+    """直接读电脑上的 PDF（只有本机能用）。返回 {src}，之后用 source_status 查进度"""
+    p = Path(str(path or "").strip().strip('"').strip("'")).expanduser()
+    if not p.is_file():
+        raise PdfCardError("找不到这个文件：%s" % p)
+    if p.suffix.lower() != ".pdf":
+        raise PdfCardError("这不是 PDF 文件")
+    return {"src": _register(p, p.name), "name": p.name}
 
 
 def load_stream(settings_dir, name, rfile, length):
-    """网页上传的 PDF（原始字节，一块一块写盘——整本几十上百 MB，不能先装成 base64 再塞进内存）
-    → 存到 设置目录/制卡/ → 页数、有没有文字层、按哪种标题能认出几个知识点"""
+    """网页上传的 PDF（原始字节流式写盘；只有没法直接读本机文件时——比如平板、浏览器——才走这条）"""
     if length <= 0:
         raise PdfCardError("文件是空的")
     if length > MAX_UPLOAD:
-        raise PdfCardError("文件太大（超过 400MB），请先拆开")
+        raise PdfCardError("文件太大（超过 1GB），请先拆开")
     d = _dir(settings_dir)
     tmp = d / ("up-%d.tmp" % int(time.time() * 1000))
     h, left, first = hashlib.sha1(), length, b""
@@ -1178,8 +1215,7 @@ def load_stream(settings_dir, name, rfile, length):
             raise PdfCardError("文件没传完，请重新选择")
         if first != b"%PDF":
             raise PdfCardError("这不是 PDF 文件")
-        sid = h.hexdigest()[:16]
-        f = d / (sid + ".pdf")
+        f = d / (h.hexdigest()[:16] + ".pdf")
         if f.exists():
             tmp.unlink()
         else:
@@ -1188,9 +1224,7 @@ def load_stream(settings_dir, name, rfile, length):
         tmp.unlink(missing_ok=True)
     for old in sorted(d.glob("*.pdf"), key=lambda p: p.stat().st_mtime)[:-4]:   # 只留最近几份
         old.unlink(missing_ok=True)
-    res = info(f)
-    res.update(src=sid, name=str(name or "资料.pdf"), subject=guess_subject(name))
-    return res
+    return {"src": _register(f, name), "name": str(name or "资料.pdf")}
 
 
 def load(settings_dir, name, data):
@@ -1204,9 +1238,20 @@ def load(settings_dir, name, data):
     return load_stream(settings_dir, name, io.BytesIO(raw), len(raw))
 
 
+def source_status(body):
+    src = _SRC.get(str(body.get("src") or ""))
+    if not src:
+        raise PdfCardError("资料找不到了，请重新选择文件")
+    out = {"state": src["state"], "progress": src["progress"], "error": src["error"], "size": src["size"]}
+    if src["info"]:
+        out.update(src["info"])
+    return out
+
+
 def start(settings_dir, body):
     sid = str(body.get("src") or "")
-    if not re.fullmatch(r"[0-9a-f]{16}", sid) or not (_dir(settings_dir) / (sid + ".pdf")).is_file():
+    src = _SRC.get(sid)
+    if not src or not src["path"].is_file():
         raise PdfCardError("资料找不到了，请重新选择文件")
     if any(j["state"] == "running" for j in _JOBS.values()):
         raise PdfCardError("上一本还在做，等它做完")
@@ -1221,7 +1266,7 @@ def start(settings_dir, body):
         try:
             def pg(msg):
                 job["progress"] = msg
-            r = convert(_dir(settings_dir) / (sid + ".pdf"), subject, first=body.get("first"), last=body.get("last"),
+            r = convert(src["path"], subject, first=body.get("first"), last=body.get("last"),
                         unit=body.get("unit") or "auto", unit_regex=body.get("unit_regex") or None,
                         unit_label=body.get("unit_label") or None, drop=body.get("drop") or "", fixes=body.get("fixes") or "",
                         progress=pg)
