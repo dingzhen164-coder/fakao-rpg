@@ -935,20 +935,20 @@ def _color_of(attrs):
 
 
 def _table_to_md(table_html):
-    """<table>（含 rowspan / colspan）→ Markdown 表格。合并单元格展开：内容写在左上角那一格，被盖住的格子写“〃”。"""
+    """<table>（含 rowspan / colspan）→ Markdown 表格。合并单元格展开：内容写在左上角那一格，跨行被盖住的格子写“〃”，跨列被盖住的格子写“⇢”；没有 <th> 表头的表格，Markdown 里留一行空表头（卡面渲染时会隐藏）。"""
     from html.parser import HTMLParser
 
     class T(HTMLParser):
         def __init__(self):
             super().__init__(convert_charrefs=True)
-            self.rows, self.cur, self.cell, self.attrs = [], None, None, {}
+            self.rows, self.cur, self.cell, self.attrs, self.tag = [], None, None, {}, ""
 
         def handle_starttag(self, tag, attrs):
             tag = tag.lower()
             if tag == "tr":
                 self.cur = []
             elif tag in ("td", "th"):
-                self.cell, self.attrs = [], dict(attrs)
+                self.cell, self.attrs, self.tag = [], dict(attrs), tag
             elif tag == "br" and self.cell is not None:
                 self.cell.append(" ")
 
@@ -956,7 +956,7 @@ def _table_to_md(table_html):
             tag = tag.lower()
             if tag in ("td", "th") and self.cell is not None and self.cur is not None:
                 txt = re.sub(r"\s+", " ", "".join(self.cell)).strip().replace("|", "\\|")
-                self.cur.append((txt, int(self.attrs.get("rowspan") or 1), int(self.attrs.get("colspan") or 1)))
+                self.cur.append((txt, int(self.attrs.get("rowspan") or 1), int(self.attrs.get("colspan") or 1), self.tag == "th"))
                 self.cell = None
             elif tag == "tr" and self.cur is not None:
                 self.rows.append(self.cur)
@@ -968,18 +968,19 @@ def _table_to_md(table_html):
 
     t = T()
     t.feed(table_html)
-    grid, span_left = [], {}                      # span_left: (行, 列) → 被上面的 rowspan 占着的内容
+    grid, span_left, hdr = [], {}, []             # span_left: (行, 列) → 被上面的 rowspan 占着的内容；hdr: 这一行是不是全是 <th>
     for r, row in enumerate(t.rows):
+        hdr.append(bool(row) and all(x[3] for x in row))
         out, c = [], 0
         def fill():
             nonlocal c
             while (r, c) in span_left:
                 out.append(span_left.pop((r, c)))
                 c += 1
-        for txt, rs, cs in row:
+        for txt, rs, cs, _th in row:
             fill()
             for k in range(cs):
-                out.append(txt if k == 0 else "〃")             # 跨列：被盖住的格子写“〃”（同上）
+                out.append(txt if k == 0 else "⇢")             # 跨列：被盖住的格子写“⇢”（同左）
                 for rr in range(1, rs):
                     span_left[(r + rr, c + k)] = "〃"            # 跨行：下面被盖住的格子也写“〃”
             c += cs
@@ -990,13 +991,18 @@ def _table_to_md(table_html):
     n = max(len(r) for r in grid)
     grid = [r + [""] * (n - len(r)) for r in grid]
     lines, start = [], 0
-    if len(grid) > 1 and all(x == "〃" for x in grid[0][1:]) and n > 1:   # 第一行整行合并 = 题注
+    if len(grid) > 1 and all(x == "⇢" for x in grid[0][1:]) and n > 1:   # 第一行整行合并 = 题注
         lines.append("**" + grid[0][0] + "**")
         lines.append("")
         start = 1
-    lines.append("| " + " | ".join(grid[start]) + " |")
+    if start < len(grid) and hdr[start]:           # 原表有表头行（<th>）
+        lines.append("| " + " | ".join(grid[start]) + " |")
+        body = grid[start + 1:]
+    else:                                          # 原表没有表头：留一行空表头，卡面渲染时隐藏
+        lines.append("| " + " | ".join([" "] * n) + " |")
+        body = grid[start:]
     lines.append("|" + "|".join(["---"] * n) + "|")
-    lines += ["| " + " | ".join(r) + " |" for r in grid[start + 1:]]
+    lines += ["| " + " | ".join(r) + " |" for r in body]
     return "\n".join(lines)
 
 

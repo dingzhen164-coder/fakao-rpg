@@ -137,6 +137,10 @@ class CardsTest(unittest.TestCase):
         self.assertEqual(cards.html_to_md(html),
                          "前言\n\n**题注**\n\n| 类型 | 年龄 | 效力 |\n|---|---|---|\n"
                          "| 限制 | 8周岁以上 | 有效 |\n| 〃 | 不满18周岁 | 待定 （追认） |\n\n后话")
+        # 没有 <th> 表头的表：留一行空表头；跨列盖住的格子写“⇢”，跨行写“〃”
+        self.assertEqual(cards.html_to_md('<table><tr><td>条约</td><td colspan="2">有义务继承</td></tr><tr><td rowspan="2">债务</td><td>对象</td><td>x</td></tr>'
+                                          '<tr><td>规则</td><td>y</td></tr></table>'),
+                         "|   |   |   |\n|---|---|---|\n| 条约 | 有义务继承 | ⇢ |\n| 债务 | 对象 | x |\n| 〃 | 规则 | y |")
         # 单元格里的竖线要转义；没有合并格的普通表
         self.assertIn("| a\\|b | c |", cards.html_to_md("<table><tr><th>x</th><th>y</th></tr><tr><td>a|b</td><td>c</td></tr></table>"))
         # 导入后卡面能渲染出表格所需的 Markdown（正面 / 反面都保留）

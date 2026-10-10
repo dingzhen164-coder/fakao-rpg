@@ -692,8 +692,24 @@
         const rows = [];
         while (i < lines.length && /^\s*\|/.test(lines[i])) rows.push(row(lines[i++]));
         i--;
-        out += `<div class="tbl-wrap"><table class="nt-table"><thead><tr>${head.map((h) => `<th>${inline(h)}</th>`).join("")}</tr></thead><tbody>${
-          rows.map((r) => `<tr>${r.map((c) => `<td>${inline(c.replace(/\\\|/g, "|"))}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+        // 合并格：「〃」＝被上面的格子盖住（跨行），「⇢」＝被左边的格子盖住（跨列）；表头整行为空就不显示表头
+        const grid = [head, ...rows];
+        const w = Math.max(...grid.map((r) => r.length));
+        grid.forEach((r) => { while (r.length < w) r.push(""); });
+        const emptyHead = head.every((h) => !h.trim());
+        const cell = (r, c, tag) => {
+          const x = grid[r][c];
+          if (x === "〃" && r > (emptyHead ? 1 : 0)) return "";
+          if (x === "⇢" && c > 0) return "";
+          let rs = 1, cs = 1;
+          while (r + rs < grid.length && grid[r + rs][c] === "〃") rs++;
+          while (c + cs < w && grid[r][c + cs] === "⇢") cs++;
+          const at = (rs > 1 ? ` rowspan="${rs}"` : "") + (cs > 1 ? ` colspan="${cs}"` : "");
+          return `<${tag}${at}>${inline(x.replace(/\\\|/g, "|"))}</${tag}>`;
+        };
+        const tr = (r, tag) => `<tr>${grid[r].map((_, c) => cell(r, c, tag)).join("")}</tr>`;
+        const body = grid.map((_, r) => r).filter((r) => r >= 1).map((r) => tr(r, "td")).join("");
+        out += `<div class="tbl-wrap"><table class="nt-table">${emptyHead ? "" : `<thead>${tr(0, "th")}</thead>`}<tbody>${body}</tbody></table></div>`;
         continue;
       }
       if (/^\s*([-*+]|\d+[.)])\s+/.test(l)) {
