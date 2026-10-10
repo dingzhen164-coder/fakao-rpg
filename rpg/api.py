@@ -70,7 +70,7 @@ from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appapk, appearance, cardgen, cards, mindmap, notes, poster, tianji, idioms, importer, lan, library, marks, mock, report, question_bank, ai, config, engine, paths as paths_mod, store, themes, trainer, tutor, vault
+from . import appapk, appearance, cards, pdfcards, mindmap, notes, poster, tianji, idioms, importer, lan, library, marks, mock, report, question_bank, ai, config, engine, paths as paths_mod, store, themes, trainer, tutor, vault
 from .paths import WEB_DIR, Paths, find_vault, load_settings, looks_like_vault, save_settings
 
 
@@ -1012,33 +1012,46 @@ def cards_add_many(body):
     return _cards(lambda g: cards.add_many(g, body.get("deck"), body.get("cards") or []))
 
 
-def _gen(fn, body):
+def _pdf(fn):
+    try:
+        return fn()
+    except pdfcards.PdfCardError as e:
+        raise ApiError(str(e))
+
+
+def cards_pdf_load(body):
     with open_game(save=False) as g:
         if not g.paths.vault:
             raise ApiError("还没找到法考库")
-        p = g.paths
-    try:
-        return fn(p, body)
-    except (cardgen.GenError, notes.NotesError) as e:
-        raise ApiError(str(e))
-    except ai.AIError as e:
-        raise ApiError(str(e))
+    return _pdf(lambda: pdfcards.load(paths_mod.SETTINGS_DIR, body.get("name"), body.get("data")))
 
 
-def cardgen_load(body):
-    return _gen(cardgen.load, body)
+def cards_pdf_start(body):
+    return _pdf(lambda: pdfcards.start(paths_mod.SETTINGS_DIR, body))
 
 
-def cardgen_chunks(body):
-    return _gen(cardgen.chunks, body)
+def cards_pdf_status(body):
+    return _pdf(lambda: pdfcards.status(body))
 
 
-def cardgen_files(body):
-    return _gen(lambda p, b: cardgen.vault_files(p), body)
-
-
-def cardgen_gen(body):
-    return _gen(cardgen.gen, body)
+def cards_pdf_save(body):
+    """把审过的卡刻入：图片写进 训练/卡片/图片/，同一简匣里已有同名正面的跳过（重复导入同一本书不会翻倍）"""
+    def run(g):
+        deck = body.get("deck")
+        cds = [c for c in (body.get("cards") or []) if isinstance(c, dict)]
+        dest = cards.folder(g.paths) / "图片"
+        have = {n["front"] for n in cards.load(g.paths)[0] if n["deck"] == cards._clean_deck(deck)}
+        items, dup = [], 0
+        for c in cds:
+            if str(c.get("front") or "").strip() in have:
+                dup += 1
+                continue
+            back = pdfcards.write_images(dest, body.get("job"), str(c.get("back") or ""), body.get("subject") or "pdf")
+            items.append({"type": "问答", "front": c.get("front"), "back": back, "tags": c.get("tags") or []})
+        r = cards.add_many(g, deck, items)
+        r["duplicated"] = dup
+        return r
+    return _cards(run)
 
 
 def cards_explain(body):
@@ -1236,7 +1249,7 @@ for _n, _f in (("next", cards_next), ("answer", cards_answer), ("undo", cards_un
                ("update", cards_update), ("delete", cards_delete), ("suspend", cards_suspend), ("forget", cards_forget),
                ("move", cards_move), ("deck", cards_deck), ("search", cards_search), ("info", cards_info),
                ("stats", cards_stats), ("import", cards_import), ("image", cards_image), ("explain", cards_explain),
-               ("add_many", cards_add_many), ("gen/load", cardgen_load), ("gen/chunks", cardgen_chunks), ("gen/run", cardgen_gen), ("gen/files", cardgen_files)):
+               ("add_many", cards_add_many), ("pdf/load", cards_pdf_load), ("pdf/start", cards_pdf_start), ("pdf/status", cards_pdf_status), ("pdf/save", cards_pdf_save)):
     ROUTES[("POST", "/api/cards/" + _n)] = _f
 ROUTES[("GET", "/api/notes")] = notes_list
 ROUTES[("POST", "/api/notes/get")] = notes_get

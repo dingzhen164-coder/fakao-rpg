@@ -26,6 +26,7 @@
 | 听道（网课时间）：计入每日功行 | `engine.add_lecture / lecture_minutes / study_minutes`（`minutes()` = 修炼 + 听道）；首页卡片 `web/app.js lectureCard` |
 | 背景 / 语录 / BGM | 后端 `rpg/appearance.py`（存档 state["appearance"]）；前端 `web/ambience.js`（自带背景是 SVG 现画；BGM 只播放 训练/外观/音乐/ 里的文件） |
 | 题库、试炼塔（单选 / 多选 / 不定项） | `rpg/question_bank.py`（`### 题型`、`norm_answer`、`is_multi`）；作答按钮在 `rpg/trainer.py`（exam_pick 多选是勾选切换） |
+| 📄 PDF 制卡（扫描版讲义 PDF → 知识点卡，全用代码） | `rpg/pdfcards.py`（算法）、`rpg/api.py cards_pdf_*`、`web/cards.js genScreen`；依赖 numpy / opencv，打包要装 |
 | 真题导入（txt → 题库，待修、补答案、AI 补知识点） | `rpg/importer.py`（粉笔模考 PDF 拆分是行测专用） |
 | 默认人设、台词 | `defaults/角色设定.md`、`defaults/台词库.md`、`defaults/台词库·玄幻.md`（首次运行时复制给用户；改结构要升“配置版本”，见 DESIGN.md） |
 

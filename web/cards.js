@@ -34,12 +34,12 @@
       <div class="yj-tree"><div class="yj-row yj-th"><span class="yj-fold"></span><span class="yj-name">${esc(T("yj_deck"))}</span>
         <span class="yj-n new">${esc(T("yj_new"))}</span><span class="yj-n learn">${esc(T("yj_learn"))}</span><span class="yj-n due">${esc(T("yj_due"))}</span><span class="yj-gear"></span></div>
         ${rows}</div>
-      ${OV.cards ? "" : `<p class="small muted yj-empty">还没有${esc(T("yj"))}。点「✍ ${esc(T("yj_add"))}」自己刻，或者「📥 导入」Anki 导出的文本；「🧙 学姐制卡」可以从 PDF / 笔记直接做卡。</p>`}
-      <div class="small faint yj-moved">✍ ${esc(T("yj_add"))}、🧙 学姐制卡、🏛 ${esc(T("yj_browse"))}、📊 ${esc(T("yj_stats"))}、📥 导入、＋ 新${esc(T("yj_deck"))} 在「${esc(NAV("skeleton"))} › ${esc(T("yj"))} · 知识点」里</div></div>`;
+      ${OV.cards ? "" : `<p class="small muted yj-empty">还没有${esc(T("yj"))}。点「✍ ${esc(T("yj_add"))}」自己刻，或者「📥 导入」Anki 导出的文本；「📄 PDF 制卡」可以把教材 PDF 按知识点直接做成卡。</p>`}
+      <div class="small faint yj-moved">✍ ${esc(T("yj_add"))}、📄 PDF 制卡、🏛 ${esc(T("yj_browse"))}、📊 ${esc(T("yj_stats"))}、📥 导入、＋ 新${esc(T("yj_deck"))} 在「${esc(NAV("skeleton"))} › ${esc(T("yj"))} · 知识点」里</div></div>`;
   }
-  // 刻录符文 / 学姐制卡 / 灵识图 / 导入 / 新卷轴匣：放在咒文书「玉简 · 知识点」（藏简阁就是那里的一枚枚玉简）
+  // 刻录符文 / PDF 制卡 / 灵识图 / 导入 / 新卷轴匣：放在咒文书「玉简 · 知识点」（藏简阁就是那里的一枚枚玉简）
   function toolsHtml() {
-    return `<div class="card yj-tools yj-tools-lib"><button data-yjmode="add">✍ ${esc(T("yj_add"))}</button><button data-yjmode="gen" title="把 PDF / Markdown 笔记交给学姐，自动出${esc(T("yj"))}草稿，你审过再刻入">🧙 学姐制卡</button>
+    return `<div class="card yj-tools yj-tools-lib"><button data-yjmode="add">✍ ${esc(T("yj_add"))}</button><button data-yjmode="gen" title="把扫描版教材 PDF 按知识点做成${esc(T("yj"))}（带表格和示意图），你审过再刻入">📄 PDF 制卡</button>
         <button data-yjmode="stats">📊 ${esc(T("yj_stats"))}</button><button data-yjmode="import">📥 导入</button>
         <button class="ghost" id="yjNewDeck">＋ 新${esc(T("yj_deck"))}</button></div>`;
   }
@@ -347,7 +347,7 @@
     const title = `📗 ${esc(T("yj"))} · ${esc((FL.deck || "全部").replace(/::/g, " › "))}`;
     const go = `<button class="ghost small" id="flToc" title="回这一匣的目录">☰ 目录</button><button class="ghost small" id="flRev" title="按记忆曲线温这一匣（会记进度）">🌙 ${esc(T("yj_review"))}这一匣</button>`;
     if (!FL.keys.length) {
-      s.innerHTML = head(title, go) + `<div class="yj-finish"><h2>这一匣还是空的</h2><p>到冒险大厅「${esc(T("yj_add"))}」或「学姐制卡」放进符文卡。</p></div>`;
+      s.innerHTML = head(title, go) + `<div class="yj-finish"><h2>这一匣还是空的</h2><p>到冒险大厅「${esc(T("yj_add"))}」或「PDF 制卡」放进符文卡。</p></div>`;
       bindBack(); document.getElementById("flRev").onclick = () => review(FL.deck); document.getElementById("flToc").onclick = () => browseDeck(FL.deck); return;
     }
     FL.i = Math.max(0, Math.min(FL.i, FL.keys.length - 1));
@@ -715,118 +715,86 @@
     };
   }
 
-  // ---------------------------------------------------------------- 🧙 学姐制卡：PDF / Markdown / 粘贴 → AI 出卡草稿 → 审 → 刻入
-  const GEN = { src: null, tab: "file", sel: new Set(), pages: ["", ""], deck: "", types: "问答和填空都可以", density: "标准", note: "",
-                cards: [], running: false, stop: false, prog: "", files: null, fq: "" };
+  // ---------------------------------------------------------------- 📄 PDF 制卡：扫描版教材 PDF → 一个知识点一张符文卡（全程代码，不调 AI）→ 审 → 刻入
+  const GEN = { src: null, deck: "", subject: "", first: "", last: "", unit: "auto", unit_regex: "", unit_label: "", drop: "", fixes: "",
+                job: null, running: false, prog: "", res: null, cards: [], timer: null };
   async function genScreen() {
     await ensureOV().catch(showError);
     if (!GEN.deck) GEN.deck = ADD.deck || OV?.decks?.[0]?.name || "";
     const s = stage();
-    s.innerHTML = head("🧙 学姐制卡", `<span class="small muted">学姐按“一张卡只考一个点”出${esc(T("yj"))}草稿，你审过再刻入</span>`) + `<div class="yj-gen">
-      <div class="card"><h3>① 资料</h3>
-        <div class="yj-chips">${[["file", "📄 上传 PDF / Markdown"], ["vault", "📚 库里的笔记"], ["paste", "📋 粘贴文字"]].map(([k, v]) => `<a class="${GEN.tab === k ? "on" : ""}" data-gtab="${k}">${v}</a>`).join("")}</div>
-        <div id="gSrc" class="yj-gsrc"></div><div id="gInfo"></div></div>
-      <div class="card" id="gOpts" ${GEN.src ? "" : "hidden"}><h3>② 怎么出</h3>
-        <div class="yj-form-row"><label>放进${esc(T("yj_deck"))}<select id="gDeck">${deckOptions(GEN.deck)}</select></label>
-          <label>卡片类型<select id="gTypes">${["问答和填空都可以", "问答", "填空"].map((x) => `<option ${x === GEN.types ? "selected" : ""}>${x}</option>`).join("")}</select></label>
-          <label>出多少<select id="gDen">${["精简", "标准", "详细"].map((x) => `<option ${x === GEN.density ? "selected" : ""}>${x}</option>`).join("")}</select></label></div>
-        <label class="yj-field">给学姐的额外要求（可不填）<input id="gNote" value="${esc(GEN.note)}" placeholder="如：公式卡都配一个例子；只出第二节的速算方法"></label>
+    s.innerHTML = head("📄 PDF 制卡", `<span class="small muted">按书里的「知识点」一个知识点做一张${esc(T("yj"))}，表格和示意图都带上；做完你审一遍再刻入</span>`) + `<div class="yj-gen">
+      <div class="card"><h3>① 选 PDF</h3>
+        <label class="yj-drop"><input type="file" id="gFile" accept=".pdf" hidden><b>点这里选教材 PDF</b>
+          <span class="small muted">适合扫描版（带文字层）的法考讲义 / 教材；章节要有「知识点一」或「考点4：」这样的标题。第一次用建议先只做几页试试</span></label>
+        <div id="gInfo"></div></div>
+      <div class="card" id="gOpts" ${GEN.src ? "" : "hidden"}><h3>② 怎么做</h3>
+        <div class="yj-form-row"><label>科目名（卡片标题的前缀）<input id="gSubj" value="${esc(GEN.subject)}"></label>
+          <label>放进${esc(T("yj_deck"))}<select id="gDeck">${deckOptions(GEN.deck)}</select></label>
+          <label>只做哪几页（不填 = 整本）<span style="display:flex;gap:6px;align-items:center"><input id="gP1" class="yj-pg" type="number" min="1" value="${esc(GEN.first)}" placeholder="从"> 到 <input id="gP2" class="yj-pg" type="number" min="1" value="${esc(GEN.last)}" placeholder="到"> 页</span></label></div>
+        <details class="small" style="margin:6px 0"><summary class="muted">高级（一般不用动）</summary>
+          <div class="yj-form-row"><label>知识点标题的写法<select id="gUnit">${[["auto", "自动判断"], ["zhishidian", "知识点一 标题"], ["kaodian", "考点4：标题"], ["custom", "自己写正则"]].map(([k, v]) => `<option value="${k}" ${GEN.unit === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+            <label>正则（两个分组：编号、标题）<input id="gRx" value="${esc(GEN.unit_regex)}" placeholder="^\\s*专题\\s*(\\d+)\\s+(.+)$"></label></div>
+          <label class="yj-field">要删掉的水印 / 广告词（每行一个；每页都重复的页眉水印会自动删）<textarea id="gDrop" rows="2">${esc(GEN.drop)}</textarea></label>
+          <label class="yj-field">错字对照（每行：错的→对的，中间用 Tab；是正则）<textarea id="gFixes" rows="2" placeholder="美条约的缔结&#9;条约的缔结">${esc(GEN.fixes)}</textarea></label></details>
         <div class="row"><span class="small muted" id="gProg">${esc(GEN.prog)}</span><span class="spacer"></span>
-          <button class="ghost" id="gStop" ${GEN.running ? "" : "hidden"}>⏹ 停下</button><button class="primary" id="gGo" ${GEN.running ? "disabled" : ""}>🧙 开始制卡</button></div></div>
+          <button class="primary" id="gGo" ${GEN.running ? "disabled" : ""}>📄 开始制卡</button></div></div>
       <div class="card" id="gOut" ${GEN.cards.length ? "" : "hidden"}></div></div>`;
     bindBack();
-    s.querySelectorAll("[data-gtab]").forEach((a) => (a.onclick = () => { GEN.tab = a.dataset.gtab; s.querySelectorAll("[data-gtab]").forEach((x) => x.classList.toggle("on", x === a)); srcPane(); }));
-    document.getElementById("gDeck").onchange = (e) => (GEN.deck = e.target.value);
-    document.getElementById("gTypes").onchange = (e) => (GEN.types = e.target.value);
-    document.getElementById("gDen").onchange = (e) => (GEN.density = e.target.value);
-    document.getElementById("gNote").oninput = (e) => (GEN.note = e.target.value);
+    document.getElementById("gFile").onchange = (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      const rd = new FileReader();
+      document.getElementById("gInfo").innerHTML = `<p class="small muted">读取「${esc(f.name)}」…</p>`;
+      rd.onload = () => loadSrc(f.name, rd.result);
+      rd.readAsDataURL(f);
+    };
+    document.getElementById("gSubj").addEventListener("input", (e) => {                 // 科目名改了：有同名的简匣就跟着选上
+      const hit = (OV?.decks || []).find((d) => d.name === e.target.value || d.name.split("::")[0] === e.target.value);
+      if (hit) { GEN.deck = hit.name; document.getElementById("gDeck").innerHTML = deckOptions(GEN.deck); }
+    });
+    const bind = (id, k) => { const el = document.getElementById(id); if (el) el.oninput = el.onchange = (e) => (GEN[k] = e.target.value); };
+    [["gSubj", "subject"], ["gDeck", "deck"], ["gP1", "first"], ["gP2", "last"], ["gUnit", "unit"], ["gRx", "unit_regex"], ["gDrop", "drop"], ["gFixes", "fixes"]].forEach(([i, k]) => bind(i, k));
     document.getElementById("gGo").onclick = runGen;
-    document.getElementById("gStop").onclick = () => { GEN.stop = true; document.getElementById("gProg").textContent = "停在这一段做完后…"; };
-    srcPane(); infoPane(); outPane();
+    infoPane(); outPane();
   }
-  function srcPane() {
-    const box = document.getElementById("gSrc");
-    if (!box) return;
-    if (GEN.tab === "file") {
-      box.innerHTML = `<label class="yj-drop"><input type="file" id="gFile" accept=".pdf,.md,.markdown,.txt" hidden>
-        <b>点这里选文件</b><span class="small muted">PDF（书、讲义）、Markdown 笔记、TXT；扫描版 PDF 需要在设置里填识图模型</span></label>`;
-      document.getElementById("gFile").onchange = (e) => {
-        const f = e.target.files[0]; if (!f) return;
-        const rd = new FileReader();
-        document.getElementById("gInfo").innerHTML = `<p class="small muted">读取「${esc(f.name)}」…</p>`;
-        rd.onload = () => loadSrc({ kind: "file", name: f.name, data: rd.result });
-        rd.readAsDataURL(f);
-      };
-    } else if (GEN.tab === "paste") {
-      box.innerHTML = `<input id="gPName" placeholder="给这段资料起个名字（可不填）"><textarea id="gPaste" rows="8" placeholder="把要做成卡片的文字粘贴进来"></textarea>
-        <div class="row"><span class="spacer"></span><button id="gPGo">用这段文字</button></div>`;
-      document.getElementById("gPGo").onclick = () => loadSrc({ kind: "paste", name: val("gPName"), text: document.getElementById("gPaste").value });
-    } else {
-      box.innerHTML = `<input id="gFQ" placeholder="搜库里的笔记（文件名 / 文件夹）" value="${esc(GEN.fq)}"><div id="gFiles" class="yj-gfiles">读取中…</div>`;
-      const paint = () => {
-        const q = GEN.fq.trim().toLowerCase();
-        const hit = (GEN.files || []).filter((f) => !q || f.path.toLowerCase().includes(q)).slice(0, 200);
-        document.getElementById("gFiles").innerHTML = hit.map((f) => `<a data-gf="${esc(f.path)}"><span class="faint small">${esc(f.dir)}/</span>${esc(f.name)}</a>`).join("") || '<p class="small muted">没有找到</p>';
-        document.querySelectorAll("[data-gf]").forEach((a) => (a.onclick = () => loadSrc({ kind: "vault", path: a.dataset.gf })));
-      };
-      document.getElementById("gFQ").oninput = (e) => { GEN.fq = e.target.value; paint(); };
-      if (GEN.files) paint();
-      else api("/api/cards/gen/files", {}).then((r) => { GEN.files = r.files; paint(); }).catch(showError);
-    }
-  }
-  async function loadSrc(body) {
+  async function loadSrc(name, data) {
     try {
-      GEN.src = await api("/api/cards/gen/load", body);
-      GEN.sel = new Set(); GEN.pages = ["", ""];
-      infoPane();
-      document.getElementById("gOpts").hidden = false;
+      GEN.src = await api("/api/cards/pdf/load", { name, data });
+      GEN.subject = GEN.src.subject || GEN.subject;
+      const hit = (OV?.decks || []).find((d) => d.name === GEN.subject || d.name.split("::")[0] === GEN.subject);
+      GEN.deck = hit ? hit.name : (GEN.subject || GEN.deck);       // 没有同名的卷轴匣就用科目名新建一个
+      GEN.cards = []; GEN.res = null;
+      genScreen();
     } catch (e) { showError(e); document.getElementById("gInfo").innerHTML = ""; }
   }
   function infoPane() {
-    const box = document.getElementById("gInfo");
-    const src = GEN.src;
+    const box = document.getElementById("gInfo"), src = GEN.src;
     if (!box || !src) return;
-    const toc = src.toc || [];
-    const isPdf = src.kind === "pdf";
-    box.innerHTML = `<div class="yj-ginfo"><b>📘 ${esc(src.name)}</b> <span class="small muted">${isPdf ? `${src.pages} 页` : `${src.chars} 字`}${toc.length ? ` · 目录 ${toc.length} 条` : ""}</span>
-      ${isPdf && src.scanned ? `<div class="warn small">这份 PDF 像是扫描版（页面是图片）：要在设置里填「识图模型」才能读，没填的页会跳过。</div>` : ""}
-      ${toc.length ? `<div class="small muted" style="margin:8px 0 4px">勾选要做的${isPdf ? "章节" : "小节"}（不勾${isPdf ? "就按下面的页码" : "就整篇"}）：</div>
-        <div class="yj-toc">${toc.map((t, i) => `<label style="--lv:${t.level - 1}"><input type="checkbox" data-sec="${i}" ${GEN.sel.has(i) ? "checked" : ""}> ${esc(t.title)}${isPdf ? ` <span class="faint small">p${t.page}</span>` : ""}</label>`).join("")}</div>` : ""}
-      ${isPdf ? `<div class="row small" style="margin-top:8px">页码：从 <input id="gP1" class="yj-pg" type="number" min="1" max="${src.pages}" value="${esc(GEN.pages[0])}"> 到 <input id="gP2" class="yj-pg" type="number" min="1" max="${src.pages}" value="${esc(GEN.pages[1])}"> 页 <span class="faint">（一次最多 120 页）</span></div>` : ""}</div>`;
-    box.querySelectorAll("[data-sec]").forEach((cb) => (cb.onchange = () => { cb.checked ? GEN.sel.add(+cb.dataset.sec) : GEN.sel.delete(+cb.dataset.sec); }));
-    const p1 = document.getElementById("gP1"), p2 = document.getElementById("gP2");
-    if (p1) { p1.oninput = () => (GEN.pages[0] = p1.value); p2.oninput = () => (GEN.pages[1] = p2.value); }
+    const u = Object.entries(src.units || {}).filter(([, n]) => n > 0).map(([k, n]) => `认出 ${n} 个「${k}」标题`).join("，");
+    box.innerHTML = `<div class="yj-ginfo"><b>📘 ${esc(src.name)}</b> <span class="small muted">${src.pages} 页${u ? " · " + u : ""}</span>
+      ${src.has_text ? "" : `<div class="warn small">这份 PDF 没有文字层（纯图片），做不出来；请先用 OCR 软件识别后再来。</div>`}
+      ${src.has_text && !u ? `<div class="warn small">没有认出「知识点一」或「考点4：」这样的标题；可以在「高级」里自己写标题的正则。</div>` : ""}</div>`;
   }
   async function runGen() {
-    const src = GEN.src;
-    if (!src || GEN.running) return;
-    const body = { src: src.src, sections: [...GEN.sel] };
-    if (src.kind === "pdf" && GEN.pages[0]) body.pages = [GEN.pages[0], GEN.pages[1] || GEN.pages[0]];
-    let plan;
-    try { plan = await api("/api/cards/gen/chunks", body); } catch (e) { return showError(e); }
-    GEN.running = true; GEN.stop = false;
+    if (!GEN.src || GEN.running) return;
+    GEN.cards = []; GEN.res = null; outPane();
+    const body = { src: GEN.src.src, subject: GEN.subject, first: GEN.first, last: GEN.last, unit: GEN.unit === "custom" ? "auto" : GEN.unit,
+                   unit_regex: GEN.unit === "custom" ? GEN.unit_regex : "", drop: GEN.drop, fixes: GEN.fixes };
     const prog = (t) => { GEN.prog = t; const el = document.getElementById("gProg"); if (el) el.textContent = t; };
-    const btns = (on) => { const g = document.getElementById("gGo"), st = document.getElementById("gStop"); if (g) g.disabled = on; if (st) st.hidden = !on; };
-    btns(true);
-    const skipped = [];
-    let made = 0;
-    for (let i = 0; i < plan.chunks.length; i++) {
-      if (GEN.stop) break;
-      const ch = plan.chunks[i];
-      prog(`🧙 学姐正在看 ${ch.label}（${i + 1}/${plan.chunks.length}）… 已出 ${made} 张`);
-      try {
-        const r = await api("/api/cards/gen/run", { src: src.src, chunk: ch, deck: GEN.deck, types: GEN.types, density: GEN.density, note: GEN.note });
-        r.cards.forEach((c) => GEN.cards.push(Object.assign(c, { keep: true, uid: Math.random().toString(36).slice(2) })));
-        made += r.cards.length;
-        skipped.push(...r.skipped);
-        outPane();
-      } catch (e) {
-        showError(e);
-        if (!confirm(`${ch.label} 出错了：${e.message}\n\n跳过这段，接着做后面的？`)) break;
-      }
-    }
-    GEN.running = false; btns(false);
-    prog(`${GEN.stop ? "停下了" : "做完了"}：这次出了 ${made} 张${skipped.length ? `；第 ${skipped.join("、")} 页是图片（没填识图模型），跳过了` : ""}。下面审一遍，勾上要的点「刻入」。`);
+    const btn = (on) => { const g = document.getElementById("gGo"); if (g) g.disabled = on; };
+    try { GEN.job = (await api("/api/cards/pdf/start", body)).job; } catch (e) { return showError(e); }
+    GEN.running = true; btn(true); prog("📄 开始了…");
+    const tick = async () => {
+      let r;
+      try { r = await api("/api/cards/pdf/status", { job: GEN.job }); } catch (e) { GEN.running = false; btn(false); return showError(e); }
+      if (r.state === "running") { prog("📄 " + r.progress); GEN.timer = setTimeout(tick, 1000); return; }
+      GEN.running = false; btn(false);
+      if (r.state === "error") { prog(""); return showError(new Error(r.error)); }
+      GEN.res = r;
+      GEN.cards = r.cards.map((c) => Object.assign(c, { keep: true, uid: Math.random().toString(36).slice(2) }));
+      prog(`做完了：共 ${r.cards.length} 张。先看下面的提醒，再审一遍，勾上要的点「刻入」。`);
+      outPane();
+    };
+    GEN.timer = setTimeout(tick, 800);
   }
   function outPane() {
     const box = document.getElementById("gOut");
@@ -834,32 +802,33 @@
     box.hidden = !GEN.cards.length;
     if (!GEN.cards.length) return;
     const n = GEN.cards.filter((c) => c.keep).length;
-    box.innerHTML = `<div class="row"><h3 style="margin:0">③ 审卡</h3><span class="small muted">共 ${GEN.cards.length} 张，勾选 ${n} 张 · 直接在框里改；不要的取消勾选</span><span class="spacer"></span>
-        <a class="small" id="gAll">全选</a><a class="small" id="gNone">全不选</a><button class="ghost small" id="gClear">清空</button>
+    const warns = ((GEN.res && GEN.res.report) || []).filter((x) => x.notes.length);
+    box.innerHTML = `${GEN.res && GEN.res.auto_drop.length ? `<p class="small muted">自动认出并删掉的每页页眉 / 水印：${esc(GEN.res.auto_drop.join("；"))}</p>` : ""}
+      ${warns.length ? `<details class="small warn" open><summary>⚠ ${warns.length} 处要你看一眼（数字可能被扫描截掉、表格 / 框图转成了图片、标题没认出来…）</summary>
+        ${warns.map((w) => `<p><b>${esc(w.title)}</b><br>${w.notes.map(esc).join("<br>")}</p>`).join("")}</details>` : ""}
+      <div class="row"><h3 style="margin:0">③ 审卡</h3><span class="small muted">共 ${GEN.cards.length} 张，勾选 ${n} 张 · 直接在框里改；不要的取消勾选</span><span class="spacer"></span>
+        <a class="small" id="gAll">全选</a><a class="small" id="gNone">全不选</a>
         <button class="primary" id="gSave" ${n ? "" : "disabled"}>✍ 刻入选中的 ${n} 张</button></div>
       <div class="yj-gcards">${GEN.cards.map((c) => `<div class="yj-gcard ${c.keep ? "" : "off"}" data-uid="${c.uid}">
-        <div class="row small"><label><input type="checkbox" data-k ${c.keep ? "checked" : ""}> ${c.type === "填空" ? "填空" : "问答"}</label>
-          <span class="faint">${esc(c.extra || "")}</span><span class="spacer"></span><input class="yj-gtags" data-f="tags" value="${esc((c.tags || []).join(" "))}" placeholder="标签"><a data-del title="删掉这张">✕</a></div>
-        <textarea data-f="front" rows="2">${esc(c.front)}</textarea>
-        <textarea data-f="back" rows="2" placeholder="${c.type === "填空" ? "（填空卡反面可以不填）" : "反面"}">${esc(c.back)}</textarea></div>`).join("")}</div>`;
+        <div class="row small"><label><input type="checkbox" data-k ${c.keep ? "checked" : ""}> 问答</label>
+          <span class="faint">${c.images.length ? `🖼 ${c.images.length} 张图（刻入时一起存）` : ""}</span><span class="spacer"></span><input class="yj-gtags" data-f="tags" value="${esc((c.tags || []).join(" "))}" placeholder="标签"></div>
+        <textarea data-f="front" rows="1">${esc(c.front)}</textarea>
+        <textarea data-f="back" rows="8">${esc(c.back)}</textarea></div>`).join("")}</div>`;
     const find = (el) => GEN.cards.find((c) => c.uid === el.closest("[data-uid]").dataset.uid);
     box.querySelectorAll("[data-k]").forEach((cb) => (cb.onchange = () => { find(cb).keep = cb.checked; outPane(); }));
     box.querySelectorAll("[data-f]").forEach((t) => (t.oninput = () => {
       const c = find(t);
       if (t.dataset.f === "tags") c.tags = t.value.split(/\s+/).filter(Boolean);
       else c[t.dataset.f] = t.value;
-      if (t.dataset.f === "front") c.type = /\{\{c\d+::/.test(t.value) ? "填空" : "问答";
     }));
-    box.querySelectorAll("[data-del]").forEach((a) => (a.onclick = () => { const c = find(a); GEN.cards = GEN.cards.filter((x) => x !== c); outPane(); }));
     document.getElementById("gAll").onclick = () => { GEN.cards.forEach((c) => (c.keep = true)); outPane(); };
     document.getElementById("gNone").onclick = () => { GEN.cards.forEach((c) => (c.keep = false)); outPane(); };
-    document.getElementById("gClear").onclick = () => { if (confirm("清空这些还没刻入的草稿？")) { GEN.cards = []; outPane(); } };
     document.getElementById("gSave").onclick = async () => {
       const pick = GEN.cards.filter((c) => c.keep);
       try {
-        const r = await api("/api/cards/add_many", { deck: GEN.deck, cards: pick.map(({ type, front, back, tags, extra }) => ({ type, front, back, tags, extra })) });
+        const r = await api("/api/cards/pdf/save", { job: GEN.job, deck: GEN.deck, subject: GEN.subject, cards: pick.map(({ front, back, tags }) => ({ front, back, tags })) });
         GEN.cards = GEN.cards.filter((c) => !c.keep);
-        toast(`✍ 刻入「${esc(GEN.deck)}」${r.added} 张${r.skipped ? `，${r.skipped} 张格式不对没刻（正面空 / 填空没挖空）` : ""}`);
+        toast(`✍ 刻入「${esc(GEN.deck)}」${r.added} 张${r.duplicated ? `，${r.duplicated} 张这个${esc(T("yj_deck"))}里已有同名的，跳过了` : ""}${r.skipped ? `，${r.skipped} 张格式不对没刻` : ""}`);
         OV = null; outPane();
       } catch (e) { showError(e); }
     };

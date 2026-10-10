@@ -57,7 +57,7 @@
 背景法阵 `web/art/circle-*.svg` 由 `tools/make_circle.py` 生成。大典 `web/ceremony.js` 的 MOUNT / FISH 现在画城堡和流星（类名沿用），
 收功 `web/settle.js` 的人物是法袍 + 法师帽、法阵刻 Ⅰ–Ⅷ。图标是紫底金法阵加「法」字（web/icons、android/res）。
 
-**AI 提示词**：出题、讲题、编咒文书、制卡、整理手写笔记、考情分析都改成法考口径（`prompts.py`、`cardgen.RULES`、`notes.py`）；
+**AI 提示词**：出题、讲题、编咒文书、整理手写笔记、考情分析都改成法考口径（`prompts.py`、`notes.py`）；
 要求以现行法律、司法解释为准，拿不准要说明。
 
 **测试**：老用例（按行测板块写的）通过 `tests/legacy_xingce.py` 把默认配置切回行测底本后运行，守住引擎；
@@ -363,3 +363,15 @@ summary 新增 tower，trainer battle 中也含 tower（只有计数，无题目
 默认论证逻辑骨架依据用户提供的ch01—ch09补齐：2个上位总览、26个方法单元、5结构总览及5个结构单元、独立拆题，共35单元。建立联系含6打法；平行因素改为不同方面作用于同一结果；固定结构区分B→A与共同原因C→A/B。每方法含作用、识别/使用、边界和自行举例任务。词面信号不是硬排除规则；平均趋势与绝对断言、作用方向与大小、共现与因果证据分开。
 
 标题与上一版保持一致，新增结构单元以新id记录；不迁移或重置旧存档。正文带`内容版本: 20261001-完整章节`，仍以草稿发布，审阅后定稿。更新脚本检查此版本而非仅标题，确保已安装的占位草稿也能升级；同版本重复运行保留已审改骨架。技能原文件只读，不复制或覆写原skill目录。
+
+## 📄 PDF 制卡（2.3.0，取代了 AI 的“学姐制卡”）
+
+- 入口：咒文书 › 符文卡 · 知识点 › 「📄 PDF 制卡」（`web/cards.js` 的 `genScreen`）；后端 `rpg/pdfcards.py`，接口 `/api/cards/pdf/{load,start,status,save}`（`rpg/api.py`）。
+- 做什么：扫描版（每页一张图 + 不可见 OCR 文字层）的法考讲义 PDF → 一个知识点一张卡。**全程用代码，不调 AI**。流程：上传（存 `~/.fakao-rpg/制卡/`）→ 后台线程跑（轮询 status）→ 网页审卡 → save 刻入。
+- 算法：按「知识点一 / 考点4：」标题切（OCR 常把编号和标题名切成同一行的两个框，先按位置并回一行再认）；「第N部分 / 第N章」是上级标题，只进卡片标题和标签；
+  OpenCV 找表格线重建网格（合并格用 〃＝同上、⇢＝同左 写进 Markdown 表格，`web/notes.js mdRender` 渲染成真正合并的格子；没有表头的表格留空表头并隐藏）；
+  框图 / 示意图 / 重建不可靠的表格整块裁成图片，刻入时写进 `训练/卡片/图片/<科目>-<图名>.png`；每页重复的页眉水印自动识别删除。
+- 依赖：pymupdf、numpy、opencv-python-headless。**打包时要装**（见 `.github/workflows/build-exe.yml`，`tests/smoke_frozen.py` 检查带齐）；缺了只是这个功能报错提示，别的不受影响。平板 App 只是网页客户端，制卡在电脑上做。
+- **两份拷贝**：`rpg/pdfcards.py` 和仓库外的命令行版 `skills/book-to-ankicard/scripts/pdf_to_cards.py`（obsidian-to-xingce 仓库）是同一套算法，改了一边另一边要同步。
+- 测试：`tests/test_cards.py` 的 `CardGenTest`（用 PyMuPDF 现画一页合成 PDF，没装 opencv 时跳过）。
+
