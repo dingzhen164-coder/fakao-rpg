@@ -348,6 +348,28 @@ class CardGenTest(CardsApiTest):
         r = pdfcards.convert(f, "民诉")
         self.assertEqual([c["front"] for c in r["cards"]], ["【民诉3.1.1】平等原则", "【民诉3.1.2】同等、对等原则", "【民诉3.1.3】辩论原则"])
 
+    def test_pdf_cards_zhuanti_and_captioned_figure(self):
+        """众合民法讲义：「专题三」→「第一节」→「考点11：标题」；法条章节一览（带「第200—204条」「共5条」）不是本书的章节；
+        考点下面先是一张没有竖线可认的思维导图，图下有「（××思维导图）」图注——图里的字不能一行行塞进卡片，整张裁成图片"""
+        from rpg import pdfcards
+        if not pdfcards.available()[0]:
+            self.skipTest("没装 opencv / numpy")
+        f = self._text_pdf([(60, 50, "第十章  期间计算（第200—204条）（共5条）"), (180, 90, "专题三  民事法律行为"),
+                            (150, 130, "第一节  民事法律行为的基本原理"), (60, 170, "考点11：民事法律行为和事实行为的区别"),
+                            (60, 230, "民事法"), (60, 246, "律事实"), (140, 238, "→行为→法律效果"), (330, 210, "一合同行为"),
+                            (330, 238, "一遗嘱行为"), (330, 266, "一侵权行为"), (150, 300, "（民事法律行为和事实行为法律思维导图）"),
+                            (60, 340, "民事法律行为是民事主体通过意思表示设立、变更、终止民事法律关系的行为。")], "民法讲义.pdf")
+        r = pdfcards.convert(f, "民法")
+        self.assertEqual([c["front"] for c in r["cards"]], ["【民法3.1.11】民事法律行为和事实行为的区别"])
+        c = r["cards"][0]
+        self.assertNotIn("第十章", " ".join(c["tags"]))
+        self.assertNotIn("遗嘱行为", c["back"])                     # 图里的字没有当正文
+        self.assertEqual(len(c["images"]), 1)
+        self.assertIn("![[", c["back"])
+        self.assertIn("民事法律行为是民事主体", c["back"])
+        self.assertIsNone(pdfcards.match_parent("第十章  期间计算（第200—204条）（共5条）"))
+        self.assertEqual(pdfcards.match_parent("专题三  民事法律行为")[0], 2)
+
     def test_pdf_cards_errors(self):
         with self.assertRaises(api.ApiError):
             api.cards_pdf_load({"name": "x.pdf", "data": "data:application/pdf;base64,"})
