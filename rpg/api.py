@@ -1026,6 +1026,15 @@ def cards_pdf_load(body):
     return _pdf(lambda: pdfcards.load(paths_mod.SETTINGS_DIR, body.get("name"), body.get("data")))
 
 
+def cards_pdf_open(body):
+    """直接读本机上的 PDF，不上传（路径来自窗口的文件选择框，或手填；LOCAL_ONLY：只有电脑本机能用）"""
+    return _pdf(lambda: pdfcards.open_path(body.get("path")))
+
+
+def cards_pdf_src(body):
+    return _pdf(lambda: pdfcards.source_status(body))
+
+
 def cards_pdf_start(body):
     return _pdf(lambda: pdfcards.start(paths_mod.SETTINGS_DIR, body))
 
@@ -1249,7 +1258,7 @@ for _n, _f in (("next", cards_next), ("answer", cards_answer), ("undo", cards_un
                ("update", cards_update), ("delete", cards_delete), ("suspend", cards_suspend), ("forget", cards_forget),
                ("move", cards_move), ("deck", cards_deck), ("search", cards_search), ("info", cards_info),
                ("stats", cards_stats), ("import", cards_import), ("image", cards_image), ("explain", cards_explain),
-               ("add_many", cards_add_many), ("pdf/load", cards_pdf_load), ("pdf/start", cards_pdf_start), ("pdf/status", cards_pdf_status), ("pdf/save", cards_pdf_save)):
+               ("add_many", cards_add_many), ("pdf/load", cards_pdf_load), ("pdf/open", cards_pdf_open), ("pdf/src", cards_pdf_src), ("pdf/start", cards_pdf_start), ("pdf/status", cards_pdf_status), ("pdf/save", cards_pdf_save)):
     ROUTES[("POST", "/api/cards/" + _n)] = _f
 ROUTES[("GET", "/api/notes")] = notes_list
 ROUTES[("POST", "/api/notes/get")] = notes_get
@@ -1267,7 +1276,7 @@ ROUTES[("GET", "/api/update/check")] = update_check
 ROUTES[("POST", "/api/update/apply")] = update_apply
 ROUTES[("GET", "/api/lan")] = lan_get
 ROUTES[("POST", "/api/lan")] = lan_set
-LOCAL_ONLY = {"/api/lan", "/api/settings", "/api/update/apply", "/api/notes/open"}     # 只有电脑本机能改的
+LOCAL_ONLY = {"/api/lan", "/api/settings", "/api/update/apply", "/api/notes/open", "/api/cards/pdf/open"}     # 只有电脑本机能改的
 
 
 class Handler(BaseHTTPRequestHandler):
