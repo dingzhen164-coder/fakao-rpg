@@ -214,52 +214,60 @@ class CardsApiTest(unittest.TestCase):
 
 
 class CardGenTest(CardsApiTest):
-    """🧙 学姐制卡（PDF / Markdown → AI 出卡草稿 → 刻入）和 AI 方案切换"""
+    """📄 PDF 制卡（扫描版教材 PDF → 知识点卡 → 刻入）和 AI 方案切换"""
 
     def _pdf(self):
+        """合成一页：「第一部分 国际法」「第一章 …」「知识点一」和标题名是同一行里的两个文字框，一张带合并格的表，然后是知识点二"""
         import pymupdf
         doc = pymupdf.open()
-        for i, t in enumerate(["第一章 增长\n隔年增长率 = r1 + r2 + r1×r2，用于求隔一年的增长率。" * 3,
-                               "第二章 比重\n现期比重 = 部分 / 整体。" * 3, ""]):
-            p = doc.new_page()
-            if t:
-                p.insert_text((50, 72), t, fontname="china-s", fontsize=11)
-        doc.set_toc([[1, "第一章 增长", 1], [1, "第二章 比重", 2], [1, "插图", 3]])
+        p = doc.new_page(width=523, height=750)
+        f = dict(fontname="china-s", fontsize=12)
+        p.insert_text((200, 90), "第一部分", **f); p.insert_text((280, 90), "国际法", **f)
+        p.insert_text((195, 150), "第一章", **f); p.insert_text((250, 150), "国际法的渊源", **f)
+        p.insert_text((60, 200), "知识点一", **f); p.insert_text((130, 200), "国际法的渊源", **f)
+        p.insert_text((60, 230), "国际法的渊源只有国际条约、国际习惯和一般法律原则三项。", **f)
+        x0, x1, xm, ys = 60, 460, 140, [260, 300, 340, 380]
+        for y in ys:
+            p.draw_line((x0, y), (x1, y), width=1.2)
+        for x in (x0, xm, x1):
+            p.draw_line((x, ys[0]), (x, ys[-1]), width=1.2)
+        for k, (a, b) in enumerate([("国际条约", "原则上只约束缔约国"), ("国际习惯", "约束所有主体"), ("一般法律原则", "约束所有主体")]):
+            p.insert_text((x0 + 6, ys[k] + 24), a, **f); p.insert_text((xm + 6, ys[k] + 24), b, **f)
+        p.insert_text((60, 430), "知识点二", **f); p.insert_text((130, 430), "国际法基本原则", **f)
+        p.insert_text((60, 460), "国家主权平等原则、不干涉内政原则。", **f)
         return "data:application/pdf;base64," + __import__("base64").b64encode(doc.tobytes()).decode()
 
-    def test_pdf_to_cards(self):
-        from unittest.mock import patch
-        from rpg import ai
-        info = api.cardgen_load({"kind": "file", "name": "花生资料分析.pdf", "data": self._pdf()})
-        self.assertEqual((info["kind"], info["pages"], [t["title"] for t in info["toc"]]), ("pdf", 3, ["第一章 增长", "第二章 比重", "插图"]))
-        plan = api.cardgen_chunks({"src": info["src"], "sections": [0]})
-        self.assertEqual([c["pages"] for c in plan["chunks"]], [[1]])
-        plan = api.cardgen_chunks({"src": info["src"], "pages": [1, 3]})
-        self.assertEqual(sum(len(c["pages"]) for c in plan["chunks"]), 3)
-        reply = ('```json\n{"cards": [{"type": "问答", "front": "隔年增长率公式？", "back": "r1 + r2 + r1×r2", "tags": ["#增长"]},'
-                 '{"type": "填空", "front": "现期比重 = {{c1::部分}} / 整体", "back": "", "tags": "比重"},'
-                 '{"type": "问答", "front": "没有答案的卡", "back": ""}]}\n```')
-        with patch.object(ai, "available", return_value=True), patch.object(ai, "vision_available", return_value=False), \
-                patch.object(ai, "chat", return_value=reply) as chat:
-            r = api.cardgen_gen({"src": info["src"], "chunk": plan["chunks"][0], "deck": "资料分析", "density": "精简", "types": "问答"})
-        self.assertIn("隔年增长率", chat.call_args.args[0][1]["content"])
-        self.assertIn("只出问答卡", chat.call_args.args[0][1]["content"])
-        self.assertEqual(r["skipped"], [3])                                  # 第 3 页没字、没识图模型：跳过
-        self.assertEqual([(c["type"], c["tags"]) for c in r["cards"]], [("问答", ["增长"]), ("填空", ["比重"])])
-        self.assertTrue(r["cards"][0]["extra"].startswith("出自《花生资料分析》"))
-        a = api.cards_add_many({"deck": "资料分析::速算", "cards": r["cards"] + [{"type": "填空", "front": "没挖空"}]})
-        self.assertEqual((a["added"], a["skipped"]), (2, 1))
-        self.assertEqual(api.cards_search({"deck": "资料分析"})["total"], 2)
+    def test_pdf_cards_end_to_end(self):
+        import time
+        from rpg import pdfcards
+        if not pdfcards.available()[0]:
+            self.skipTest("没装 opencv / numpy")
+        info = api.cards_pdf_load({"name": "国际法讲义.pdf", "data": self._pdf()})
+        self.assertEqual((info["pages"], info["subject"], info["units"]["知识点"]), (1, "国际法", 2))   # 编号和标题分成两个框也认得出
+        job = api.cards_pdf_start({"src": info["src"], "subject": "国际法"})["job"]
+        for _ in range(120):
+            st = api.cards_pdf_status({"job": job})
+            if st["state"] != "running":
+                break
+            time.sleep(0.5)
+        self.assertEqual(st["state"], "done", st)
+        self.assertEqual([c["front"] for c in st["cards"]], ["【国际法1.1.1】国际法的渊源", "【国际法1.1.2】国际法基本原则"])
+        self.assertIn("| 国际条约 | 原则上只约束缔约国 |", st["cards"][0]["back"])      # 表格是 Markdown，没有表头的留空表头
+        self.assertTrue(st["cards"][0]["back"].count("|---|---|") == 1)
+        a = api.cards_pdf_save({"job": job, "deck": "国际法", "subject": "国际法",
+                                "cards": [{"front": c["front"], "back": c["back"], "tags": c["tags"]} for c in st["cards"]]})
+        self.assertEqual((a["added"], a["duplicated"]), (2, 0))
+        again = api.cards_pdf_save({"job": job, "deck": "国际法", "subject": "国际法", "cards": [{"front": st["cards"][0]["front"], "back": "x"}]})
+        self.assertEqual((again["added"], again["duplicated"]), (0, 1))          # 同一本书导入两次不会翻倍
+        self.assertEqual(api.cards_search({"deck": "国际法"})["total"], 2)
 
-    def test_markdown_sections(self):
-        md = "---\ntags: x\n---\n# 增长\n## 隔年增长\n" + "隔年增长率内容。\n\n" * 5 + "## 混合增长\n混合增长率内容。\n# 比重\n比重内容。\n"
-        info = api.cardgen_load({"kind": "paste", "name": "笔记", "text": md})
-        self.assertEqual([t["title"] for t in info["toc"]], ["增长", "隔年增长", "混合增长", "比重"])
-        plan = api.cardgen_chunks({"src": info["src"], "sections": [1]})
-        self.assertEqual(len(plan["chunks"]), 1)
-        self.assertIn("隔年增长率内容", plan["chunks"][0]["text"])
-        self.assertNotIn("混合增长率内容", plan["chunks"][0]["text"])
-        self.assertNotIn("tags: x", api.cardgen_chunks({"src": info["src"]})["chunks"][0]["text"])
+    def test_pdf_cards_errors(self):
+        with self.assertRaises(api.ApiError):
+            api.cards_pdf_load({"name": "x.pdf", "data": "data:application/pdf;base64,"})
+        with self.assertRaises(api.ApiError):
+            api.cards_pdf_start({"src": "0" * 16})
+        with self.assertRaises(api.ApiError):
+            api.cards_pdf_status({"job": "nope"})
 
     def test_ai_profiles_switch(self):
         api.settings_set({"api_key": "sk-deep", "base_url": "https://api.deepseek.com", "model": "deepseek-chat"})

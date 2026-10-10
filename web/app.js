@@ -554,14 +554,14 @@ const views = {
           ${s.ai_active && (s.ai_profiles || []).some(p => p.name === s.ai_active) ? "" : `<option value="" selected>（当前设置：${esc(s.model)}，还没存成方案）</option>`}</select>
         <button class="small" id="sProfSave" title="把下面这套 接口地址 + 模型 + key 存成一套，起个名字">💾 存为一套</button>
         ${(s.ai_profiles || []).length ? '<button class="small ghost" id="sProfDel" title="删掉下拉里选中的这套">🗑</button>' : ""}</div>
-      <p class="small muted" style="margin-top:2px">常用的几套（DeepSeek、通义千问、Kimi、智谱…）各存一套，下拉一选就换；导师、学姐解惑、学姐讲讲、学姐制卡都跟着换。新加一套：下面「常用接口」选一个、填 key 和模型 → 保存 → 「存为一套」。</p>
+      <p class="small muted" style="margin-top:2px">常用的几套（DeepSeek、通义千问、Kimi、智谱…）各存一套，下拉一选就换；导师、学姐解惑、学姐讲讲都跟着换。新加一套：下面「常用接口」选一个、填 key 和模型 → 保存 → 「存为一套」。</p>
       <label class="small muted">AI 的 API key ${s.has_key ? `（已填写，末尾 ${esc(s.key_tail)}；不改就留空）` : ""}</label>
       <input id="sKey" type="password" placeholder="sk-……">
       <div class="row" style="margin-top:8px">
         <div style="flex:2"><label class="small muted">接口地址 <select id="sPreset" class="ai-preset"><option value="">常用接口…</option>${AI_PRESETS.map((p, i) => `<option value="${i}">${esc(p[0])}</option>`).join("")}</select></label><input id="sBase" value="${esc(s.base_url)}"></div>
         <div style="flex:1"><label class="small muted">模型</label><input id="sModel" value="${esc(s.model)}"></div></div>
-      <details class="sv-vision" style="margin-top:10px"${s.vision_model ? " open" : ""}><summary class="small">🪶 识图模型（学姐制卡读扫描版 PDF 用，可不填）</summary>
-      <p class="small muted">填一个能看图的模型（如 qwen-vl-max、gpt-4o、glm-4v）：「🧙 学姐制卡」遇到扫描版 PDF（页面是图片）时让它看图认字。接口地址、key 和上面一样时留空。</p>
+      <details class="sv-vision" style="margin-top:10px"${s.vision_model ? " open" : ""}><summary class="small">🪶 识图模型（笔记识图用，可不填）</summary>
+      <p class="small muted">填一个能看图的模型（如 qwen-vl-max、gpt-4o、glm-4v）：笔记遇到图片 / 扫描页时让它看图认字。接口地址、key 和上面一样时留空。</p>
       <div class="row">
         <div style="flex:1"><label class="small muted">识图模型</label><input id="sVModel" value="${esc(s.vision_model || "")}" placeholder="如 qwen-vl-max"></div>
         <div style="flex:2"><label class="small muted">接口地址（留空 = 同上）</label><input id="sVBase" value="${esc(s.vision_base_url || "")}" placeholder="${esc(s.base_url)}"></div></div>

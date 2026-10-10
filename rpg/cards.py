@@ -640,7 +640,7 @@ def add(g, body):
 
 
 def add_many(g, deck, items):
-    """一次刻入多枚（学姐制卡审完后）：[{type, front, back, tags, extra}]，格式不对的跳过"""
+    """一次刻入多枚（PDF 制卡审完后）：[{type, front, back, tags, extra}]，格式不对的跳过"""
     deck = _clean_deck(deck)
     notes, headers = load(g.paths)
     taken = {x["id"] for x in notes}
