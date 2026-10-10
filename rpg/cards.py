@@ -934,11 +934,78 @@ def _color_of(attrs):
     return c
 
 
+def _table_to_md(table_html):
+    """<table>（含 rowspan / colspan）→ Markdown 表格。合并单元格展开：内容写在左上角那一格，被盖住的格子写“〃”。"""
+    from html.parser import HTMLParser
+
+    class T(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.rows, self.cur, self.cell, self.attrs = [], None, None, {}
+
+        def handle_starttag(self, tag, attrs):
+            tag = tag.lower()
+            if tag == "tr":
+                self.cur = []
+            elif tag in ("td", "th"):
+                self.cell, self.attrs = [], dict(attrs)
+            elif tag == "br" and self.cell is not None:
+                self.cell.append(" ")
+
+        def handle_endtag(self, tag):
+            tag = tag.lower()
+            if tag in ("td", "th") and self.cell is not None and self.cur is not None:
+                txt = re.sub(r"\s+", " ", "".join(self.cell)).strip().replace("|", "\\|")
+                self.cur.append((txt, int(self.attrs.get("rowspan") or 1), int(self.attrs.get("colspan") or 1)))
+                self.cell = None
+            elif tag == "tr" and self.cur is not None:
+                self.rows.append(self.cur)
+                self.cur = None
+
+        def handle_data(self, data):
+            if self.cell is not None:
+                self.cell.append(data)
+
+    t = T()
+    t.feed(table_html)
+    grid, span_left = [], {}                      # span_left: (行, 列) → 被上面的 rowspan 占着的内容
+    for r, row in enumerate(t.rows):
+        out, c = [], 0
+        def fill():
+            nonlocal c
+            while (r, c) in span_left:
+                out.append(span_left.pop((r, c)))
+                c += 1
+        for txt, rs, cs in row:
+            fill()
+            for k in range(cs):
+                out.append(txt if k == 0 else "〃")             # 跨列：被盖住的格子写“〃”（同上）
+                for rr in range(1, rs):
+                    span_left[(r + rr, c + k)] = "〃"            # 跨行：下面被盖住的格子也写“〃”
+            c += cs
+        fill()
+        grid.append(out)
+    if not grid:
+        return ""
+    n = max(len(r) for r in grid)
+    grid = [r + [""] * (n - len(r)) for r in grid]
+    lines, start = [], 0
+    if len(grid) > 1 and all(x == "〃" for x in grid[0][1:]) and n > 1:   # 第一行整行合并 = 题注
+        lines.append("**" + grid[0][0] + "**")
+        lines.append("")
+        start = 1
+    lines.append("| " + " | ".join(grid[start]) + " |")
+    lines.append("|" + "|".join(["---"] * n) + "|")
+    lines += ["| " + " | ".join(r) + " |" for r in grid[start + 1:]]
+    return "\n".join(lines)
+
+
 def html_to_md(s):
     """Anki / 网页复制来的 HTML → Markdown。加粗、斜体、标题、有序 / 无序列表、图片都转过来；
     带颜色的字（style="color:…" / <font color>）保留成 <span style="color:…">…</span>（Obsidian 和温简里都显示颜色）"""
     from html.parser import HTMLParser
     s = s or ""
+    s = re.sub(r"<table\b.*?</table>", lambda m: "\n\n" + _table_to_md(m.group(0)) + "\n\n", s, flags=re.S | re.I)
     if "<" not in s:
         import html as _html
         return _html.unescape(s).replace("\xa0", " ").strip()

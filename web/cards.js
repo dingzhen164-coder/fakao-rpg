@@ -693,7 +693,7 @@
     const s = stage();
     s.innerHTML = head("📥 导入") + `<div class="yj-import card">
       <p>导入 <b>Anki 导出的纯文本</b>（「导出 → 纯文本格式的笔记」，每行 正面⇥反面⇥标签），或者 anki-expert 出的 .tsv / 卡片表格。<br>
-        <span class="small muted">正面里有 {{c1::…}} 的自动当填空卡；Anki 的粗体、换行、列表会转成 Markdown。图片要另外放进库里。</span></p>
+        <span class="small muted">正面里有 {{c1::…}} 的自动当填空卡；Anki 的粗体、换行、列表、表格会转成 Markdown（表格里合并的格子写「〃」，表示同上）。图片要另外放进库里。</span></p>
       <div class="yj-form-row"><label>导入到${esc(T("yj_deck"))}<select id="iDeck">${deckOptions(ADD.deck || OV?.decks?.[0]?.name)}</select></label>
         <label class="ghost">选文件 <input type="file" id="iFile" accept=".txt,.tsv,.csv,.md"></label></div>
       <textarea id="iText" rows="12" placeholder="或者直接粘贴：每行一张卡，正面和反面之间用 Tab 隔开"></textarea>

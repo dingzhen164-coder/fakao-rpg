@@ -128,6 +128,23 @@ class CardsTest(unittest.TestCase):
         r = cards.import_text(self.g, {"deck": "资料分析", "text": "#separator:pipe\n" + table})
         self.assertEqual(r["added"], 1)
 
+    def test_import_tables_become_markdown_tables(self):
+        """HTML 表格（含 rowspan / colspan 合并格）→ Markdown 表格：左上角那格写内容，被盖住的格子写“〃”；整行合并的第一行是题注"""
+        html = ('<div>前言</div><table><tr><th colspan="3">题注</th></tr>'
+                '<tr><th>类型</th><th>年龄</th><th>效力</th></tr>'
+                '<tr><td rowspan="2">限制</td><td>8周岁以上</td><td>有效</td></tr>'
+                '<tr><td>不满18周岁</td><td>待定<br>（追认）</td></tr></table><div>后话</div>')
+        self.assertEqual(cards.html_to_md(html),
+                         "前言\n\n**题注**\n\n| 类型 | 年龄 | 效力 |\n|---|---|---|\n"
+                         "| 限制 | 8周岁以上 | 有效 |\n| 〃 | 不满18周岁 | 待定 （追认） |\n\n后话")
+        # 单元格里的竖线要转义；没有合并格的普通表
+        self.assertIn("| a\\|b | c |", cards.html_to_md("<table><tr><th>x</th><th>y</th></tr><tr><td>a|b</td><td>c</td></tr></table>"))
+        # 导入后卡面能渲染出表格所需的 Markdown（正面 / 反面都保留）
+        r = cards.import_text(self.g, {"deck": "表格", "text": "三分法\t" + html})
+        self.assertEqual(r["added"], 1)
+        note = cards.search(self.g, {"deck": "表格"})["rows"][0]
+        self.assertIn("| 〃 | 不满18周岁 |", cards.note_get(self.g, note["id"])["back"])
+
     def test_import_colors_lists_headings_and_reimport_updates(self):
         back = ('<h3 style="color: rgb(41, 128, 185)">6 类关键信息</h3><ol><li><b style="color:#c0392b">定义词（拆词法）</b>：拆开</li>'
                 '<li><b>主客体</b>：谁对谁做</li></ol><div>出处：第1章&nbsp;五</div>')
