@@ -310,6 +310,44 @@ class CardGenTest(CardsApiTest):
         self.assertEqual(r["unit"], "小节")
         self.assertEqual([c["front"] for c in r["cards"]], ["【法理学1.1.1】法概念的争议", "【法理学1.1.2】马克思主义关于法律本质的看法", "【法理学1.1.3】法的特征"])
 
+    def _text_pdf(self, rows, name):
+        import pymupdf
+        from rpg import paths
+        doc = pymupdf.open()
+        p = doc.new_page(width=523, height=750)
+        f = dict(fontname="china-s", fontsize=12)
+        for x, y, t in rows:
+            p.insert_text((x, y), t, **f)
+        f_ = paths.SETTINGS_DIR / name
+        f_.parent.mkdir(parents=True, exist_ok=True)
+        doc.save(str(f_))
+        return f_
+
+    def test_pdf_cards_kaodian_with_big_sections(self):
+        """商经知这类：「第一章」→「一、概述」→「考点 1  标题」（没有冒号，编号和标题是两个文字框）。「一、概述」是大节标题，不能并进上一个考点"""
+        from rpg import pdfcards
+        if not pdfcards.available()[0]:
+            self.skipTest("没装 opencv / numpy")
+        f = self._text_pdf([(200, 80, "第一章  公司法"), (60, 130, "一、概述"), (200, 170, "考点 1"), (270, 170, "公司的概念和特征"),
+                            (60, 210, "公司是依法设立的营利性法人。"), (200, 260, "考点 2"), (270, 260, "公司的分类"),
+                            (60, 300, "分为有限责任公司和股份有限公司。"), (60, 350, "二、运行"), (200, 390, "考点 3"), (270, 390, "公司治理"),
+                            (60, 430, "股东会是权力机构。")], "商经.pdf")
+        r = pdfcards.convert(f, "商经知")
+        self.assertEqual(r["unit"], "考点")
+        self.assertEqual([c["front"] for c in r["cards"]], ["【商经知1.1】公司的概念和特征", "【商经知1.2】公司的分类", "【商经知1.3】公司治理"])
+        self.assertNotIn("二、运行", r["cards"][1]["back"])            # 「二、运行」没有被并进上一张卡
+
+    def test_pdf_cards_jiang_and_jie(self):
+        """民诉这类：「第三讲」→「第一节」→「一、平等原则」；也有只有「第一讲」→「一、」的"""
+        from rpg import pdfcards
+        if not pdfcards.available()[0]:
+            self.skipTest("没装 opencv / numpy")
+        f = self._text_pdf([(160, 60, "第三讲  基本原则与基本制度"), (200, 100, "第一节  基本原则"), (60, 150, "一、平等原则"),
+                            (60, 180, "平等原则指诉讼当事人诉讼权利、义务平等。"), (60, 230, "二、同等、对等原则"), (60, 260, "同等原则指外国人享有同样的诉讼权利。"),
+                            (60, 310, "三、辩论原则"), (60, 340, "辩论原则指当事人有权进行辩论。")], "民诉.pdf")
+        r = pdfcards.convert(f, "民诉")
+        self.assertEqual([c["front"] for c in r["cards"]], ["【民诉3.1.1】平等原则", "【民诉3.1.2】同等、对等原则", "【民诉3.1.3】辩论原则"])
+
     def test_pdf_cards_errors(self):
         with self.assertRaises(api.ApiError):
             api.cards_pdf_load({"name": "x.pdf", "data": "data:application/pdf;base64,"})
