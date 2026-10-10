@@ -733,7 +733,7 @@
           <label>放进${esc(T("yj_deck"))}<select id="gDeck">${deckOptions(GEN.deck)}</select></label>
           <label>只做哪几页（不填 = 整本）<span style="display:flex;gap:6px;align-items:center"><input id="gP1" class="yj-pg" type="number" min="1" value="${esc(GEN.first)}" placeholder="从"> 到 <input id="gP2" class="yj-pg" type="number" min="1" value="${esc(GEN.last)}" placeholder="到"> 页</span></label></div>
         <details class="small" style="margin:6px 0"><summary class="muted">高级（一般不用动）</summary>
-          <div class="yj-form-row"><label>知识点标题的写法<select id="gUnit">${[["auto", "自动判断"], ["zhishidian", "知识点一 标题"], ["kaodian", "考点4：标题"], ["custom", "自己写正则"]].map(([k, v]) => `<option value="${k}" ${GEN.unit === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+          <div class="yj-form-row"><label>知识点标题的写法<select id="gUnit">${[["auto", "自动判断"], ["zhishidian", "知识点一 标题"], ["kaodian", "考点4：标题"], ["xiaojie", "一、标题（按小节，法理学这类）"], ["custom", "自己写正则"]].map(([k, v]) => `<option value="${k}" ${GEN.unit === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
             <label>正则（两个分组：编号、标题）<input id="gRx" value="${esc(GEN.unit_regex)}" placeholder="^\\s*专题\\s*(\\d+)\\s+(.+)$"></label></div>
           <label class="yj-field">要删掉的水印 / 广告词（每行一个；每页都重复的页眉水印会自动删）<textarea id="gDrop" rows="2">${esc(GEN.drop)}</textarea></label>
           <label class="yj-field">错字对照（每行：错的→对的，中间用 Tab；是正则）<textarea id="gFixes" rows="2" placeholder="美条约的缔结&#9;条约的缔结">${esc(GEN.fixes)}</textarea></label></details>
