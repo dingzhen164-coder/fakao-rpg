@@ -291,6 +291,25 @@ class CardGenTest(CardsApiTest):
         with self.assertRaises(pdfcards.PdfCardError):
             pdfcards.load_stream(paths.SETTINGS_DIR, "x.pdf", io.BytesIO(raw[:50]), len(raw))        # 没传完
 
+    def test_pdf_cards_section_units(self):
+        """法理学这类没有「知识点」标题的书：「第一章 / 第一节」下面的「一、二、三、」各做一张卡，自动认出来"""
+        import pymupdf
+        from rpg import paths, pdfcards
+        if not pdfcards.available()[0]:
+            self.skipTest("没装 opencv / numpy")
+        doc = pymupdf.open()
+        p = doc.new_page(width=523, height=750)
+        f = dict(fontname="china-s", fontsize=12)
+        for y, t in [(110, "第一章  法的本体"), (150, "第一节  法的定义"), (190, "一、法概念的争议"), (230, "法律和道德之间的联系。"),
+                     (270, "二、马克思主义关于法律本质的看法"), (310, "法的正式性。"), (350, "三、法的特征"), (390, "法是调整人的行为的规范。")]:
+            p.insert_text((60, y), t, **f)
+        f_ = paths.SETTINGS_DIR / "法理学.pdf"
+        f_.parent.mkdir(parents=True, exist_ok=True)
+        doc.save(str(f_))
+        r = pdfcards.convert(f_, "法理学")
+        self.assertEqual(r["unit"], "小节")
+        self.assertEqual([c["front"] for c in r["cards"]], ["【法理学1.1.1】法概念的争议", "【法理学1.1.2】马克思主义关于法律本质的看法", "【法理学1.1.3】法的特征"])
+
     def test_pdf_cards_errors(self):
         with self.assertRaises(api.ApiError):
             api.cards_pdf_load({"name": "x.pdf", "data": "data:application/pdf;base64,"})
