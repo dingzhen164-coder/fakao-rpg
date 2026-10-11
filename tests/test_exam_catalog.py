@@ -1,5 +1,6 @@
 """历年题目录的安全边界、导入一致性、参考匹配与正式判分隔离。"""
 import json
+import copy
 import tempfile
 import time
 import unittest
@@ -47,6 +48,49 @@ class CatalogTest(unittest.TestCase):
             dict(id=q['id'], fingerprint=q['fingerprint'], chapter=self.chapter,
                  topic='证明责任', confidence=confidence, reason='考证据')
             for q in ex.load(self.p)['questions'].values()]}
+
+    def test_bulk_adoption_crosses_pages_and_preserves_records(self):
+        self.imported()
+        d = ex.load(self.p)
+        base = d['questions'][self.ident]
+        d['questions'] = {}
+        for i in range(2800):
+            q = copy.deepcopy(base)
+            q.update(id='bulk-%04d' % i, year=2025 if i % 2 == 0 else 2024,
+                     stem='甲' if i % 3 == 0 else '乙', options={k: '选项' for k in 'ABCD'}, board='刑诉', classification='review',
+                     answer='A', answer_status='verified', history=[{'answer': 'B', 'ok': False}],
+                     suggestion=dict(chapter=self.chapter, topic='证据', reason='测试'))
+            d['questions'][q['id']] = q
+        ex.save(self.p, d)
+        filters = {'year': 2025, 'q': '甲', 'classification': 'review', 'page': 100}
+        result = ex.search(self.p, filters)
+        self.assertEqual(result['confirmable'], {'all': 2800, 'filtered': 467})
+        r = ex.confirm_batch(self.p, dict(scope='filtered', filters=filters, revision=result['revision']))
+        self.assertEqual(r['confirmed'], 467)
+        before = ex._file(self.p).read_bytes()
+        with self.assertRaises(ex.CatalogError):
+            ex.confirm_batch(self.p, dict(scope='all', revision=result['revision']))
+        self.assertEqual(before, ex._file(self.p).read_bytes())
+        result = ex.search(self.p, {})
+        self.assertEqual(result['confirmable']['all'], 2333)
+        self.assertEqual(ex.confirm_batch(self.p, dict(scope='all', revision=result['revision']))['confirmed'], 2333)
+        after = ex.load(self.p)
+        self.assertTrue(all(q['classification'] == 'confirmed' and q['answer'] == 'A'
+                            and q['history'] == [{'answer': 'B', 'ok': False}]
+                            for q in after['questions'].values()))
+
+    def test_bulk_skips_confirmed_and_invalid_chapters(self):
+        self.imported()
+        d = ex.load(self.p)
+        qs = list(d['questions'].values())
+        qs[0].update(classification='confirmed', chapter=self.chapter,
+                     suggestion=dict(chapter=self.chapter, topic='不应覆盖'))
+        qs[1]['suggestion'] = dict(chapter='不存在', topic='无法分类')
+        ex.save(self.p, d)
+        r = ex.search(self.p, {})
+        self.assertEqual(r['confirmable']['all'], 0)
+        self.assertEqual(ex.confirm_batch(self.p, dict(scope='all', revision=r['revision']))['confirmed'], 0)
+        self.assertEqual(ex.load(self.p)['questions'][qs[0]['id']]['topic'], '')
 
     def test_offline_preview_adopt_and_preserve_answer(self):
         self.imported()

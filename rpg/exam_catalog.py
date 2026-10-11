@@ -204,9 +204,7 @@ def scan(paths, body):
     return {'total': len(data['questions']), 'added': added, 'changed': changed}
 
 
-def search(paths, body):
-    with LOCK:
-        data = load(paths)
+def _filtered(data, body):
     qs = list(data['questions'].values())
     if body.get('classification') == 'suggested':
         qs = [q for q in qs if q.get('suggestion')]
@@ -220,6 +218,19 @@ def search(paths, body):
     words = str(body.get('q') or '').split()
     if words:
         qs = [q for q in qs if all(w in (q['id'] + q['stem'] + q.get('topic', '') + ' '.join(q['options'].values())) for w in words)]
+    return qs
+
+
+def _confirmable(data, body):
+    chapters = {c['id'] for c in data['chapters']}
+    return [q for q in _filtered(data, body) if q['classification'] != 'confirmed'
+            and (q.get('suggestion') or {}).get('chapter') in chapters]
+
+
+def search(paths, body):
+    with LOCK:
+        data = load(paths)
+    qs = _filtered(data, body)
     qs.sort(key=lambda q: (-q['year'], q['paper'], q['number']))
     page = max(0, int(body.get('page') or 0)); size = 20
     rows = [{k: q[k] for k in ('id', 'board', 'subject', 'chapter', 'topic', 'classification', 'answer_status', 'revision')}
@@ -228,7 +239,8 @@ def search(paths, body):
         row.update(text=q['stem'][:95], references=len(q['references']), warnings=bool(q['warnings']),
                    suggestion=q.get('suggestion'))
     allq = list(data['questions'].values())
-    return {'total': len(qs), 'page': page, 'pages': (len(qs) + size - 1) // size, 'rows': rows,
+    return {'revision': data['revision'], 'confirmable': {'filtered': len(_confirmable(data, body)), 'all': len(_confirmable(data, {}))},
+            'total': len(qs), 'page': page, 'pages': (len(qs) + size - 1) // size, 'rows': rows,
             'chapters': data['chapters'], 'boards': list(dict.fromkeys(SUBJECTS.values())),
             'years': sorted(set(q['year'] for q in allq), reverse=True),
             'stats': {'total': len(allq), 'verified': sum(q['answer_status'] == 'verified' for q in allq),
@@ -306,12 +318,22 @@ def practice(paths, body):
 
 
 def confirm_batch(paths, body):
-    """用户勾选后确认AI建议；逐条版本校验，冲突整批拒绝。"""
+    """用户勾选或按筛选/全部一次采用章节建议；目录及题级版本校验，冲突整批拒绝。"""
     items = body.get('items')
-    if not isinstance(items, list) or not 1 <= len(items) <= 100:
-        raise CatalogError('请选择1—100道题')
+    scope = body.get('scope')
+    if not scope and (not isinstance(items, list) or not 1 <= len(items) <= 100):
+        raise CatalogError('请选择1—100道题，或批量采用章节建议')
     with LOCK:
         data = load(paths)
+        if scope:
+            if scope not in ('all', 'filtered') or not isinstance(body.get('filters', {}), dict):
+                raise CatalogError('批量采用范围无效')
+            if body.get('revision') != data['revision']:
+                raise CatalogError('分类目录已更新，请刷新后重新批量采用')
+            qs = _confirmable(data, {} if scope == 'all' else body.get('filters', {}))
+            items = [{'id': q['id'], 'revision': q['revision']} for q in qs]
+            if not items:
+                return {'confirmed': 0}
         chapters = {c['id']: c for c in data['chapters']}
         updates = []
         for item in items:

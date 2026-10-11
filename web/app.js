@@ -494,7 +494,7 @@ const views = {
       <button class="${LIB.tab === 'yujian' ? 'on' : ''}" data-libtab="yujian">📖 真题卷轴 · 题库</button>
       <button class="${LIB.tab === 'jiaocai' ? 'on' : ''}" data-libtab="jiaocai">📚 典籍 · 教材</button></div></div>`;
     if (LIB.tab === 'idioms') LIB.tab = 'cards';     // 成语实词录是行测专用，法师成长记不显示
-    if (LIB.tab === 'yujian') return tabs + await yujianHtml() + importCardHtml();
+    if (LIB.tab === 'yujian') return tabs + (window.EXAMS ? EXAMS.card() : '') + await yujianHtml() + importCardHtml();
     if (LIB.tab === 'jiaocai') return tabs + await jiaocaiHtml();
     return tabs + await cardsLibHtml();
   },
@@ -1046,7 +1046,6 @@ async function shizhanHtml() {
   const firstOk = d.boards.reduce((n, b) => n + b.first_correct, 0);
   const boards = d.boards.filter(b => b.total || b.pending || b.wrong);
   return `${pagodaHtml(d.tower, done, wrong, rate(firstOk, done))}
-    ${window.EXAMS ? EXAMS.card() : ''}
     ${pointHtml(c, d.count, d.order)}
     ${setsHtml(d.sets)}
     <div class="card"><div class="row"><h3 style="margin:0">⚔ 板块试炼</h3><span class="small muted">${d.order === 'shuffle' ? '从没做过的题里随机抽' : '按题库顺序'}一组 ${d.count} 关，交卷判分（做过的不再出）</span><span class="spacer"></span>
@@ -1082,7 +1081,6 @@ function pagodaHtml(t, done, wrong, acc) {
 }
 
 function bindHub() {
-  if (window.EXAMS) EXAMS.bindHub($('#view'));
   document.querySelectorAll('[data-hall]').forEach(g => g.onclick = () => { HALL = g.dataset.hall; renderTrain(); });
   document.querySelectorAll('[data-xlboard]').forEach(a => a.onclick = () => { XL_BOARD = a.dataset.xlboard; renderTrain(); });
   document.querySelectorAll('[data-xlwrong]').forEach(b => b.onclick = () =>
@@ -1404,6 +1402,7 @@ async function yjOpen(row) {
   } catch (e) { d.innerHTML = `⚠ ${esc(e.message)}`; }
 }
 function bindLibrary() {
+  if (LIB.tab === 'yujian' && window.EXAMS) EXAMS.bindHub($('#view'));
   document.querySelectorAll('[data-libtab]').forEach(b => b.onclick = () => { LIB.tab = b.dataset.libtab; render(); });
   document.querySelectorAll('[data-deck]').forEach(t => t.onclick = () => CARDS.browseDeck(t.dataset.deck));
   if (LIB.tab === 'cards' && window.CARDS) CARDS.bindTools($('#view'));

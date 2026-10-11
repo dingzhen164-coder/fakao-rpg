@@ -49,7 +49,8 @@
       <div class="row"><label class="small">本批 <select id="exLimit">${[20, 50, 100].map(n => option(n, n, batchLimit)).join('')}</select> 题</label><button data-classify>AI 建议章节</button><span class="muted small">只处理当前科目中尚无建议的题；已保存建议不重复请求。</span></div>
       <p data-job class="small muted" role="status">${esc(jobText())}</p>
       <p data-message class="ex-message" role="status" aria-live="polite"></p>
-      <div class="row"><b>共 ${data.total} 题</b><span class="spacer"></span><button data-confirm>确认勾选的章节建议</button></div>
+      <div class="card ex-bulk"><div class="row"><button class="primary" data-confirm-all>一次采用全部章节建议（${data.confirmable.all} 题）</button><button data-confirm-filtered>采用当前筛选的章节建议（${data.confirmable.filtered} 题）</button></div><p class="small muted">批量采用跨全部分页，无需逐题勾选；保留已确认归属。仅采用现有有效章节建议，不核验答案，不调用 AI。当前筛选按上方已应用的科目、章节、年份、状态和关键词。</p></div>
+      <div class="row"><b>共 ${data.total} 题</b><span class="spacer"></span><button data-select-page>全选本页建议</button><button data-confirm>采用勾选的章节建议</button></div>
       <div class="ex-list">${data.rows.map(q => { const c = data.chapters.find(c => c.id === q.suggestion?.chapter); return `<article class="ex-row">
         <div>${c ? `<input type="checkbox" data-confirm-id="${esc(q.id)}" aria-label="选择${esc(q.id)}的章节建议">` : ''}<button class="ex-question" data-question="${esc(q.id)}"><b>${esc(q.id)}</b><span>${esc(q.text)}</span></button></div>
         <p class="small muted">${esc(q.subject || '未分科')} · ${esc(labels[q.classification])}${q.chapter ? ' · ' + esc(data.chapters.find(c => c.id === q.chapter)?.name || q.chapter) : ''} · ${q.answer_status === 'verified' ? '答案已核验' : '答案待核验'}${q.references ? ` · 参考解析 ${q.references}` : ''}${q.warnings ? ' · 原文需核对' : ''}</p>
@@ -88,6 +89,15 @@
 
     el('#exReferenceFile').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { if (f.size > 12 * 1024 * 1024) throw Error('JSON文件不能超过12MB'); const rows = JSON.parse(await f.text()); if (!Array.isArray(rows)) throw Error('请选择JSON数组文件'); await refs({ name: f.name, rows }); } catch (err) { message(err.message); } };
     el('[data-classify]').onclick = () => run(async () => { const r = await api('/api/exams/classify', { board: filters.board, limit: Number(el('#exLimit').value) }); data.job = r; el('[data-job]').textContent = jobText(); });
+    el('[data-select-page]').onclick = () => { const boxes = [...content.querySelectorAll('[data-confirm-id]')]; const check = boxes.some(x => !x.checked); boxes.forEach(x => x.checked = check); el('[data-select-page]').textContent = check ? '取消本页全选' : '全选本页建议'; };
+    const adopt = scope => run(async () => {
+      const count = data.confirmable[scope === 'all' ? 'all' : 'filtered'];
+      if (!count) throw Error('该范围没有可采用的章节建议；已确认的题无需再次确认');
+      const r = await api('/api/exams/confirm', { scope, filters: { ...filters }, revision: data.revision });
+      filters.page = 0; await refresh(); message(`已一次采用 ${r.confirmed} 题的章节建议；答案核验状态未改变。`);
+    });
+    el('[data-confirm-all]').onclick = () => adopt('all');
+    el('[data-confirm-filtered]').onclick = () => adopt('filtered');
     el('[data-confirm]').onclick = () => run(async () => { const selected = [...content.querySelectorAll('[data-confirm-id]:checked')].map(x => data.rows.find(q => q.id === x.dataset.confirmId)); if (!selected.length) throw Error('请先勾选要确认的建议'); const r = await api('/api/exams/confirm', { items: selected.map(q => ({ id: q.id, revision: q.revision })) }); await refresh(); message(`已确认 ${r.confirmed} 道题的章节。`); });
     content.querySelectorAll('[data-question]').forEach(b => b.onclick = () => run(() => openQuestion(b.dataset.question)));
   }
@@ -130,7 +140,7 @@
     content = document.createElement('div'); content.className = 'ex-content'; dialog.append(content); document.body.append(dialog);
     content.innerHTML = '<div class="row"><h2>正在读取真题目录…</h2><button data-close>关闭</button></div><p data-message role="status"></p>';
     content.querySelector('[data-close]').onclick = () => dialog.close();
-    dialog.addEventListener('close', () => { ++epoch; clearInterval(timer); dialog.remove(); renderTrain(); });
+    dialog.addEventListener('close', () => { ++epoch; clearInterval(timer); dialog.remove(); render(); });
     dialog.showModal();
     try { await refresh(); } catch (e) { message(e.message); }
     timer = setInterval(async () => { if (!dialog.open || busy || !data?.job?.running) return; try { const r = await api('/api/exams/search', filters); data.job = r.job; if (!question) { if (!r.job.running) { data = r; renderList(); } else content.querySelector('[data-job]').textContent = jobText(); } } catch (e) { message(e.message); } }, 2500);
