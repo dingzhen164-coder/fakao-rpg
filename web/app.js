@@ -119,6 +119,7 @@ function realmUp(e) {
 
 // ------------------------------------------------------------ 导航 / 风格
 function go(view) {
+  if (window.EXAMS?.isOpen()) EXAMS.leave();
   if (VIEW === "notes" && view !== "notes" && window.NOTES) NOTES.flush();
   if (view === "tianji" && VIEW === "tianji" && window.TIANJI && TIANJI.isOpen()) TIANJI.close();   // 在一期里再点顶栏：回天机简报首页
   if (window.CARDS && CARDS.isOpen()) CARDS.close();
@@ -131,6 +132,7 @@ function go(view) {
 document.querySelectorAll("#nav a").forEach((a) => (a.onclick = () => go(a.dataset.view)));
 // 平板 App 的返回键（android/…/MainActivity.java 调这个）：先关画面、弹窗、草稿，再回营地；返回 false 表示没得退了
 window.xcBack = () => {
+  if (window.EXAMS?.isOpen()) { EXAMS.close(); return true; }
   const click = (sel) => { const b = document.querySelector(sel); if (b) b.click(); return !!b; };
   if (click(".img-zoom") || click(".cer-ok") || click(".st-btn")) return true;
   if (document.documentElement.classList.contains("drawing") && window.DRAW) { DRAW.close(); return true; }
@@ -192,6 +194,7 @@ async function render() {
   document.documentElement.classList.remove("in-chat");
   document.documentElement.classList.toggle("in-notes", VIEW === "notes");
   try {
+    if (window.EXAMS?.isOpen()) return EXAMS.renderPage(v);
     if (VIEW === "home") { await refresh(); v.innerHTML = views.home(); bindHome(); }
     else if (VIEW === "train") { if (!DASH) await refresh(); v.innerHTML = await views.train(); bindTrain(); }
     else if (VIEW === "contest") { if (!DASH) await refresh(); await CONTEST.render(v); }

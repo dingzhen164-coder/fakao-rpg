@@ -1,16 +1,15 @@
-/* 历年卷轴复用学院亮暗色变量；平板触控和长选项换行。 */
-.ex-dialog { box-sizing:border-box; width:min(1100px,96vw); max-height:94vh; border:1px solid var(--line); border-radius:var(--radius); padding:0; background:var(--bg); color:var(--text); box-shadow:var(--shadow); }
-.ex-dialog::backdrop { background:rgba(10,6,20,.75); }
-.ex-content { padding:24px; overflow-wrap:anywhere; }
+/* 真题页与法典研习：在主页面内阅读，离线可用。 */
+.ex-page { width:100%; min-width:0; }
+.ex-content { padding:0; overflow-wrap:anywhere; }
 .ex-heading { display:flex; align-items:center; justify-content:space-between; gap:14px; }
 .ex-heading h2 { margin:8px 0; }
-.ex-dialog button,.ex-dialog select,.ex-dialog input:not([type=checkbox]):not([type=radio]) { min-height:42px; }
-.ex-dialog label:not(.row) { display:block; margin:8px 0; font-size:14px; }
-.ex-dialog label input:not([type=checkbox]):not([type=radio]),.ex-dialog label select,.ex-dialog textarea { display:block; width:100%; box-sizing:border-box; margin-top:5px; }
-.ex-dialog input[type=checkbox],.ex-dialog input[type=radio] { width:20px; height:20px; flex-shrink:0; accent-color:var(--accent); }
-.ex-dialog .card { margin:16px 0; }
-.ex-dialog summary { padding:8px 0; cursor:pointer; }
-.ex-dialog details details { margin-top:16px; border-top:1px solid var(--line); }
+.ex-page button,.ex-page select,.ex-page input:not([type=checkbox]):not([type=radio]) { min-height:42px; }
+.ex-page label:not(.row) { display:block; margin:8px 0; font-size:14px; }
+.ex-page label input:not([type=checkbox]):not([type=radio]),.ex-page label select,.ex-page textarea { display:block; width:100%; box-sizing:border-box; margin-top:5px; }
+.ex-page input[type=checkbox],.ex-page input[type=radio] { width:20px; height:20px; flex-shrink:0; accent-color:var(--accent); }
+.ex-page .card { margin:16px 0; }
+.ex-page summary { padding:8px 0; cursor:pointer; }
+.ex-page details details { margin-top:16px; border-top:1px solid var(--line); }
 .ex-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
 .ex-stats button { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
 .ex-stats b { display:block; font-size:25px; color:var(--gold); }
@@ -30,8 +29,8 @@
 .ex-options label { display:flex!important; align-items:flex-start; gap:12px; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--panel); cursor:pointer; }
 .ex-options label:has(input:checked) { border-color:var(--accent); background:var(--panel2); }
 .ex-options span { flex:1; }
-@media(max-width:850px) { .ex-content { padding:18px; } .ex-filters { grid-template-columns:1fr 1fr; } .ex-keyword { grid-column:span 1; } .ex-heading h2 { font-size:21px; } }
-@media(max-width:500px) { .ex-stats { grid-template-columns:1fr 1fr; } .ex-content { padding:12px; } .ex-dialog { width:98vw; } }
+@media(max-width:850px) { .ex-content { padding:0; } .ex-filters { grid-template-columns:1fr 1fr; } .ex-keyword { grid-column:span 1; } .ex-heading h2 { font-size:21px; } }
+@media(max-width:500px) { .ex-stats { grid-template-columns:1fr 1fr; } .ex-content { padding:0; } }
 /* 八科法典：铜轴、羊皮纸、学院纹章；纯CSS动画，离线可用。 */
 .ex-shelf { margin:18px 0; }
 .ex-shelf-intro h3 { margin:7px 0; }
@@ -85,7 +84,59 @@
 .ex-reference-report { padding:14px 18px; border-left:4px solid var(--accent); background:var(--panel); border-radius:8px; }
 .ex-reference-report p,.ex-references>p { line-height:1.75; }
 .ex-ref-link { font-size:13px; padding:6px 10px; color:var(--accent); }
-.ex-heading { position:sticky; top:0; z-index:2; background:var(--bg); padding:8px 0; border-bottom:1px solid var(--line); }
+.ex-heading { padding:8px 0 16px; border-bottom:1px solid var(--line); }
 .ex-reading [data-catalog-tab="import"],.ex-reading [data-catalog-tab="classification"] { display:none; }
 .ex-reading .ex-classification { display:none; }
 .ex-answer-view { scroll-margin-top:70px; }
+
+/* 法典书页：紫金边饰、羊皮纸质感、符文选项；内容按页面正常滚动。 */
+.ex-study-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px; padding:12px 0 22px; border-bottom:1px solid var(--line); margin-bottom:24px; }
+.ex-study-head h2 { font-family:var(--display); font-size:29px; letter-spacing:2px; margin:6px 0; }
+.ex-study-head p { margin:5px 0 0; }
+.ex-study-layout { display:grid; grid-template-columns:minmax(0,1fr) 240px; gap:24px; align-items:start; }
+.ex-study-main { min-width:0; }
+.ex-parchment { position:relative; padding:28px 30px; border:1px solid var(--line); border-radius:14px; background:linear-gradient(135deg,#d6b25e12,transparent 38%,#9d7cf409),var(--panel); box-shadow:var(--shadow); }
+.ex-parchment::before,.ex-parchment::after { content:'✧'; position:absolute; color:var(--gold); font-size:21px; line-height:1; top:12px; pointer-events:none; }
+.ex-parchment::before { left:12px; } .ex-parchment::after { right:12px; }
+.ex-paper-meta { display:flex; align-items:center; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--line); padding:0 0 15px; font-size:13px; color:var(--muted); }
+.ex-seal { width:40px; height:40px; display:grid; place-items:center; border-radius:50%; border:1px solid var(--gold); color:var(--gold); font-size:23px; background:var(--panel2); }
+.ex-status { padding:4px 10px; border:1px solid var(--line); border-radius:20px; }
+.ex-page .ex-stem { font-size:20px; font-weight:500; line-height:1.9; margin:24px 0; }
+.ex-options { display:grid; gap:12px; margin:22px 0 26px; }
+.ex-page .ex-options label { margin:0; padding:16px 18px; align-items:center; gap:14px; transition:border-color .18s,background .18s; min-height:68px; }
+.ex-options label:hover { border-color:var(--gold); }
+.ex-options label:focus-within { outline:2px solid var(--accent); outline-offset:2px; }
+.ex-options label:has(input:checked) .ex-option-letter { border-color:var(--accent); color:var(--accent); background:var(--panel2); }
+.ex-option-letter { width:34px; height:34px; flex-shrink:0; display:grid; place-items:center; border-radius:8px; border:1px solid var(--line); color:var(--gold); font-family:var(--display); font-size:18px; }
+.ex-study-actions { padding-top:18px; border-top:1px solid var(--line); gap:10px; }
+.ex-study-actions .primary { min-width:140px; padding:12px 24px; background:linear-gradient(135deg,var(--accent),#50328b); color:#fff; }
+.ex-study-actions .small { flex-basis:100%; }
+.ex-study-side { position:sticky; top:120px; padding:22px 18px; border:1px solid var(--line); border-radius:14px; background:var(--panel); box-shadow:var(--shadow); text-align:center; }
+.ex-progress-emblem { color:var(--gold); font-size:35px; width:64px; height:64px; margin:0 auto 16px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; background:radial-gradient(circle,#d8b25b20,transparent); }
+.ex-study-side h3 { margin:12px 0; font-size:23px; color:var(--gold); } .ex-study-side h3 small { font-size:14px; color:var(--muted); }
+.ex-study-side progress { width:100%; height:7px; accent-color:var(--accent); display:block; }
+.ex-study-side .ex-sequence { padding:0; border:0; background:none; margin:20px 0; gap:8px; } .ex-study-side .ex-sequence button { flex:1; }
+.ex-number-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; margin:18px 0; }
+.ex-number-grid button { min-width:0; min-height:36px; padding:4px; font-size:13px; }
+.ex-number-grid .on { background:var(--accent); color:#fff; border-color:var(--accent); }
+.ex-number-pages { justify-content:space-between; } .ex-number-pages button { font-size:12px; padding:6px; }
+.ex-side-note { margin:20px 0 0; padding-top:16px; border-top:1px solid var(--line); text-align:left; line-height:1.8; }
+.ex-page .ex-answer-view { border-left:3px solid var(--accent); }
+@media(max-width:900px) {
+  .ex-study-layout { grid-template-columns:minmax(0,1fr); gap:18px; }
+  .ex-study-side { position:static; text-align:left; }
+  .ex-progress-emblem { display:none; } .ex-number-grid { grid-template-columns:repeat(10,minmax(0,1fr)); }
+  .ex-parchment { padding:22px; }
+  .ex-study-head h2 { font-size:25px; }
+}
+@media(max-width:500px) {
+  .ex-study-head { gap:12px; } .ex-study-head h2 { font-size:23px; }
+  .ex-study-head>.row { width:100%; } .ex-study-head>.row button { flex:1; }
+  .ex-parchment { padding:20px 14px; } .ex-page .ex-stem { font-size:18px; }
+  .ex-page .ex-options label { padding:14px 10px; gap:9px; }
+  .ex-number-grid { grid-template-columns:repeat(5,minmax(0,1fr)); }
+  .ex-study-actions button { flex:1; }
+}
+@media(prefers-reduced-motion:reduce) { .ex-options label { transition:none; } }
+
+.ex-parchment>.ex-sequence { display:flex; justify-content:space-between; border:0; border-top:1px solid var(--line); border-radius:0; margin:16px 0 0; padding:16px 0 0; background:none; }

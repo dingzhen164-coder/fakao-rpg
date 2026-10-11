@@ -2,7 +2,8 @@
  * 调用 /api/exams/*；无答案的练习不计游戏分，AI建议必须用户确认。
  */
 (() => {
-  let dialog, content, data, question, timer, busy = false, epoch = 0;
+  let page, content, data, question, timer, busy = false, epoch = 0, active = false, originScroll = 0;
+  const drafts = new Map();
   let offlinePackage = null, offlinePreview = null, batchLimit = 20, sequence = null, browseMode = false;
   let catalogTab = 'questions';
   let filters = { board: '', chapter: '', year: '', paper: '', classification: '', q: '', page: 0 };
@@ -11,17 +12,18 @@
   const message = text => { const el = content.querySelector('[data-message]'); if (el) el.textContent = text; };
   async function run(action) {
     if (busy) return;
+    const host = content;
     busy = true;
     content.setAttribute('aria-busy', 'true');
     content.querySelectorAll('button, input, select, textarea').forEach(b => b.disabled = true);
-    try { await action(); } catch (e) { message(e.message); }
-    finally { busy = false; content.removeAttribute('aria-busy'); content.querySelectorAll('button, input, select, textarea').forEach(b => b.disabled = false); if (question && sequence) { const i = sequence.ids.indexOf(question.id); content.querySelector('[data-q-prev]').disabled = i <= 0; content.querySelector('[data-q-next]').disabled = i + 1 >= sequence.total; } }
+    try { await action(); } catch (e) { if (host === content && active) message(e.message); }
+    finally { if (host !== content) return; busy = false; content.removeAttribute('aria-busy'); content.querySelectorAll('button, input, select, textarea').forEach(b => b.disabled = false); if (active && question && sequence) { const i = sequence.ids.indexOf(question.id); content.querySelector('[data-q-prev]').disabled = i <= 0; content.querySelector('[data-q-next]').disabled = i + 1 >= sequence.total; const prev = content.querySelector('[data-number-prev]'), next = content.querySelector('[data-number-next]'); if (prev) prev.disabled = i < 20; if (next) next.disabled = Math.floor(i / 20) * 20 + 20 >= sequence.total; } else if (active && data) { content.querySelector('[data-prev]').disabled = data.page === 0; content.querySelector('[data-next]').disabled = data.page + 1 >= data.pages; } }
   }
   async function refresh() {
     sequence = null;
     const token = ++epoch;
     const result = await api('/api/exams/search', filters);
-    if (!dialog?.open || token !== epoch) return;
+    if (!active || !content?.isConnected || token !== epoch) return;
     data = result;
     renderList();
   }
@@ -34,7 +36,7 @@
     if (tab === 'references') filters = { board: '', chapter: '', year: '', paper: '', classification: '', q: '', page: 0, has_references: 'yes' };
     else { delete filters.has_references; delete filters.answer_status; filters.page = 0; }
     await refresh();
-    dialog.scrollTop = 0;
+    window.scrollTo(0, 0);
   }
   function referenceReport() {
     const r = data.reference_import;
@@ -44,7 +46,7 @@
     question = null;
     const s = data.stats;
     const chapters = data.chapters.filter(c => !filters.board || c.board === filters.board);
-    content.innerHTML = `<div class="ex-heading"><div><div class="rune">📖 真题卷轴</div><h2>历年真题 · 科目与章节</h2></div><button data-close aria-label="关闭历年真题">关闭</button></div>
+    content.innerHTML = `<div class="ex-heading"><div><div class="rune">📖 真题卷轴</div><h2>历年真题 · 科目与章节</h2></div><button data-close aria-label="返回卷轴书架">返回卷轴</button></div>
       <nav class="ex-tabs" aria-label="题库功能">${[['questions', '题目目录'], ['references', '参考解析'], ['import', '导入原卷'], ['classification', '分类管理']].map(([id, name]) => `<button data-catalog-tab="${id}" aria-pressed="${catalogTab === id}" class="${catalogTab === id ? 'on' : ''}">${name}</button>`).join('')}</nav>
       <div class="ex-stats" ${catalogTab === 'references' ? 'hidden' : ''}>${[['全部题目', s.total, 'questions'], ['章节已确认', s.classified, 'classification'], ['答案已核验', s.verified, 'verified'], ['有参考解析 · 点击查看', s.references, 'references']].map(([name, n, tab]) => `<button data-stat-tab="${tab}"><b>${n}</b><span>${name}</span></button>`).join('')}</div>
       <section class="card ex-import" ${catalogTab !== 'import' ? 'hidden' : ''}><h3>📥 导入原卷</h3><div class="ex-tools">
@@ -81,7 +83,7 @@
   }
   function bindList() {
     const el = s => content.querySelector(s);
-    el('[data-close]').onclick = () => dialog.close();
+    el('[data-close]').onclick = () => close();
     content.querySelectorAll('[data-catalog-tab]').forEach(b => b.onclick = () => run(() => switchTab(b.dataset.catalogTab)));
     content.querySelectorAll('[data-stat-tab]').forEach(b => b.onclick = () => run(async () => {
       if (b.dataset.statTab === 'verified') { await switchTab('questions'); filters.answer_status = 'verified'; await refresh(); }
@@ -130,24 +132,30 @@
     content.querySelectorAll('[data-ref-question]').forEach(b => b.onclick = () => run(() => openQuestion(b.dataset.refQuestion, true)));
   }
   async function openQuestion(id, reveal = false) {
-    ++epoch;
-    if (!sequence) sequence = await api('/api/exams/sequence', filters);
-    question = await api('/api/exams/detail', { id, reveal });
-    if (dialog.open) { renderQuestion(); dialog.scrollTop = 0; if (reveal) content.querySelector('.ex-answer-view')?.scrollIntoView({ block: 'start' }); }
+    const token = ++epoch;
+    const ordered = sequence || await api('/api/exams/sequence', filters);
+    const detail = await api('/api/exams/detail', { id, reveal });
+    if (!active || !content.isConnected || token !== epoch) return;
+    sequence = ordered; question = detail;
+    renderQuestion(); window.scrollTo(0, 0);
+    if (reveal) content.querySelector('.ex-answer-view')?.scrollIntoView({ block: 'start' });
   }
   function renderQuestion() {
     const q = question, shown = Array.isArray(q.references);
+    const picked = drafts.get(q.id) ?? q.result?.answer ?? q.history[q.history.length - 1]?.answer ?? '';
+    const navStart = Math.floor(Math.max(0, sequence?.ids.indexOf(q.id) ?? 0) / 20) * 20;
     const selected = q.suggestion?.chapter || q.chapter;
     const pos = sequence?.ids.indexOf(q.id) ?? -1;
     const range = [filters.board, filters.year ? filters.year + '年' : '', filters.paper].filter(Boolean).join(' · ') || '历年题目';
-    content.innerHTML = `<div class="ex-heading"><button data-back>← 返回目录</button><b>${esc(q.id)}</b><button data-close>关闭</button></div>
-      <div class="ex-sequence"><div class="row"><b>${esc(range)} · 第 ${pos + 1} / ${sequence?.total || 1} 题</b><span class="spacer"></span><button data-q-prev ${pos <= 0 ? 'disabled' : ''}>上一题</button><button data-q-next ${!sequence || pos + 1 >= sequence.total ? 'disabled' : ''}>下一题</button></div><p class="small muted">按本次目录顺序连续练习；选择提交后自动保存，关闭后可继续未做题。未核验答案的题只记录选择。</p></div>
-      <p class="small muted">${esc(q.source_type)} · ${esc(q.kind === 'single' ? '单选' : q.kind === 'multi' ? '多选' : q.kind === 'any' ? '不定项' : '题型待核对')} · ${q.answer_status === 'verified' ? '答案已核验' : '答案待核验'}</p>
+    content.innerHTML = `<header class="ex-study-head"><div><div class="rune">✧ 真题卷轴 · ${esc(range)}</div><h2>${esc(q.board || q.subject || '历年真题')} · 法典研习</h2><p class="small muted"><span>${esc(q.id)}</span>${q.chapter ? ' · ' + esc(data.chapters.find(c => c.id === q.chapter)?.name || q.chapter) : ''}</p></div><div class="row"><button data-back>← 题目目录</button><button data-close>返回卷轴</button></div></header>
+      <div class="ex-study-layout"><div class="ex-study-main"><article class="ex-parchment">
+      <div class="ex-paper-meta"><span class="ex-seal" aria-hidden="true">${esc(marks[q.board] || '✧')}</span><span>${esc(q.kind === 'single' ? '单项选择' : q.kind === 'multi' ? '多项选择' : q.kind === 'any' ? '不定项选择' : '题型待核对')}</span><span class="spacer"></span><span class="ex-status">${q.answer_status === 'verified' ? '答案已核验' : '答案待核验'}</span></div>
+      <p class="small muted">${esc(q.source_type)} · 第 ${pos + 1} / ${sequence?.total || 1} 题</p>
       ${q.warnings.length ? `<div class="ex-warning"><b>原文完整性提示</b>${q.warnings.map(w => `<p class="ex-prose">${esc(w)}</p>`).join('')}</div>` : ''}
-      ${q.material ? `<div class="card ex-prose">${esc(q.material)}</div>` : ''}<h3 class="ex-prose">${esc(q.stem)}</h3>
-      <div class="ex-options">${Object.entries(q.options).map(([k, v]) => `<label><input type="${q.kind === 'single' ? 'radio' : 'checkbox'}" name="exChoice" value="${k}" ${(q.result?.answer || q.history[q.history.length - 1]?.answer || '').includes(k) ? 'checked' : ''}><b>${k}.</b><span class="ex-prose">${esc(v)}</span></label>`).join('')}</div>
-      <div class="row"><button class="primary" data-practice>提交参考练习</button><button data-reveal>${q.reference_count ? `查看解析（${q.reference_count} 份）` : '查看答案 / 解析'}</button><span class="small muted">参考练习只留记录，不计经验或正式正确率。</span></div>
-      <p data-message class="ex-message" role="status" aria-live="polite">${q.result ? esc(q.result.ok === null ? `已记录选择 ${q.result.answer}；答案未核验，不判对错。` : `选择 ${q.result.answer}，${q.result.ok ? '正确' : '错误'}；已核验答案 ${q.answer}。`) : ''}</p>
+      ${q.material ? `<div class="card ex-prose">${esc(q.material)}</div>` : ''}<h3 class="ex-prose ex-stem">${esc(q.stem)}</h3>
+      <div class="ex-options">${Object.entries(q.options).map(([k, v]) => `<label><input type="${q.kind === 'single' ? 'radio' : 'checkbox'}" name="exChoice" value="${k}" ${picked.includes(k) ? 'checked' : ''}><b class="ex-option-letter">${k}</b><span class="ex-prose">${esc(v)}</span></label>`).join('')}</div>
+      <div class="row ex-study-actions"><button class="primary" data-practice>提交作答</button><button data-reveal>${q.reference_count ? `查看解析（${q.reference_count} 份）` : '查看答案 / 解析'}</button><span class="small muted">参考练习只留记录，不计经验或正式正确率。</span></div>
+      <p data-message class="ex-message" role="status" aria-live="polite">${q.result ? esc(q.result.ok === null ? `已记录选择 ${q.result.answer}；答案未核验，不判对错。` : `选择 ${q.result.answer}，${q.result.ok ? '正确' : '错误'}；已核验答案 ${q.answer}。`) : ''}</p><div class="ex-sequence row"><button data-q-prev ${pos <= 0 ? 'disabled' : ''}>上一题</button><button data-q-next ${!sequence || pos + 1 >= sequence.total ? 'disabled' : ''}>下一题</button></div></article>
       ${shown ? `<div class="card ex-answer-view"><h3>答案与参考解析</h3><p>${q.answer ? `已核验答案：<b>${esc(q.answer)}</b><br>来源：${esc(q.answer_source)}` : '尚无已核验答案。'}</p>
         ${q.analysis ? `<p class="small muted">${q.analysis_status === 'verified' ? '用户已核验解析' : '参考解析 · 未核验'}</p><div class="ex-prose">${esc(q.analysis)}</div>` : ''}
         ${q.references.map(r => `<details open><summary>${esc(r.source)} · ${r.match === 'full' ? '题干与选项匹配' : '仅题干匹配'}</summary><p class="small muted">${esc(r.dataset)} 第 ${r.row + 1} 条；${r.match === 'full' ? '原数据→本题选项：' + Object.entries(r.option_map).map(([a, b]) => a + '→' + b).join('，') : '没有完整选项，不能据此确定答案。'}</p><p class="ex-prose">${esc(r.text)}</p></details>`).join('') || '<p class="muted small">这道题尚未匹配到参考解析。匹配成功的题可在「参考解析」列表中直接查看。</p>'}</div>` : ''}
@@ -157,14 +165,22 @@
       <div class="ex-filters"><label>答案字母<input id="exAnswer" value="${esc(q.answer)}" placeholder="例如 A 或 ACD" maxlength="4"></label><label>题型<select id="exKind">${option('', '请选择题型', q.kind)}${[['single', '单选'], ['multi', '多选'], ['any', '不定项']].map(([k, v]) => option(k, v, q.kind)).join('')}</select></label></div>
       <label>核对来源<input id="exAnswerSource" value="${esc(q.answer_source)}" placeholder="教材版本、页码 / 答案表 / 法条"></label><label>补充解析<textarea id="exAnalysis" rows="5">${esc(q.analysis)}</textarea></label>
       ${q.warnings.length ? '<label class="row"><input type="checkbox" id="exTextChecked">已核对原卷题干、选项与材料</label>' : ''}<label class="row"><input type="checkbox" id="exAnalysisChecked" ${q.analysis_status === 'verified' ? 'checked' : ''}>补充解析也已核验</label><button data-save-answer>保存已核验答案</button></details>` : ''}
-      ${q.history.length ? `<details class="card"><summary>参考练习记录 · ${q.history.length}</summary>${q.history.slice(-10).reverse().map(h => `<p class="small">${esc(h.date.slice(0, 16).replace('T', ' '))} · ${esc(h.answer)} · ${h.ok === null ? '未判分' : h.ok ? '正确' : '错误'}</p>`).join('')}</details>` : ''}`;
+      ${q.history.length ? `<details class="card"><summary>参考练习记录 · ${q.history.length}</summary>${q.history.slice(-10).reverse().map(h => `<p class="small">${esc(h.date.slice(0, 16).replace('T', ' '))} · ${esc(h.answer)} · ${h.ok === null ? '未判分' : h.ok ? '正确' : '错误'}</p>`).join('')}</details>` : ''}
+      </div><aside class="ex-study-side"><div class="ex-progress-emblem" aria-hidden="true">✦</div><div class="rune">当前卷轴</div><h3>第 ${pos + 1} <small>/ ${sequence?.total || 1} 题</small></h3><progress value="${Math.max(0, pos + 1)}" max="${sequence?.total || 1}" aria-label="当前题目位置"></progress><p class="small muted">已作答 ${sequence?.answered || 0} 题</p>
+      <div class="ex-number-grid" aria-label="题号导航">${(sequence?.ids || [q.id]).slice(navStart, navStart + 20).map((id, i) => `<button data-jump-id="${esc(id)}" title="${esc(id)}" ${id === q.id ? 'aria-current="step" class="on"' : ''}>${navStart + i + 1}</button>`).join('')}</div>
+      ${sequence?.total > 20 ? `<div class="row ex-number-pages"><button data-number-prev ${navStart === 0 ? 'disabled' : ''}>前 20 题</button><button data-number-next ${navStart + 20 >= sequence.total ? 'disabled' : ''}>后 20 题</button></div>` : ''}<p class="ex-side-note small muted">选择提交后保存到本地。没有已核验答案时，只记录选择，不判对错。</p></aside></div>`;
     const el = s => content.querySelector(s);
-    el('[data-close]').onclick = () => dialog.close();
-    el('[data-back]').onclick = () => run(refresh);
+    el('[data-close]').onclick = () => close();
+    el('[data-back]').onclick = () => run(async () => { await refresh(); window.scrollTo(0, 0); });
     const next = delta => run(async () => { const index = sequence.ids.indexOf(q.id) + delta; if (index >= 0 && index < sequence.total) await openQuestion(sequence.ids[index]); });
     el('[data-q-prev]').onclick = () => next(-1); el('[data-q-next]').onclick = () => next(1);
+    content.querySelectorAll('[data-jump-id]').forEach(b => b.onclick = () => run(() => openQuestion(b.dataset.jumpId)));
+    const jumpGroup = offset => run(() => openQuestion(sequence.ids[Math.min(sequence.total - 1, Math.max(0, navStart + offset))]));
+    if (el('[data-number-prev]')) el('[data-number-prev]').onclick = () => jumpGroup(-20);
+    if (el('[data-number-next]')) el('[data-number-next]').onclick = () => jumpGroup(20);
+    content.querySelectorAll('[name="exChoice"]').forEach(input => input.onchange = () => drafts.set(q.id, [...content.querySelectorAll('[name="exChoice"]:checked')].map(e => e.value).join('')));
     el('[data-reveal]').onclick = () => run(() => openQuestion(q.id, true));
-    el('[data-practice]').onclick = () => run(async () => { const answer = [...content.querySelectorAll('[name=exChoice]:checked')].map(e => e.value).join(''); question = await api('/api/exams/practice', { id: q.id, answer }); renderQuestion(); });
+    el('[data-practice]').onclick = () => run(async () => { const answer = [...content.querySelectorAll('[name=exChoice]:checked')].map(e => e.value).join(''); const token = epoch; const updated = await api('/api/exams/practice', { id: q.id, answer }); if (!active || token !== epoch) return; if (!q.history.length) sequence.answered++; drafts.delete(q.id); question = updated; renderQuestion(); });
     el('[data-save-class]').onclick = () => run(async () => { if (!el('#exEditChapter').value) throw Error('请选择章节'); await api('/api/exams/edit', { id: q.id, revision: q.revision, chapter: el('#exEditChapter').value, topic: el('#exEditTopic').value }); await openQuestion(q.id, shown); message('章节已确认。'); });
     if (shown) el('[data-save-answer]').onclick = () => run(async () => { await api('/api/exams/edit', { id: q.id, revision: q.revision, answer: el('#exAnswer').value, kind: el('#exKind').value, answer_source: el('#exAnswerSource').value, analysis: el('#exAnalysis').value, analysis_checked: el('#exAnalysisChecked').checked, text_checked: !!el('#exTextChecked')?.checked }); await openQuestion(q.id, true); message('答案已核验保存；章节确认后可在正式试炼中使用。'); });
   }
@@ -174,20 +190,34 @@
     await openQuestion(sequence.ids[sequence.start]);
   }
   async function open(options = {}) {
-    if (dialog?.open) return;
+    if (active && content?.isConnected) return;
     catalogTab = options.references ? 'references' : options.manage ? 'classification' : 'questions';
     filters = { board: '', chapter: '', year: '', paper: '', classification: '', q: '', page: 0, ...options };
     delete filters.id; delete filters.practice; delete filters.browse; delete filters.references; delete filters.manage;
     if (options.references) filters.has_references = 'yes';
     browseMode = !!(options.browse || options.practice || options.id); sequence = null;
-    dialog = document.createElement('dialog'); dialog.className = 'ex-dialog' + (browseMode ? ' ex-reading' : ''); dialog.setAttribute('aria-label', '历年真题卷轴');
-    content = document.createElement('div'); content.className = 'ex-content'; dialog.append(content); document.body.append(dialog);
-    content.innerHTML = '<div class="row"><h2>正在读取真题目录…</h2><button data-close>关闭</button></div><p data-message role="status"></p>';
-    content.querySelector('[data-close]').onclick = () => dialog.close();
-    dialog.addEventListener('close', async () => { const closedDialog = dialog; ++epoch; clearInterval(timer); try { await render(); } finally { closedDialog.remove(); } });
-    dialog.showModal();
-    try { await refresh(); if (options.id) await openQuestion(options.id); else if (options.practice) await startSequence(); } catch (e) { message(e.message); }
-    timer = setInterval(async () => { if (!dialog.open || busy || !data?.job?.running) return; try { const r = await api('/api/exams/search', filters); data.job = r.job; if (!question) { if (!r.job.running) { data = r; renderList(); } else content.querySelector('[data-job]').textContent = jobText(); } } catch (e) { message(e.message); } }, 2500);
+    active = true; busy = false; question = null; data = null; drafts.clear(); originScroll = window.scrollY;
+    mount(document.querySelector('#view'));
+    content.innerHTML = '<div class="ex-heading"><h2>正在翻开真题卷轴…</h2><button data-close>返回卷轴</button></div><p data-message role="status"></p>';
+    content.querySelector('[data-close]').onclick = close;
+    window.scrollTo(0, 0);
+    try { await refresh(); if (!active || !content.isConnected) return; if (options.id) await openQuestion(options.id); else if (options.practice) await startSequence(); } catch (e) { message(e.message); }
+    if (!active || !content.isConnected) return;
+    timer = setInterval(async () => { if (!active || !content.isConnected || busy || !data?.job?.running) return; try { const r = await api('/api/exams/search', filters); data.job = r.job; if (!question) { if (!r.job.running) { data = r; renderList(); } else content.querySelector('[data-job]').textContent = jobText(); } } catch (e) { message(e.message); } }, 2500);
+  }
+  function mount(root) {
+    page = document.createElement('section'); page.className = 'ex-page' + (browseMode ? ' ex-reading' : '');
+    page.setAttribute('aria-label', '真题卷轴学习页');
+    content = document.createElement('div'); content.className = 'ex-content'; page.append(content);
+    root.replaceChildren(page); document.documentElement.classList.remove('in-chat', 'in-notes');
+  }
+  function leave() { active = false; ++epoch; clearInterval(timer); }
+  async function close() {
+    leave(); await render(); window.scrollTo(0, originScroll);
+  }
+  function renderPage(root) {
+    if (!root.contains(page)) mount(root);
+    if (question) renderQuestion(); else if (data) renderList();
   }
   const marks = { 民法: '⚖', 刑法: '⚔', 民诉: '✦', 刑诉: '♜', 行政法: '♛', 商经知: '◇', 三国法: '☉', 理论法: '✧' };
   async function shelfHtml(mode = 'library') {
@@ -215,5 +245,5 @@
       id: b.dataset.exId, practice: b.hasAttribute('data-ex-practice'), browse: true
     }));
   }
-  window.EXAMS = { shelfHtml, bindHub, open };
+  window.EXAMS = { shelfHtml, bindHub, open, leave, close, renderPage, isOpen: () => active };
 })();

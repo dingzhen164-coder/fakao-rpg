@@ -88,6 +88,8 @@ def main():
                         page.evaluate('(t) => document.documentElement.dataset.theme = t', theme)
                         page.screenshot(path=str(output / ('%s-%s-reference-results.png' % (width, theme))), animations='disabled')
                 page.locator('[data-question]').click()
+                assert page.locator('dialog[open]').count() == 0
+                assert page.locator('#view > .ex-page').count() == 1
                 page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
                 assert page.locator('.ex-answer-view details').first.get_attribute('open') is not None
                 # 无需作答即可主动读解析，未自动核验答案。
@@ -123,13 +125,13 @@ def main():
                         page.evaluate('(theme) => { document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; }', theme)
                         page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                         page.screenshot(path=str(output / ('%s-%s-list.png' % (width, theme))), animations='disabled')
-                        assert page.locator('.ex-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '目录横向溢出'
+                        assert page.locator('.ex-page').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '目录横向溢出'
                         page.locator('[data-question]').click()
                         page.locator('[data-reveal]').click()
                         page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
                         page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                         page.screenshot(path=str(output / ('%s-%s-detail.png' % (width, theme))), animations='disabled')
-                        assert page.locator('.ex-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '题目横向溢出'
+                        assert page.locator('.ex-page').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '题目横向溢出'
                         page.locator('[data-back]').click()
                         page.locator('[data-question]').wait_for()
                 # 统计入口清除之前的科目/年份等筛选，显示保存的解析。
@@ -141,7 +143,7 @@ def main():
                 page.locator('[data-ref-question]').click()
                 page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
                 page.locator('[data-close]').click()
-                page.locator('.ex-dialog').wait_for(state='detached')
+                page.locator('.ex-page').wait_for(state='detached')
                 page.locator('[data-ex-references]').click()
                 page.locator('[data-question]').wait_for()
                 page.locator('[data-question]').click()
@@ -149,7 +151,7 @@ def main():
                 page.locator('[data-close]').click()
                 page.locator('[data-libtab="yujian"].on').wait_for()
                 page.locator('[data-open-exams]').wait_for()
-                page.locator('.ex-dialog').wait_for(state='detached')
+                page.locator('.ex-page').wait_for(state='detached')
                 page.get_by_text('共 1 道历年题目', exact=False).wait_for()
                 # 虚构多科跨卷题库：校验未核验题直接可见、卷轴、跨科套卷与连续刷题。
                 pth = paths.Paths(vault)
@@ -192,17 +194,19 @@ def main():
                 expected = exam_catalog.sequence(pth, {'board': '刑诉'})
                 first_id = expected['ids'][expected['start']]
                 board_roll.locator('[data-ex-practice]').click()
-                page.locator('.ex-heading').get_by_text(first_id, exact=True).wait_for()
+                page.locator('.ex-study-head').get_by_text(first_id, exact=True).wait_for()
+                page.locator('[name="exChoice"][value="B"]').check()
                 page.locator('[data-q-next]').click()
-                page.locator('.ex-heading').get_by_text(expected['ids'][expected['start'] + 1], exact=True).wait_for()
+                page.locator('.ex-study-head').get_by_text(expected['ids'][expected['start'] + 1], exact=True).wait_for()
                 page.locator('[data-q-prev]').click()
-                page.locator('.ex-heading').get_by_text(first_id, exact=True).wait_for()
+                page.locator('.ex-study-head').get_by_text(first_id, exact=True).wait_for()
+                assert page.locator('[name="exChoice"][value="B"]').is_checked()
                 page.locator('[name="exChoice"][value="A"]').check()
                 page.locator('[data-practice]').click()
                 page.get_by_text('答案未核验，不判对错。', exact=False).wait_for()
                 assert exam_catalog.detail(pth, {'id': first_id, 'reveal': True})['history'][-1]['ok'] is None
                 page.locator('[data-close]').click()
-                page.locator('.ex-dialog').wait_for(state='detached')
+                page.locator('.ex-page').wait_for(state='detached')
                 page.locator('#nav [data-view="train"]').click()
                 page.locator('[data-hall="shizhan"]').click()
                 page.locator('[data-ex-shelf]').wait_for()
@@ -215,17 +219,20 @@ def main():
                 paper = page.locator('.ex-paper-roll').first
                 paper.locator('summary').click()
                 paper.locator('[data-ex-practice]').click()
-                page.locator('.ex-heading').get_by_text('2025-试卷一-002', exact=True).wait_for()
+                page.locator('.ex-study-head').get_by_text('2025-试卷一-002', exact=True).wait_for()
                 page.get_by_text('第 2 / 25 题', exact=False).wait_for()
                 page.locator('[data-q-next]').click()
-                page.locator('.ex-heading').get_by_text('2025-试卷一-003', exact=True).wait_for()
+                page.locator('.ex-study-head').get_by_text('2025-试卷一-003', exact=True).wait_for()
                 page.locator('[data-close]').click()
-                page.locator('.ex-dialog').wait_for(state='detached')
+                page.locator('.ex-page').wait_for(state='detached')
                 # 套卷题目目录中的每一题可直达详情。
                 paper = page.locator('.ex-paper-roll').first
                 paper.locator('summary').click()
                 paper.locator('[data-ex-id="2025-试卷一-003"]').click()
-                page.locator('.ex-heading').get_by_text('2025-试卷一-003', exact=True).wait_for()
+                page.locator('.ex-study-head').get_by_text('2025-试卷一-003', exact=True).wait_for()
+                page.locator('#nav [data-view="home"]').click()
+                page.locator('.ex-page').wait_for(state='detached')
+                assert page.evaluate('EXAMS.isOpen()') is False
                 assert not errors, '\n'.join(errors)
 
                 browser.close()
