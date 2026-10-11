@@ -220,7 +220,7 @@ def main():
                 paper.locator('summary').click()
                 paper.locator('[data-ex-practice]').click()
                 page.locator('.ex-study-head').get_by_text('2025-试卷一-002', exact=True).wait_for()
-                page.get_by_text('第 2 / 25 题', exact=False).wait_for()
+                page.locator('.ex-study-side').get_by_role('heading', name='第 2 / 25 题', exact=True).wait_for()
                 page.locator('[data-q-next]').click()
                 page.locator('.ex-study-head').get_by_text('2025-试卷一-003', exact=True).wait_for()
                 page.locator('[data-close]').click()
