@@ -1,4 +1,4 @@
-"""程序版本。改这里并推到 main，GitHub 检查后自动打包 Windows / Mac / 安卓并发到 Releases。"""
+"""程序版本。日常推送 dev；统一验证并发布时更新版本，再手动触发 main 的 build-exe。"""
 VERSION = "2.5.1"
 REPO = "dingzhen164-coder/fakao-rpg"
 
