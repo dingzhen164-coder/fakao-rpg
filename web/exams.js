@@ -184,7 +184,7 @@
     content = document.createElement('div'); content.className = 'ex-content'; dialog.append(content); document.body.append(dialog);
     content.innerHTML = '<div class="row"><h2>正在读取真题目录…</h2><button data-close>关闭</button></div><p data-message role="status"></p>';
     content.querySelector('[data-close]').onclick = () => dialog.close();
-    dialog.addEventListener('close', () => { ++epoch; clearInterval(timer); dialog.remove(); render(); });
+    dialog.addEventListener('close', async () => { const closedDialog = dialog; ++epoch; clearInterval(timer); try { await render(); } finally { closedDialog.remove(); } });
     dialog.showModal();
     try { await refresh(); if (options.id) await openQuestion(options.id); else if (options.practice) await startSequence(); } catch (e) { message(e.message); }
     timer = setInterval(async () => { if (!dialog.open || busy || !data?.job?.running) return; try { const r = await api('/api/exams/search', filters); data.job = r.job; if (!question) { if (!r.job.running) { data = r; renderList(); } else content.querySelector('[data-job]').textContent = jobText(); } } catch (e) { message(e.message); } }, 2500);
