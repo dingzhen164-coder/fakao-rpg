@@ -70,7 +70,7 @@ from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appapk, appearance, cards, pdfcards, mindmap, notes, poster, tianji, idioms, importer, lan, library, marks, mock, report, question_bank, ai, config, engine, paths as paths_mod, store, themes, trainer, tutor, vault
+from . import appapk, appearance, cards, pdfcards, mindmap, notes, poster, tianji, idioms, importer, exam_catalog, lan, library, marks, mock, report, question_bank, ai, config, engine, paths as paths_mod, store, themes, trainer, tutor, vault
 from .paths import WEB_DIR, Paths, find_vault, load_settings, looks_like_vault, save_settings
 
 
@@ -219,6 +219,16 @@ def _import_call(fn, body):
 
 def import_status(body):
     return importer.status(_import_paths())
+
+
+def _exam_route(action):
+    """历年目录不持游戏锁，AI后台运行，不阻塞学习心跳。"""
+    def call(body):
+        try:
+            return action(_import_paths(), body)
+        except (exam_catalog.CatalogError, ValueError, TypeError) as e:
+            raise ApiError(str(e))
+    return call
 
 
 def import_preview(body):
@@ -729,6 +739,15 @@ def settings_test(body):
 
 
 ROUTES = {
+    ("GET", "/api/exams"): _exam_route(exam_catalog.search),
+    ("POST", "/api/exams/search"): _exam_route(exam_catalog.search),
+    ("POST", "/api/exams/scan"): _exam_route(exam_catalog.scan),
+    ("POST", "/api/exams/detail"): _exam_route(exam_catalog.detail),
+    ("POST", "/api/exams/edit"): _exam_route(exam_catalog.edit),
+    ("POST", "/api/exams/practice"): _exam_route(exam_catalog.practice),
+    ("POST", "/api/exams/references"): _exam_route(exam_catalog.references),
+    ("POST", "/api/exams/classify"): _exam_route(exam_catalog.classify),
+    ("POST", "/api/exams/confirm"): _exam_route(exam_catalog.confirm_batch),
     ("GET", "/api/dashboard"): dashboard,
     ("POST", "/api/plan/regenerate"): plan_regenerate,
     ("POST", "/api/theme"): theme_set,
@@ -1443,4 +1462,5 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         self._handle("POST")
+
 

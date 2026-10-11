@@ -77,9 +77,11 @@ def search(g, body):
 def detail(g, key):
     from . import trainer
     board, _, ident = str(key).partition('::')
-    q = next((x for x in question_bank.read_all(g.paths, board)[0] if x['id'] == ident), None)
+    boards = question_bank.boards(g) if board == '历年' else [board]
+    q = next((x for b in boards for x in question_bank.read_all(g.paths, b)[0] if x['key'] == key), None)
     if not q:
         raise question_bank.BankError('找不到这道题（题库可能改过）')
+    board = q['board']
     rec = question_bank.state(g)['records'].get(q['key']) or {}
     return {'key': q['key'], 'id': q['id'], 'board': q['board'], 'topic': q['topic'], 'papers': q.get('papers', []),
             'stem': trainer._bank_blocks(g, board, q['stem']),
@@ -99,3 +101,4 @@ def _tutor(g, board, q):
         return []
     note = question_bank.tutor_notes(g.paths).get(q['id'])
     return trainer._bank_blocks(g, board, note) if note else []
+

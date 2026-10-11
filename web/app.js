@@ -1046,6 +1046,7 @@ async function shizhanHtml() {
   const firstOk = d.boards.reduce((n, b) => n + b.first_correct, 0);
   const boards = d.boards.filter(b => b.total || b.pending || b.wrong);
   return `${pagodaHtml(d.tower, done, wrong, rate(firstOk, done))}
+    ${window.EXAMS ? EXAMS.card() : ''}
     ${pointHtml(c, d.count, d.order)}
     ${setsHtml(d.sets)}
     <div class="card"><div class="row"><h3 style="margin:0">⚔ 板块试炼</h3><span class="small muted">${d.order === 'shuffle' ? '从没做过的题里随机抽' : '按题库顺序'}一组 ${d.count} 关，交卷判分（做过的不再出）</span><span class="spacer"></span>
@@ -1081,6 +1082,7 @@ function pagodaHtml(t, done, wrong, acc) {
 }
 
 function bindHub() {
+  if (window.EXAMS) EXAMS.bindHub($('#view'));
   document.querySelectorAll('[data-hall]').forEach(g => g.onclick = () => { HALL = g.dataset.hall; renderTrain(); });
   document.querySelectorAll('[data-xlboard]').forEach(a => a.onclick = () => { XL_BOARD = a.dataset.xlboard; renderTrain(); });
   document.querySelectorAll('[data-xlwrong]').forEach(b => b.onclick = () =>
@@ -1609,3 +1611,4 @@ function towerProgress(t) {
   if (t.summit) return `<div class="tower-progress">🗼 ${t.layers} 层已全部登顶 · ${t.completed} 道新题</div>${bar(1, 'thin yellow')}`;
   return `<div class="tower-progress">🗼 正在攀登第 ${t.current} 层 · 本层 ${t.floor_done}/${t.floor_total} 道 · 再做 ${t.remaining} 道升层</div>${bar(t.floor_total ? t.floor_done / t.floor_total : 0, 'thin yellow')}`;
 }
+

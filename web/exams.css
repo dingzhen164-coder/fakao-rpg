@@ -1,0 +1,34 @@
+/* 历年卷轴复用学院亮暗色变量；平板触控和长选项换行。 */
+.ex-dialog { box-sizing:border-box; width:min(1100px,96vw); max-height:94vh; border:1px solid var(--line); border-radius:var(--radius); padding:0; background:var(--bg); color:var(--text); box-shadow:var(--shadow); }
+.ex-dialog::backdrop { background:rgba(10,6,20,.75); }
+.ex-content { padding:24px; overflow-wrap:anywhere; }
+.ex-heading { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.ex-heading h2 { margin:8px 0; }
+.ex-dialog button,.ex-dialog select,.ex-dialog input:not([type=checkbox]):not([type=radio]) { min-height:42px; }
+.ex-dialog label:not(.row) { display:block; margin:8px 0; font-size:14px; }
+.ex-dialog label input:not([type=checkbox]):not([type=radio]),.ex-dialog label select,.ex-dialog textarea { display:block; width:100%; box-sizing:border-box; margin-top:5px; }
+.ex-dialog input[type=checkbox],.ex-dialog input[type=radio] { width:20px; height:20px; flex-shrink:0; accent-color:var(--accent); }
+.ex-dialog .card { margin:16px 0; }
+.ex-dialog summary { padding:8px 0; cursor:pointer; }
+.ex-dialog details details { margin-top:16px; border-top:1px solid var(--line); }
+.ex-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
+.ex-stats div { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+.ex-stats b { display:block; font-size:25px; color:var(--gold); }
+.ex-stats span { font-size:13px; color:var(--muted); }
+.ex-filters { display:grid; grid-template-columns:1fr 2fr 1fr 1fr; gap:12px; align-items:end; }
+.ex-keyword { grid-column:span 3; }
+.ex-tools { padding-top:10px; }
+.ex-message { min-height:24px; color:var(--accent); white-space:pre-wrap; }
+.ex-row { border-top:1px solid var(--line); padding:16px 0; }
+.ex-row>div:first-child { display:flex; gap:10px; align-items:flex-start; }
+.ex-question { text-align:left; flex:1; background:var(--panel); padding:12px; }
+.ex-question b { display:block; color:var(--gold); margin-bottom:7px; }
+.ex-suggestion { border-left:3px solid var(--accent); background:var(--panel2); padding:10px 14px; line-height:1.65; }
+.ex-pagination { justify-content:center; margin:20px 0 0; }
+.ex-warning { padding:14px; border:1px solid var(--orange); border-radius:12px; color:var(--orange); }
+.ex-prose { white-space:pre-wrap; line-height:1.8; }
+.ex-options label { display:flex!important; align-items:flex-start; gap:12px; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--panel); cursor:pointer; }
+.ex-options label:has(input:checked) { border-color:var(--accent); background:var(--panel2); }
+.ex-options span { flex:1; }
+@media(max-width:850px) { .ex-content { padding:18px; } .ex-filters { grid-template-columns:1fr 1fr; } .ex-keyword { grid-column:span 1; } .ex-heading h2 { font-size:21px; } }
+@media(max-width:500px) { .ex-stats { grid-template-columns:1fr 1fr; } .ex-content { padding:12px; } .ex-dialog { width:98vw; } }

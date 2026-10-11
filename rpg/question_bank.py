@@ -83,6 +83,16 @@ def read_all(paths, board):
                 errors.append('题目 %s：编号重复，请使用固定且唯一的编号' % q['id'])
             seen.add(q['id'])
             questions.append(dict(q))
+    from . import exam_catalog
+    try:
+        for q in exam_catalog.official_questions(paths, board):
+            if q['id'] in seen:
+                errors.append('题目 %s：与历年目录编号重复，请保留一份' % q['id'])
+                continue
+            seen.add(q['id'])
+            questions.append(q)
+    except exam_catalog.CatalogError as e:
+        errors.append(str(e))
     return questions, errors
 
 
@@ -177,6 +187,9 @@ TUTOR_HEAD = '【学姐解惑】'
 def save_tutor_to_bank(paths, q, text, date):
     """把学姐解惑写进这道题在题库文件里的“### 解析”末尾（原解析不动）；同一题再问就换掉上一次的。
     返回写进的文件名；找不到这道题返回空"""
+    if q.get('key', '').startswith('历年::'):
+        from . import exam_catalog
+        return exam_catalog.save_tutor(paths, q, text, date)
     for f in files(paths, q['board']):
         t = f.read_text(encoding='utf-8-sig')
         h = re.search(r'^## 题目 %s\s*$' % re.escape(q['id']), t, re.M)
@@ -572,3 +585,4 @@ def tower(g):
             'floor_total': target - lower, 'next_at': target,
             'remaining': max(0, target - completed),
             'per_floor': (total + layers - 1) // layers}
+

@@ -14,7 +14,28 @@ permissions:
   contents: write
 
 jobs:
+  ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser test tools
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Check exams UI
+        run: python tests/smoke_exams_ui.py ui-screenshots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exams-ui-screenshots
+          path: ui-screenshots/
   build:
+    needs: ui
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -147,3 +168,4 @@ jobs:
         run: |
           V=$(sed -n 's/^VERSION = "\(.*\)"/\1/p' rpg/version.py)
           gh release upload "v$V" fakao-mage-mac.zip --clobber
+
