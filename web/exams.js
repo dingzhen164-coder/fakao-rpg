@@ -3,8 +3,9 @@
  */
 (() => {
   let dialog, content, data, question, timer, busy = false, epoch = 0;
+  let offlinePackage = null, offlinePreview = null, batchLimit = 20;
   let filters = { board: '', chapter: '', year: '', classification: '', q: '', page: 0 };
-  const labels = { pending: '待分类', legacy: '旧分科 · 待核对', confirmed: '章节已确认' };
+  const labels = { pending: '待分类', legacy: '旧分科 · 待核对', confirmed: '章节已确认', review: '已归章 · 待复核', suggested: '有待确认建议' };
   const option = (value, text, selected) => `<option value="${esc(value)}" ${String(value) === String(selected) ? 'selected' : ''}>${esc(text)}</option>`;
   const message = text => { const el = content.querySelector('[data-message]'); if (el) el.textContent = text; };
   async function run(action) {
@@ -36,6 +37,7 @@
       <details class="card" ${!s.total ? 'open' : ''}><summary>📥 导入与参考解析</summary><div class="ex-tools">
         <label>原卷文件夹（相对法考库）<input id="exFolder" value="60-真题库"></label><div class="row"><button data-scan>预览导入</button><button data-import>导入 / 更新原卷</button></div>
         <p class="small muted">识别“年份-试卷一/二/三.md”；按年份、卷次、题号去重，旧分科只作为待核对记录。章节来自 10-科目 的文件夹。</p>
+        <label>离线分类结果（无需 API）<input type="file" id="exOfflineFile" accept=".json,application/json"></label><div class="row"><button data-offline-adopt>预览后采用离线分类</button><button data-suggestions>查看待确认建议</button></div><p class="small muted">先选分类包中的 JSON 预览，再点击采用。保留已确认归属；多专题或证据不足的题按章显示并标记待复核。答案、解析和练习记录保持原样。</p>
         <div class="row"><button data-reference>下载并匹配 Lawyer LLaMA</button><label class="small">或上传 JSON <input type="file" id="exReferenceFile" accept=".json,application/json"></label></div>
         <p class="small muted">只作个人学习参考，遵循上游数据使用说明。首次下载需联网，之后本地可用。仅精确匹配题干及选项，保留原选项映射，不自动提取标准答案。</p>
       </div></details>
@@ -44,7 +46,7 @@
       <label>年份<select id="exYear">${option('', '全部年份', filters.year)}${data.years.map(y => option(y, y, filters.year)).join('')}</select></label>
       <label>分类状态<select id="exClass">${option('', '全部状态', filters.classification)}${Object.entries(labels).map(([k, v]) => option(k, v, filters.classification)).join('')}</select></label>
       <label class="ex-keyword">关键词<input id="exQuery" value="${esc(filters.q)}" placeholder="题干、选项、题号或知识点"></label><button data-search>搜索</button></div>
-      <div class="row"><label class="small">本批 <select id="exLimit"><option>20</option><option>50</option><option>100</option></select> 题</label><button data-classify>AI 建议章节</button><span class="muted small">只处理当前科目中尚无建议的题；已保存建议不重复请求。</span></div>
+      <div class="row"><label class="small">本批 <select id="exLimit">${[20, 50, 100].map(n => option(n, n, batchLimit)).join('')}</select> 题</label><button data-classify>AI 建议章节</button><span class="muted small">只处理当前科目中尚无建议的题；已保存建议不重复请求。</span></div>
       <p data-job class="small muted" role="status">${esc(jobText())}</p>
       <p data-message class="ex-message" role="status" aria-live="polite"></p>
       <div class="row"><b>共 ${data.total} 题</b><span class="spacer"></span><button data-confirm>确认勾选的章节建议</button></div>
@@ -67,6 +69,23 @@
     el('[data-scan]').onclick = () => scan(false); el('[data-import]').onclick = () => scan(true);
     const refs = body => run(async () => { message('正在匹配参考数据，首次下载可能需要片刻…'); const r = await api('/api/exams/references', body); await refresh(); message(`读取 ${r.records} 条数据；${r.matched}/${r.total} 道题匹配参考，其中 ${r.full} 道题干与选项完整匹配。标准答案未改变。`); });
     el('[data-reference]').onclick = () => refs({ download: true });
+    const offlineMessage = r => `可采用 ${r.adopted} 题；另 ${r.review} 题归章并标记待复核。保留已确认 ${r.preserved}；未找到 ${r.missing}；原文变化 ${r.changed}；未知章节 ${r.unknown_chapter}。`;
+    el('#exOfflineFile').onchange = e => run(async () => {
+      offlinePackage = null; offlinePreview = null;
+      const f = e.target.files[0]; if (!f) return;
+      if (f.size > 12 * 1024 * 1024) throw Error('分类JSON不能超过12MB');
+      const pkg = JSON.parse(await f.text());
+      const r = await api('/api/exams/import-classification', { package: pkg, commit: false });
+      offlinePackage = pkg; offlinePreview = r; message('预览：' + offlineMessage(r) + ' 点击采用后写入训练目录。');
+    });
+    el('[data-offline-adopt]').onclick = () => run(async () => {
+      if (!offlinePackage || !offlinePreview) throw Error('请先选择离线分类JSON，查看预览结果');
+      const r = await api('/api/exams/import-classification', { package: offlinePackage, commit: true, revision: offlinePreview.revision });
+      offlinePackage = null; offlinePreview = null; await refresh(); message('已导入：' + offlineMessage(r));
+    });
+    el('[data-suggestions]').onclick = () => run(async () => { filters.classification = 'suggested'; filters.year = ''; filters.page = 0; await refresh(); });
+    el('#exLimit').onchange = () => { batchLimit = Number(el('#exLimit').value); };
+
     el('#exReferenceFile').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { if (f.size > 12 * 1024 * 1024) throw Error('JSON文件不能超过12MB'); const rows = JSON.parse(await f.text()); if (!Array.isArray(rows)) throw Error('请选择JSON数组文件'); await refs({ name: f.name, rows }); } catch (err) { message(err.message); } };
     el('[data-classify]').onclick = () => run(async () => { const r = await api('/api/exams/classify', { board: filters.board, limit: Number(el('#exLimit').value) }); data.job = r; el('[data-job]').textContent = jobText(); });
     el('[data-confirm]').onclick = () => run(async () => { const selected = [...content.querySelectorAll('[data-confirm-id]:checked')].map(x => data.rows.find(q => q.id === x.dataset.confirmId)); if (!selected.length) throw Error('请先勾选要确认的建议'); const r = await api('/api/exams/confirm', { items: selected.map(q => ({ id: q.id, revision: q.revision })) }); await refresh(); message(`已确认 ${r.confirmed} 道题的章节。`); });
@@ -90,7 +109,7 @@
       ${shown ? `<div class="card"><h3>答案与参考解析</h3><p>${q.answer ? `已核验答案：<b>${esc(q.answer)}</b><br>来源：${esc(q.answer_source)}` : '尚无已核验答案。'}</p>
         ${q.analysis ? `<p class="small muted">${q.analysis_status === 'verified' ? '用户已核验解析' : '参考解析 · 未核验'}</p><div class="ex-prose">${esc(q.analysis)}</div>` : ''}
         ${q.references.map(r => `<details><summary>${esc(r.source)} · ${r.match === 'full' ? '题干与选项匹配' : '仅题干匹配'}</summary><p class="small muted">${esc(r.dataset)} 第 ${r.row + 1} 条；${r.match === 'full' ? '原数据→本题选项：' + Object.entries(r.option_map).map(([a, b]) => a + '→' + b).join('，') : '没有完整选项，不能据此确定答案。'}</p><p class="ex-prose">${esc(r.text)}</p></details>`).join('') || '<p class="muted small">暂无匹配的 Lawyer LLaMA 参考解析。</p>'}</div>` : ''}
-      <details class="card" open><summary>科目与章节核对</summary>${q.suggestion ? `<p class="small muted">AI建议依据：${esc(q.suggestion.reason)}</p>` : ''}<p class="small muted">旧分科：${esc(q.legacy_subject || '未分类')}；选择章节并保存，即确认该归属。</p>
+      <details class="card" open><summary>科目与章节核对</summary>${q.suggestion ? `<p class="small muted">分类建议依据：${esc(q.suggestion.reason)}</p>` : q.classification_source ? `<p class="small muted">${esc(q.classification_source.method)}：${esc(q.classification_source.reason)}</p>` : ''}<p class="small muted">旧分科：${esc(q.legacy_subject || '未分类')}；选择章节并保存，即确认该归属。</p>
       <label>章节<select id="exEditChapter">${option('', '请选择章节', selected)}${data.chapters.map(c => option(c.id, c.subject + ' · ' + c.name, selected)).join('')}</select></label><label>知识点<input id="exEditTopic" value="${esc(q.suggestion?.topic || q.topic)}"></label><button data-save-class>确认章节</button></details>
       ${shown ? `<details class="card"><summary>核验并补充答案</summary><p class="small muted">依据教材、答案表或法条核对后保存；GPT输出保持参考身份。原文有提示时，请先核对完整题目。</p>
       <div class="ex-filters"><label>答案字母<input id="exAnswer" value="${esc(q.answer)}" placeholder="例如 A 或 ACD" maxlength="4"></label><label>题型<select id="exKind">${option('', '请选择题型', q.kind)}${[['single', '单选'], ['multi', '多选'], ['any', '不定项']].map(([k, v]) => option(k, v, q.kind)).join('')}</select></label></div>

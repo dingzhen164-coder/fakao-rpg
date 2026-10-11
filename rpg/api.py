@@ -748,6 +748,7 @@ ROUTES = {
     ("POST", "/api/exams/references"): _exam_route(exam_catalog.references),
     ("POST", "/api/exams/classify"): _exam_route(exam_catalog.classify),
     ("POST", "/api/exams/confirm"): _exam_route(exam_catalog.confirm_batch),
+    ("POST", "/api/exams/import-classification"): _exam_route(exam_catalog.import_classification),
     ("GET", "/api/dashboard"): dashboard,
     ("POST", "/api/plan/regenerate"): plan_regenerate,
     ("POST", "/api/theme"): theme_set,

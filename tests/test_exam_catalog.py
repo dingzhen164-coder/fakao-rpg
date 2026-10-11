@@ -42,6 +42,56 @@ class CatalogTest(unittest.TestCase):
         ex.JOBS.pop(str(self.p.vault), None)
         self.tmp.cleanup()
 
+    def offline_package(self, confidence='high'):
+        return {'format': 'fakao-rpg-classification', 'version': 1, 'items': [
+            dict(id=q['id'], fingerprint=q['fingerprint'], chapter=self.chapter,
+                 topic='证明责任', confidence=confidence, reason='考证据')
+            for q in ex.load(self.p)['questions'].values()]}
+
+    def test_offline_preview_adopt_and_preserve_answer(self):
+        self.imported()
+        q = ex.detail(self.p, {'id': self.ident, 'reveal': True})
+        ex.edit(self.p, dict(id=self.ident, revision=q['revision'], answer='A', kind='single', answer_source='测试答案表'))
+        before = ex._file(self.p).read_bytes()
+        pkg = self.offline_package()
+        r = ex.import_classification(self.p, {'package': pkg})
+        self.assertEqual(r['adopted'], 2)
+        self.assertEqual(before, ex._file(self.p).read_bytes())
+        ex.import_classification(self.p, dict(package=pkg, commit=True, revision=r['revision']))
+        self.assertEqual(ex.load(self.p)['questions'][self.ident]['answer'], 'A')
+        self.assertEqual(len(ex.official_questions(self.p, '刑诉')), 1)
+        self.assertEqual(ex.import_classification(self.p, {'package': pkg})['preserved'], 2)
+        self.assertEqual(self.source.read_text(encoding='utf-8'), PAPER)
+
+    def test_offline_review_filters_and_confirm(self):
+        self.imported()
+        pkg = self.offline_package('review')
+        r = ex.import_classification(self.p, {'package': pkg})
+        ex.import_classification(self.p, dict(package=pkg, commit=True, revision=r['revision']))
+        self.assertEqual(ex.search(self.p, dict(classification='review', chapter=self.chapter))['total'], 2)
+        rows = ex.search(self.p, {'classification': 'suggested'})['rows']
+        self.assertEqual(len(rows), 2)
+        self.assertFalse(ex.official_questions(self.p, '刑诉'))
+        ex.confirm_batch(self.p, {'items': [dict(id=rows[0]['id'], revision=rows[0]['revision'])]})
+        self.assertEqual(ex.search(self.p, {'classification': 'review'})['total'], 1)
+
+    def test_offline_fingerprint_and_atomic_validation(self):
+        self.imported()
+        pkg = self.offline_package()
+        pkg['items'][0]['fingerprint'] = 'changed'
+        pkg['items'][1]['chapter'] = '10-科目/不存在'
+        r = ex.import_classification(self.p, {'package': pkg})
+        self.assertEqual((r['changed'], r['unknown_chapter'], r['adopted']), (1, 1, 0))
+        before = ex._file(self.p).read_bytes()
+        pkg = self.offline_package()
+        pkg['items'].append(pkg['items'][0])
+        with self.assertRaises(ex.CatalogError):
+            ex.import_classification(self.p, dict(package=pkg, commit=True, revision=ex.load(self.p)['revision']))
+        self.assertEqual(before, ex._file(self.p).read_bytes())
+        with self.assertRaises(ex.CatalogError):
+            ex.import_classification(self.p, dict(package=self.offline_package(), commit=True, revision=-1))
+        self.assertEqual(before, ex._file(self.p).read_bytes())
+
     def imported(self):
         ex.scan(self.p, {'commit': True})
         return ex.detail(self.p, {'id': self.ident, 'reveal': True})

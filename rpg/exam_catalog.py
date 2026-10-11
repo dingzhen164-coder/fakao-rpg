@@ -208,7 +208,11 @@ def search(paths, body):
     with LOCK:
         data = load(paths)
     qs = list(data['questions'].values())
+    if body.get('classification') == 'suggested':
+        qs = [q for q in qs if q.get('suggestion')]
     for field in ('board', 'chapter', 'year', 'classification'):
+        if field == 'classification' and body.get(field) == 'suggested':
+            continue
         if body.get(field):
             qs = [q for q in qs if str(q.get(field)) == str(body[field])]
     if body.get('answer_status'):
@@ -325,6 +329,62 @@ def confirm_batch(paths, body):
             q.pop('suggestion', None)
         save(paths, data)
     return {'confirmed': len(updates)}
+
+
+def import_classification(paths, body):
+    """导入离线分类包。预览后显式采用；指纹一致才更新，保留已确认归属与所有答案。
+
+    format=fakao-rpg-classification, version=1, items 含 id/fingerprint/chapter/topic/
+    confidence(high/review)/method/reason。review 题可按章找题但仍待复核，不进入正式判分。
+    """
+    package = body.get('package')
+    if not isinstance(package, dict) or package.get('format') != 'fakao-rpg-classification' or package.get('version') != 1:
+        raise CatalogError('请选择法考离线分类结果JSON（版本1）')
+    items = package.get('items')
+    if not isinstance(items, list) or not 1 <= len(items) <= 10000:
+        raise CatalogError('分类结果必须包含1—10000道题')
+    with LOCK:
+        data = load(paths)
+        if body.get('commit') and body.get('revision') != data['revision']:
+            raise CatalogError('目录已更新，请重新预览后采用分类')
+        chapters = {c['id']: c for c in data['chapters']}
+        seen, updates = set(), []
+        report = dict(total=len(items), adopted=0, review=0, preserved=0, missing=0, changed=0, unknown_chapter=0,
+                      revision=data['revision'])
+        for row in items:
+            if not isinstance(row, dict) or not isinstance(row.get('id'), str) or row['id'] in seen:
+                raise CatalogError('分类结果有重复或无效题号，未写入')
+            seen.add(row['id'])
+            if row.get('confidence') not in ('high', 'review') or not isinstance(row.get('fingerprint'), str):
+                raise CatalogError('分类结果缺少指纹或复核标记，未写入')
+            if not isinstance(row.get('chapter'), str):
+                raise CatalogError('分类结果章节格式错误，未写入')
+            q = data['questions'].get(row['id'])
+            if not q:
+                report['missing'] += 1
+            elif q['fingerprint'] != row['fingerprint']:
+                report['changed'] += 1
+            elif q['classification'] == 'confirmed':
+                report['preserved'] += 1
+            elif row['chapter'] not in chapters:
+                report['unknown_chapter'] += 1
+            else:
+                updates.append((q, row, chapters[row['chapter']]))
+                report['review' if row['confidence'] == 'review' or q.get('warnings') else 'adopted'] += 1
+        if body.get('commit') and updates:
+            for q, row, c in updates:
+                review = row['confidence'] == 'review' or bool(q.get('warnings'))
+                q.update(chapter=c['id'], subject=c['subject'], board=c['board'],
+                         topic=str(row.get('topic') or c['name'])[:150], classification='review' if review else 'confirmed',
+                         revision=q['revision'] + 1,
+                         classification_source={'method': str(row.get('method') or '离线分类')[:100],
+                                                'reason': str(row.get('reason') or '')[:600]})
+                if review:
+                    q['suggestion'] = dict(chapter=c['id'], topic=q['topic'], reason=q['classification_source']['reason'])
+                else:
+                    q.pop('suggestion', None)
+            save(paths, data)
+        return report
 
 
 def normalize(s):

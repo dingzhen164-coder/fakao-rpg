@@ -50,6 +50,21 @@ def main():
                 page.locator('[data-import]').click()
                 page.locator('[data-question]').wait_for()
                 page.get_by_text('导入与参考解析', exact=False).click()
+                q = exam_catalog.detail(paths.Paths(vault), {'id': '2025-试卷一-001'})
+                package = {'format': 'fakao-rpg-classification', 'version': 1, 'items': [
+                    dict(id=q['id'], fingerprint=q['fingerprint'], chapter=chapter, confidence='review', reason='测试复核')]}
+                page.locator('#exOfflineFile').set_input_files({'name': 'classification.json', 'mimeType': 'application/json',
+                    'buffer': json.dumps(package, ensure_ascii=False).encode('utf-8')})
+                page.get_by_text('预览：可采用 0 题；另 1 题', exact=False).wait_for()
+                assert exam_catalog.load(paths.Paths(vault))['questions'][q['id']]['classification'] == 'pending'
+                page.locator('[data-offline-adopt]').click()
+                page.get_by_text('已导入：可采用', exact=False).wait_for()
+                page.locator('#exClass').select_option('review')
+                page.locator('[data-question]').wait_for()
+                page.locator('#exClass').select_option('')
+                page.locator('[data-question]').wait_for()
+                page.get_by_text('导入与参考解析', exact=False).click()
+
                 rows = [{'input': '界面测试题：哪个选项是甲？\nA. 乙\nB. 甲\nC. 丁\nD. 丙', 'output': '虚构测试解析：原数据B对应本题A。'}]
                 page.locator('#exReferenceFile').set_input_files({'name': 'sample.json', 'mimeType': 'application/json', 'buffer': json.dumps(rows, ensure_ascii=False).encode('utf-8')})
                 page.get_by_text('标准答案未改变。', exact=False).wait_for()
