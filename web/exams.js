@@ -13,9 +13,9 @@
     if (busy) return;
     busy = true;
     content.setAttribute('aria-busy', 'true');
-    content.querySelectorAll('button').forEach(b => b.disabled = true);
+    content.querySelectorAll('button, input, select, textarea').forEach(b => b.disabled = true);
     try { await action(); } catch (e) { message(e.message); }
-    finally { busy = false; content.removeAttribute('aria-busy'); content.querySelectorAll('button').forEach(b => b.disabled = false); if (question && sequence) { const i = sequence.ids.indexOf(question.id); content.querySelector('[data-q-prev]').disabled = i <= 0; content.querySelector('[data-q-next]').disabled = i + 1 >= sequence.total; } }
+    finally { busy = false; content.removeAttribute('aria-busy'); content.querySelectorAll('button, input, select, textarea').forEach(b => b.disabled = false); if (question && sequence) { const i = sequence.ids.indexOf(question.id); content.querySelector('[data-q-prev]').disabled = i <= 0; content.querySelector('[data-q-next]').disabled = i + 1 >= sequence.total; } }
   }
   async function refresh() {
     sequence = null;

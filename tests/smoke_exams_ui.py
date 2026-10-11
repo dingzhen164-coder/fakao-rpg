@@ -49,12 +49,14 @@ def main():
                 page.locator('[data-libtab="yujian"]').click()
                 page.locator('[data-open-exams]').click()
                 page.locator('[data-catalog-tab="import"]').click()
+                page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                 page.locator('[data-scan]').click()
                 page.get_by_text('预览：1 张原卷、1 题', exact=False).wait_for()
                 assert not (vault / '训练/题库/历年目录.json').exists()
                 page.locator('[data-import]').click()
                 page.locator('[data-question]').wait_for()
                 page.locator('[data-catalog-tab="classification"]').click()
+                page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                 q = exam_catalog.detail(paths.Paths(vault), {'id': '2025-试卷一-001'})
                 package = {'format': 'fakao-rpg-classification', 'version': 1, 'items': [
                     dict(id=q['id'], fingerprint=q['fingerprint'], chapter=chapter, confidence='review', reason='测试复核')]}
@@ -72,6 +74,7 @@ def main():
                 page.get_by_text('已一次采用 1 题', exact=False).wait_for()
                 assert exam_catalog.load(paths.Paths(vault))['questions'][q['id']]['classification'] == 'confirmed'
                 page.locator('[data-catalog-tab="references"]').click()
+                page.locator('.ex-content[aria-busy]').wait_for(state='detached')
 
                 rows = [{'input': '界面测试题：哪个选项是甲？\nA. 乙\nB. 甲\nC. 丁\nD. 丙', 'output': '虚构测试解析：原数据B对应本题A。'}]
                 page.locator('#exReferenceFile').set_input_files({'name': 'sample.json', 'mimeType': 'application/json', 'buffer': json.dumps(rows, ensure_ascii=False).encode('utf-8')})
@@ -110,6 +113,7 @@ def main():
                 assert source.read_bytes() == original
                 page.locator('[data-back]').click()
                 page.locator('[data-catalog-tab="questions"]').click()
+                page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                 page.locator('#exBoard').select_option('刑诉')
                 page.locator('#exChapter').select_option(chapter)
                 page.locator('[data-question]').wait_for()
