@@ -130,7 +130,7 @@ def main():
                         page.locator('[data-reveal]').click()
                         page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
                         page.locator('.ex-content[aria-busy]').wait_for(state='detached')
-                        page.screenshot(path=str(output / ('%s-%s-detail.png' % (width, theme))), animations='disabled')
+                        page.screenshot(path=str(output / ('%s-%s-detail.png' % (width, theme))), animations='disabled', full_page=True)
                         assert page.locator('.ex-page').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '题目横向溢出'
                         page.locator('[data-back]').click()
                         page.locator('[data-question]').wait_for()
