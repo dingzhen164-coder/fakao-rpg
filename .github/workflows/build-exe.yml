@@ -1,10 +1,13 @@
-# 用户明确“统一验证并发布”后，合入 main 并手动触发 → 在 Windows 上打包 fakao-mage.exe、在 Linux 上打包平板 App fakao-mage.apk、
+# 用户明确“统一验证并发布”后，合入 main 并显式请求发布 → 在 Windows 上打包 fakao-mage.exe、在 Linux 上打包平板 App fakao-mage.apk、
 # 在 Mac 上打包 法师成长记.app（Apple 芯片，fakao-mage-mac.zip），
 # 一起发到 Releases（tag v<版本>）
 # 程序里「设置 → 🆕 版本与更新 → 检查更新」读的就是这里发的 Release
 name: build-exe
 
 on:
+  push:
+    branches: [main]
+    paths: [.github/release-request.json]
   workflow_dispatch:
 
 permissions:
