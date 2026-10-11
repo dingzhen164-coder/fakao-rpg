@@ -80,12 +80,14 @@ def main():
                     page.set_viewport_size({'width': width, 'height': height})
                     for theme in ['light', 'dark']:
                         page.evaluate('(theme) => { document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; }', theme)
-                        page.screenshot(path=str(output / ('%s-%s-list.png' % (width, theme))))
+                        page.locator('.ex-content[aria-busy]').wait_for(state='detached')
+                        page.screenshot(path=str(output / ('%s-%s-list.png' % (width, theme))), animations='disabled')
                         assert page.locator('.ex-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '目录横向溢出'
                         page.locator('[data-question]').click()
                         page.locator('[data-reveal]').click()
                         page.get_by_text('Lawyer LLaMA · GPT生成 · 未核验', exact=False).click()
-                        page.screenshot(path=str(output / ('%s-%s-detail.png' % (width, theme))))
+                        page.locator('.ex-content[aria-busy]').wait_for(state='detached')
+                        page.screenshot(path=str(output / ('%s-%s-detail.png' % (width, theme))), animations='disabled')
                         assert page.locator('.ex-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '题目横向溢出'
                         page.locator('[data-back]').click()
                         page.locator('[data-question]').wait_for()

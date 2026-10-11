@@ -134,6 +134,7 @@ def parse_paper(text, year, paper, source):
 
 
 def scan(paths, body):
+    vault_root = paths.vault.resolve()
     root = _inside(paths.vault, body.get('folder') or '60-真题库')
     if not root.is_dir():
         raise CatalogError('找不到题库文件夹：%s' % root.name)
@@ -143,16 +144,17 @@ def scan(paths, body):
         raise CatalogError('没有找到“年份-试卷一/二/三.md”原卷')
     qs, old_categories = {}, {}
     for f in originals:
-        _inside(paths.vault, str(f.relative_to(paths.vault)))
+        source = f.relative_to(vault_root).as_posix()
+        _inside(vault_root, source)
         year = int(f.name[:4]); paper = f.stem.split('-')[1]
-        for q in parse_paper(f.read_text(encoding='utf-8-sig'), year, paper, str(f.relative_to(paths.vault))):
+        for q in parse_paper(f.read_text(encoding='utf-8-sig'), year, paper, source):
             if q['id'] in qs:
                 raise CatalogError('原卷编号重复：%s，请只选择一份原始题库' % q['id'])
             qs[q['id']] = q
     for f in candidates:
         if '03-按学科分类' not in f.parts or '报告' in f.name:
             continue
-        _inside(paths.vault, str(f.relative_to(paths.vault)))
+        _inside(vault_root, f.relative_to(vault_root).as_posix())
         subject_path = f.parts[f.parts.index('03-按学科分类') + 1:-1]
         if not subject_path:
             continue
@@ -166,11 +168,11 @@ def scan(paths, body):
         for s in sorted(subject_root.iterdir()):
             if not s.is_dir() or _label(s.name) not in SUBJECTS:
                 continue
-            _inside(paths.vault, str(s.relative_to(paths.vault)))
+            _inside(vault_root, s.relative_to(vault_root).as_posix())
             for c in sorted(s.iterdir()):
                 if c.is_dir():
-                    _inside(paths.vault, str(c.relative_to(paths.vault)))
-                    chapters.append({'id': str(c.relative_to(paths.vault)), 'subject': _label(s.name),
+                    _inside(vault_root, c.relative_to(vault_root).as_posix())
+                    chapters.append({'id': c.relative_to(vault_root).as_posix(), 'subject': _label(s.name),
                                      'board': SUBJECTS[_label(s.name)], 'name': _label(c.name)})
     for ident, q in qs.items():
         categories = old_categories.get(ident, [])

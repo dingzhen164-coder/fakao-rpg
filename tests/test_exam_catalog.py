@@ -179,3 +179,15 @@ class CatalogTest(unittest.TestCase):
         self.assertEqual(ex.search(self.p, {'board': '刑诉', 'chapter': self.chapter})['total'], 1)
         self.assertEqual(ex.search(self.p, {'q': '错误', 'year': 2025})['total'], 1)
         self.assertFalse(ex.official_questions(Paths(None), '刑诉'))
+
+    def test_resolved_alias_and_portable_chapter_ids(self):
+        alias = self.p.vault / 'alias'
+        try:
+            alias.symlink_to(self.p.vault, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            self.skipTest('当前平台不允许创建目录链接，Windows短路径由正常导入用例覆盖')
+        p = Paths(alias)
+        ex.scan(p, {'commit': True})
+        d = ex.load(p)
+        self.assertEqual(d['chapters'][0]['id'], self.chapter)
+        self.assertEqual(d['questions'][self.ident]['source'], '60-真题库/02-法考回忆版-2018-2025/2025-试卷一.md')

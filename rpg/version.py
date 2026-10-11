@@ -1,4 +1,4 @@
-"""程序版本。改这里的数字并推到 main，GitHub 会自动打包一个新的 exe 发到 Releases（见 .github/workflows/build-exe.yml）"""
+"""程序版本。改这里并推到 main，GitHub 检查后自动打包 Windows / Mac / 安卓并发到 Releases。"""
 VERSION = "2.4.0"
 REPO = "dingzhen164-coder/fakao-rpg"
 
