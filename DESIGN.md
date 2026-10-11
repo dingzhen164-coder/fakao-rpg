@@ -3,9 +3,9 @@
 这份文档说明**为什么这样设计、数据长什么样、规则怎么算**，让任何人（或 AI）接手时不用重新推导。
 改了规则或结构，请同步更新这里。
 
-## 历年真题目录（2.4.2）
+## 历年真题目录（2.5.0）
 
-咒文书「📖 真题卷轴 · 题库」内“历年真题卷轴”由 `web/exams.js`、`web/exams.css` 和 `rpg/exam_catalog.py` 提供；接口 `/api/exams` 与 `/api/exams/{search,scan,detail,practice,edit,references,classify,confirm,import-classification}`。
+咒文书「📖 真题卷轴 · 题库」内“历年真题卷轴”由 `web/exams.js`、`web/exams.css` 和 `rpg/exam_catalog.py` 提供；接口 `/api/exams` 与 `/api/exams/{search,overview,sequence,scan,detail,practice,edit,references,classify,confirm,import-classification}`。
 扫描 `60-真题库/**/年份-试卷一/二/三.md`，原卷四级题号标题（题干可在标题或正文）、勾选框 A—D 选项、旧卷单/多/不定项分节；原卷身份 `年份-卷次-题号`。派生分科文件只提供旧分类，不再次导入。
 章节来自 `10-科目/科目/章节` 文件夹；民诉/刑诉名称映射，以及公司法、经济法、知识产权法映射商经知，其余对应法考八科。笔记和原卷均只读。
 
@@ -16,6 +16,10 @@ AI分类每批最多100题，每次请求8题，只发章节目录和题目，�
 离线分类通过 `/api/exams/import-classification`：JSON 包含 format=fakao-rpg-classification、version=1 及 items（id、fingerprint、chapter、topic、confidence、method、reason）。仅对当前指纹一致、章节存在、尚未确认的题生效。先预览显示采用/待复核/保留/原文变化/缺失/未知章节数量，再以目录 revision 显式提交；校验不通过整包不写入。confidence=high 由用户点击采用后成为 confirmed；review 或原文警告则保存归属与建议、classification=review，可按章节浏览但仍不进入正式题。保留 classification_source 依据，不改答案、解析或历史。用户另行确认 review 后成为 confirmed。“有待确认建议”筛选跨年份显示所有有 suggestion 的题，批次题数保留在当前界面内。分类文件只由用户选择，不随公开程序发布。
 
 批量采用复用 `/api/exams/confirm`，scope=all/filtered、filters 与 revision 由前端传入。search 返回目录 revision 及全部/当前筛选可采用数量。筛选与批量采用共用 `_filtered`，操作覆盖全部分页，只有未确认且现有章节有效的建议才进入批次；目录版本变化整批拒绝，不用旧预览覆盖新修改。成功时在一次原子保存内更新分类，不触碰答案、解析或历史。页面提供全部采用、当前筛选采用、全选本页；用户点击即显式采用，不再次逐题确认。关闭历年目录刷新当前题库页。
+
+卷轴书架：`EXAMS.shelfHtml(mode)` 调用 `/api/exams/overview`，咒文书题库和冒险实战复用同一目录。八科铜轴羊皮纸卷轴纯CSS绘制，纹章浮动/光晕、展开动画，触控及键盘可展开，prefers-reduced-motion 关闭动画。overview 统计所有历年原题，不要求答案核验；返回各科题数、唯一已作答数、已核验数、章节计数、前三题预览，以及原始(year,paper)套卷及题目预览，不返回答案。未归科另列待分类。原有题库保留；为0时不再显示容易误解的“0卷”目录。
+
+连续刷题：`/api/exams/sequence` 使用目录同一筛选函数，支持科目、章节、年份、卷次及关键词，按年份降序、卷次、题号排序，返回全部id、total、answered及第一道没有历史的start，不受列表分页影响。刷题入口重置残留筛选，阅读模式隐藏分类管理，显示上一题/下一题/当前位置。按科目刷题或按套卷刷题直接定位第一道未做题；已全做过从首题重新练。选择通过已有practice接口写回同一目录，每题保留历史；无答案返回ok=null，未计入正式判分与经验。关闭后可从其他入口继续未做题。不另建题库或把参考选择伪装成正式试炼成绩。
 
 Lawyer LLaMA 使用用户点击下载的固定上游快照或上传JSON，只存本地 `训练/题库/参考数据/` 和目录，不提交用户题库或第三方数据。精确比较规范化题干和四个选项集合，保留源选项→当前选项映射；没有选项但题干相同仅标题干参考，不推断答案；共用材料不能验证时不匹配。单选项判断不拼成整题答案。展示来源、匹配范围和未核验标记；上游只作学术/个人学习参考，不能当权威答案。
 

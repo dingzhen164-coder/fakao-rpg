@@ -3,6 +3,7 @@
 手动执行需开发依赖 playwright；程序及前端不依赖它。截图输出到指定目录。
 """
 import json
+import copy
 import os
 import sys
 import tempfile
@@ -118,7 +119,84 @@ def main():
                 page.locator('[data-libtab="yujian"].on').wait_for()
                 page.locator('[data-open-exams]').wait_for()
                 page.locator('.ex-dialog').wait_for(state='detached')
+                page.get_by_text('共 1 道历年题目', exact=False).wait_for()
+                # 虚构多科跨卷题库：校验未核验题直接可见、卷轴、跨科套卷与连续刷题。
+                pth = paths.Paths(vault)
+                catalog = exam_catalog.load(pth)
+                original_q = catalog['questions']['2025-试卷一-001']
+                subjects = list(exam_catalog.SUBJECTS.values())
+                subjects = list(dict.fromkeys(subjects))
+                for i in range(2, 26):
+                    item = copy.deepcopy(original_q)
+                    board = subjects[(i - 2) % len(subjects)]
+                    item.update(id='2025-试卷一-%03d' % i, number=i, board=board, subject=board,
+                                stem='虚构展示题：%s的第%s题，应当如何适用法律？' % (board, i),
+                                history=[], references=[], answer='', answer_status='pending')
+                    catalog['questions'][item['id']] = item
+                for i, board in enumerate(subjects, 1):
+                    item = copy.deepcopy(original_q)
+                    item.update(id='2024-试卷二-%03d' % i, year=2024, paper='试卷二', number=i, board=board,
+                                stem='虚构旧卷题：%s的案例问题。' % board, history=[], references=[],
+                                answer='', answer_status='pending')
+                    catalog['questions'][item['id']] = item
+                exam_catalog.save(pth, catalog)
+                page.evaluate('render()')
+                page.locator('.ex-scroll').first.wait_for()
+                assert page.locator('.ex-scroll').count() == 8
+                page.get_by_text('共 33 道历年题目', exact=False).wait_for()
+                for width, height in [(1280, 860), (800, 1280)]:
+                    page.set_viewport_size({'width': width, 'height': height})
+                    for theme in ['light', 'dark']:
+                        page.evaluate('(t) => document.documentElement.dataset.theme = t', theme)
+                        page.screenshot(path=str(output / ('%s-%s-scroll-shelf.png' % (width, theme))), animations='disabled')
+                        assert page.locator('.ex-shelf').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1')
+                board_roll = page.locator('.ex-scroll').filter(has=page.locator('[data-ex-board="刑诉"][data-ex-practice]'))
+                board_roll.locator('summary').click()
+                for width, height in [(1280, 860), (800, 1280)]:
+                    page.set_viewport_size({'width': width, 'height': height})
+                    for theme in ['light', 'dark']:
+                        page.evaluate('(t) => document.documentElement.dataset.theme = t', theme)
+                        page.screenshot(path=str(output / ('%s-%s-scroll-open.png' % (width, theme))), animations='disabled')
+                        assert board_roll.evaluate('(e) => e.scrollWidth <= e.clientWidth + 1')
+                expected = exam_catalog.sequence(pth, {'board': '刑诉'})
+                first_id = expected['ids'][expected['start']]
+                board_roll.locator('[data-ex-practice]').click()
+                page.locator('.ex-heading').get_by_text(first_id, exact=True).wait_for()
+                page.locator('[data-q-next]').click()
+                page.locator('.ex-heading').get_by_text(expected['ids'][expected['start'] + 1], exact=True).wait_for()
+                page.locator('[data-q-prev]').click()
+                page.locator('.ex-heading').get_by_text(first_id, exact=True).wait_for()
+                page.locator('[name="exChoice"][value="A"]').check()
+                page.locator('[data-practice]').click()
+                page.get_by_text('答案未核验，不判对错。', exact=False).wait_for()
+                assert exam_catalog.detail(pth, {'id': first_id, 'reveal': True})['history'][-1]['ok'] is None
+                page.locator('[data-close]').click()
+                page.locator('.ex-dialog').wait_for(state='detached')
+                page.locator('#nav [data-view="train"]').click()
+                page.locator('[data-hall="shizhan"]').click()
+                page.locator('[data-ex-shelf]').wait_for()
+                assert page.locator('[data-open-exams]').count() == 0
+                for width, height in [(1280, 860), (800, 1280)]:
+                    page.set_viewport_size({'width': width, 'height': height})
+                    for theme in ['light', 'dark']:
+                        page.evaluate('(t) => document.documentElement.dataset.theme = t', theme)
+                        page.screenshot(path=str(output / ('%s-%s-adventure-scrolls.png' % (width, theme))), animations='disabled')
+                paper = page.locator('.ex-paper-roll').first
+                paper.locator('summary').click()
+                paper.locator('[data-ex-practice]').click()
+                page.locator('.ex-heading').get_by_text('2025-试卷一-002', exact=True).wait_for()
+                page.get_by_text('第 2 / 25 题', exact=False).wait_for()
+                page.locator('[data-q-next]').click()
+                page.locator('.ex-heading').get_by_text('2025-试卷一-003', exact=True).wait_for()
+                page.locator('[data-close]').click()
+                page.locator('.ex-dialog').wait_for(state='detached')
+                # 套卷题目目录中的每一题可直达详情。
+                paper = page.locator('.ex-paper-roll').first
+                paper.locator('summary').click()
+                paper.locator('[data-ex-id="2025-试卷一-003"]').click()
+                page.locator('.ex-heading').get_by_text('2025-试卷一-003', exact=True).wait_for()
                 assert not errors, '\n'.join(errors)
+
                 browser.close()
         finally:
             srv.shutdown(); srv.server_close()

@@ -206,9 +206,11 @@ def scan(paths, body):
 
 def _filtered(data, body):
     qs = list(data['questions'].values())
+    if body.get('unclassified'):
+        qs = [q for q in qs if not q['board']]
     if body.get('classification') == 'suggested':
         qs = [q for q in qs if q.get('suggestion')]
-    for field in ('board', 'chapter', 'year', 'classification'):
+    for field in ('board', 'chapter', 'year', 'paper', 'classification'):
         if field == 'classification' and body.get(field) == 'suggested':
             continue
         if body.get(field):
@@ -225,6 +227,52 @@ def _confirmable(data, body):
     chapters = {c['id'] for c in data['chapters']}
     return [q for q in _filtered(data, body) if q['classification'] != 'confirmed'
             and (q.get('suggestion') or {}).get('chapter') in chapters]
+
+
+def overview(paths, body):
+    """卷轴书架与实战入口共用目录：统计全部原题，包括没有核验答案的题。
+
+    boards 含章节计数和题目预览；sets 按原始年份/卷次分组，不按分类重建套卷。
+    返回编号和题干预览，不含答案/解析。作答数按历史中有选择的唯一题计算。
+    """
+    with LOCK:
+        data = load(paths)
+    qs = sorted(data['questions'].values(), key=lambda q: (-q['year'], q['paper'], q['number']))
+    chapters = {c['id']: c for c in data['chapters']}
+    def pack(rows):
+        return dict(total=len(rows), answered=sum(bool(q['history']) for q in rows),
+                    verified=sum(q['answer_status'] == 'verified' for q in rows),
+                    preview=[dict(id=q['id'], text=q['stem'][:85]) for q in rows[:3]])
+    boards = []
+    names = list(dict.fromkeys(SUBJECTS.values()))
+    if any(not q['board'] for q in qs):
+        names.append('待分类')
+    for board in names:
+        rows = [q for q in qs if (q['board'] or '待分类') == board]
+        counts = Counter(q['chapter'] for q in rows)
+        boards.append(dict(pack(rows), board=board, chapters=[dict(id=k, name=chapters[k]['name'],
+                           subject=chapters[k]['subject'], count=v) for k, v in counts.items() if k in chapters]))
+    groups = {}
+    for q in qs:
+        groups.setdefault((q['year'], q['paper']), []).append(q)
+    sets = [dict(pack(rows), year=y, paper=p, label='%s年 · %s' % (y, p))
+            for (y, p), rows in groups.items()]
+    return dict(total=len(qs), boards=boards, sets=sets)
+
+
+def sequence(paths, body):
+    """按科目/章节/原始套卷列刷题编号；分页不截断，续刷定位第一道未作答题。
+
+    编号沿用历年目录，不另建题，不把未核验答案判为正确或错误。
+    """
+    with LOCK:
+        data = load(paths)
+    qs = sorted(_filtered(data, body), key=lambda q: (-q['year'], q['paper'], q['number']))
+    if body.get('unclassified'):
+        qs = [q for q in qs if not q['board']]
+    ids = [q['id'] for q in qs]
+    start = next((i for i, q in enumerate(qs) if not q['history']), 0)
+    return dict(ids=ids, total=len(ids), answered=sum(bool(q['history']) for q in qs), start=start)
 
 
 def search(paths, body):

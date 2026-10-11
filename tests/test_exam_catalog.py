@@ -49,6 +49,39 @@ class CatalogTest(unittest.TestCase):
                  topic='证明责任', confidence=confidence, reason='考证据')
             for q in ex.load(self.p)['questions'].values()]}
 
+    def test_scroll_overview_and_paper_sequence_include_unverified_questions(self):
+        self.imported()
+        d = ex.load(self.p)
+        base = d['questions'][self.ident]
+        d['questions'] = {}
+        for i in range(1, 31):
+            q = copy.deepcopy(base)
+            q.update(id='2025-试卷一-%03d' % i, number=i, paper='试卷一', board='刑诉' if i % 2 else '民法',
+                     chapter=self.chapter if i % 2 else '', history=[], classification='legacy')
+            d['questions'][q['id']] = q
+        extra = copy.deepcopy(base)
+        extra.update(id='2024-试卷二-001', year=2024, paper='试卷二', board='', number=1)
+        d['questions'][extra['id']] = extra
+        ex.save(self.p, d)
+        before = ex._file(self.p).read_bytes()
+        summary = ex.overview(self.p, {})
+        self.assertEqual(summary['total'], 31)
+        self.assertEqual([s['total'] for s in summary['sets']], [30, 1])
+        self.assertEqual(next(b for b in summary['boards'] if b['board'] == '刑诉')['total'], 15)
+        self.assertEqual(next(b for b in summary['boards'] if b['board'] == '待分类')['total'], 1)
+        self.assertNotIn('answer', summary['boards'][0]['preview'][0] if summary['boards'][0]['preview'] else {})
+        self.assertEqual(before, ex._file(self.p).read_bytes())
+        seq = ex.sequence(self.p, dict(year=2025, paper='试卷一', page=99))
+        self.assertEqual(seq['total'], 30)
+        self.assertEqual(seq['ids'][0], self.ident)
+        self.assertEqual(seq['ids'][-1], '2025-试卷一-030')
+        self.assertEqual(ex.sequence(self.p, dict(board='刑诉', chapter=self.chapter))['total'], 15)
+        self.assertEqual(ex.sequence(self.p, dict(unclassified=True))['ids'], [extra['id']])
+        ex.practice(self.p, dict(id=self.ident, answer='A'))
+        self.assertEqual(ex.sequence(self.p, dict(year=2025, paper='试卷一'))['start'], 1)
+        self.assertEqual(ex.overview(self.p, {})['sets'][0]['answered'], 1)
+        self.assertIsNone(ex.load(self.p)['questions'][self.ident]['history'][0]['ok'])
+
     def test_bulk_adoption_crosses_pages_and_preserves_records(self):
         self.imported()
         d = ex.load(self.p)

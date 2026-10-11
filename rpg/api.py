@@ -741,6 +741,8 @@ def settings_test(body):
 ROUTES = {
     ("GET", "/api/exams"): _exam_route(exam_catalog.search),
     ("POST", "/api/exams/search"): _exam_route(exam_catalog.search),
+    ("POST", "/api/exams/overview"): _exam_route(exam_catalog.overview),
+    ("POST", "/api/exams/sequence"): _exam_route(exam_catalog.sequence),
     ("POST", "/api/exams/scan"): _exam_route(exam_catalog.scan),
     ("POST", "/api/exams/detail"): _exam_route(exam_catalog.detail),
     ("POST", "/api/exams/edit"): _exam_route(exam_catalog.edit),
