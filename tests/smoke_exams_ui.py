@@ -48,12 +48,13 @@ def main():
                 page.locator('#nav [data-view="skeleton"]').click()
                 page.locator('[data-libtab="yujian"]').click()
                 page.locator('[data-open-exams]').click()
+                page.locator('[data-catalog-tab="import"]').click()
                 page.locator('[data-scan]').click()
                 page.get_by_text('预览：1 张原卷、1 题', exact=False).wait_for()
                 assert not (vault / '训练/题库/历年目录.json').exists()
                 page.locator('[data-import]').click()
                 page.locator('[data-question]').wait_for()
-                page.get_by_text('导入与参考解析', exact=False).click()
+                page.locator('[data-catalog-tab="classification"]').click()
                 q = exam_catalog.detail(paths.Paths(vault), {'id': '2025-试卷一-001'})
                 package = {'format': 'fakao-rpg-classification', 'version': 1, 'items': [
                     dict(id=q['id'], fingerprint=q['fingerprint'], chapter=chapter, confidence='review', reason='测试复核')]}
@@ -70,20 +71,31 @@ def main():
                 page.locator('[data-confirm-filtered]').click()
                 page.get_by_text('已一次采用 1 题', exact=False).wait_for()
                 assert exam_catalog.load(paths.Paths(vault))['questions'][q['id']]['classification'] == 'confirmed'
-                page.locator('#exClass').select_option('')
-                page.locator('[data-question]').wait_for()
-                page.get_by_text('导入与参考解析', exact=False).click()
+                page.locator('[data-catalog-tab="references"]').click()
 
                 rows = [{'input': '界面测试题：哪个选项是甲？\nA. 乙\nB. 甲\nC. 丁\nD. 丙', 'output': '虚构测试解析：原数据B对应本题A。'}]
                 page.locator('#exReferenceFile').set_input_files({'name': 'sample.json', 'mimeType': 'application/json', 'buffer': json.dumps(rows, ensure_ascii=False).encode('utf-8')})
                 page.get_by_text('标准答案未改变。', exact=False).wait_for()
+                page.get_by_text('已自动导入 1 道题的参考解析', exact=False).wait_for()
+                assert page.locator('[data-question]').count() == 1
+                assert page.locator('[data-classify]').is_hidden()
+                for width, height in [(1280, 860), (800, 1280)]:
+                    page.set_viewport_size({'width': width, 'height': height})
+                    for theme in ['light', 'dark']:
+                        page.evaluate('(t) => document.documentElement.dataset.theme = t', theme)
+                        page.screenshot(path=str(output / ('%s-%s-reference-results.png' % (width, theme))), animations='disabled')
                 page.locator('[data-question]').click()
+                page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
+                assert page.locator('.ex-answer-view details').first.get_attribute('open') is not None
+                # 无需作答即可主动读解析，未自动核验答案。
+                assert not exam_catalog.detail(paths.Paths(vault), {'id': q['id'], 'reveal': True})['answer']
                 page.locator('[name="exChoice"][value="A"]').check()
                 page.locator('[data-practice]').click()
                 page.get_by_text('答案未核验，不判对错。', exact=False).wait_for()
                 q = exam_catalog.detail(paths.Paths(vault), {'id': '2025-试卷一-001', 'reveal': True})
                 assert q['answer'] == '' and q['history'][0]['ok'] is None
                 assert not exam_catalog.official_questions(paths.Paths(vault), '刑诉')
+                page.get_by_text('科目与章节核对', exact=True).click()
                 page.locator('#exEditChapter').select_option(chapter)
                 page.locator('#exEditTopic').fill('证明责任')
                 page.locator('[data-save-class]').click()
@@ -97,6 +109,7 @@ def main():
                 assert exam_catalog.official_questions(paths.Paths(vault), '刑诉')[0]['answer'] == 'A'
                 assert source.read_bytes() == original
                 page.locator('[data-back]').click()
+                page.locator('[data-catalog-tab="questions"]').click()
                 page.locator('#exBoard').select_option('刑诉')
                 page.locator('#exChapter').select_option(chapter)
                 page.locator('[data-question]').wait_for()
@@ -109,12 +122,25 @@ def main():
                         assert page.locator('.ex-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '目录横向溢出'
                         page.locator('[data-question]').click()
                         page.locator('[data-reveal]').click()
-                        page.get_by_text('Lawyer LLaMA · GPT生成 · 未核验', exact=False).click()
+                        page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
                         page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                         page.screenshot(path=str(output / ('%s-%s-detail.png' % (width, theme))), animations='disabled')
                         assert page.locator('.ex-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1'), '题目横向溢出'
                         page.locator('[data-back]').click()
                         page.locator('[data-question]').wait_for()
+                # 统计入口清除之前的科目/年份等筛选，显示保存的解析。
+                page.locator('#exYear').select_option('2025')
+                page.locator('[data-stat-tab="references"]').click()
+                assert page.locator('#exBoard').input_value() == ''
+                assert page.locator('#exYear').input_value() == ''
+                page.locator('[data-ref-question]').click()
+                page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
+                page.locator('[data-close]').click()
+                page.locator('.ex-dialog').wait_for(state='detached')
+                page.locator('[data-ex-references]').click()
+                page.locator('[data-question]').wait_for()
+                page.locator('[data-question]').click()
+                page.get_by_text('虚构测试解析：原数据B对应本题A。', exact=True).wait_for()
                 page.locator('[data-close]').click()
                 page.locator('[data-libtab="yujian"].on').wait_for()
                 page.locator('[data-open-exams]').wait_for()

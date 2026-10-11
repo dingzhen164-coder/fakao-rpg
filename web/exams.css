@@ -12,7 +12,7 @@
 .ex-dialog summary { padding:8px 0; cursor:pointer; }
 .ex-dialog details details { margin-top:16px; border-top:1px solid var(--line); }
 .ex-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
-.ex-stats div { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+.ex-stats button { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
 .ex-stats b { display:block; font-size:25px; color:var(--gold); }
 .ex-stats span { font-size:13px; color:var(--muted); }
 .ex-filters { display:grid; grid-template-columns:1fr 2fr 1fr 1fr; gap:12px; align-items:end; }
@@ -74,3 +74,18 @@
 @media(max-width:850px) { .ex-filters { grid-template-columns:1fr 1fr; } .ex-keyword { grid-column:span 1; } .ex-paper-grid,.ex-scroll-previews { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:500px) { .ex-scroll-grid,.ex-paper-grid,.ex-scroll-previews { grid-template-columns:1fr; } .ex-scroll[open]>summary { grid-template-columns:auto 1fr auto; } .ex-scroll[open] .ex-scroll-hint { grid-column:1/-1; } .ex-scroll-inside { padding:15px; } }
 @media(prefers-reduced-motion:reduce) { .ex-scroll-crest,.ex-scroll-inside { animation:none; } .ex-scroll { transition:none; } }
+
+/* 题目、参考解析、导入和分类分开；统计卡片可直接进入结果。 */
+.ex-content [hidden] { display:none!important; }
+.ex-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+.ex-tabs button { flex:1; min-width:125px; }
+.ex-tabs .on { background:var(--accent); color:#fff; border-color:var(--accent); }
+.ex-stats button { text-align:left; cursor:pointer; }
+.ex-stats button:hover,.ex-stats button:focus-visible { border-color:var(--accent); }
+.ex-reference-report { padding:14px 18px; border-left:4px solid var(--accent); background:var(--panel); border-radius:8px; }
+.ex-reference-report p,.ex-references>p { line-height:1.75; }
+.ex-ref-link { font-size:13px; padding:6px 10px; color:var(--accent); }
+.ex-heading { position:sticky; top:0; z-index:2; background:var(--bg); padding:8px 0; border-bottom:1px solid var(--line); }
+.ex-reading [data-catalog-tab="import"],.ex-reading [data-catalog-tab="classification"] { display:none; }
+.ex-reading .ex-classification { display:none; }
+.ex-answer-view { scroll-margin-top:70px; }

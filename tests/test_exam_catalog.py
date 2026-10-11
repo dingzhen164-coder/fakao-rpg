@@ -196,13 +196,35 @@ class CatalogTest(unittest.TestCase):
         row = {'input': q['stem'] + '\nA. 甲\nB. 乙\nC. 丙\nD. 丁', 'output': 'GPT判断答案是A。'}
         r = ex.references(self.p, {'name': 'sample.json', 'rows': [row]})
         self.assertEqual(r['full'], 1)
+        self.assertEqual(r['records_with_options'], 1)
+        self.assertEqual(r['records_without_options'], 0)
+        self.assertEqual(ex.search(self.p, {})['reference_import'], r)
+        self.assertEqual(ex.search(self.p, {'has_references': 'yes'})['total'], 1)
+        self.assertEqual(ex.search(self.p, {'has_references': 'no'})['total'], 1)
+        self.assertEqual(ex.sequence(self.p, {'has_references': 'yes'})['ids'], [self.ident])
         hidden = ex.detail(self.p, {'id': self.ident})
         self.assertNotIn('references', hidden)
+        self.assertEqual(hidden['reference_count'], 1)
         result = ex.practice(self.p, {'id': self.ident, 'answer': 'B'})
         self.assertIsNone(result['result']['ok'])
         self.assertEqual(result['answer'], '')
         self.assertFalse(ex.official_questions(self.p, '刑法'))
         self.assertFalse(self.p.save_file.exists())
+
+    def test_reference_report_reimport_and_option_judgments_are_not_full_questions(self):
+        q = self.imported()
+        full = {'input': q['stem'] + '\nA. 甲\nB. 乙\nC. 丙\nD. 丁', 'output': '测试参考'}
+        judgment = {'instruction': q['stem'] + '\n甲\n请给出详细的推理过程之后再给出答案。', 'output': '正确'}
+        rows = [full, [judgment], {'input': '完全不同的问题', 'output': '参考'}, {}]
+        first = ex.references(self.p, {'name': 'sample.json', 'rows': rows})
+        self.assertEqual((first['records'], first['usable_records'], first['records_with_options'], first['records_without_options']), (4, 3, 1, 2))
+        self.assertEqual((first['matched'], first['full'], first['unmatched']), (1, 1, 1))
+        ex.references(self.p, {'name': 'sample.json', 'rows': rows})
+        saved = ex.detail(self.p, {'id': self.ident, 'reveal': True})
+        self.assertEqual(len(saved['references']), 1)
+        self.assertEqual(saved['answer'], '')
+        self.assertEqual(saved['history'], [])
+        self.assertEqual(ex.search(self.p, {'has_references': 'yes', 'year': 1999})['total'], 0)
 
     def test_exact_mapping_negation_fact_changes_and_nested_rows(self):
         self.assertNotEqual(ex.normalize('1.5万元'), ex.normalize('15万元'))

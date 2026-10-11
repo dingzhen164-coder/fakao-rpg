@@ -217,6 +217,8 @@ def _filtered(data, body):
             qs = [q for q in qs if str(q.get(field)) == str(body[field])]
     if body.get('answer_status'):
         qs = [q for q in qs if q['answer_status'] == body['answer_status']]
+    if body.get('has_references'):
+        qs = [q for q in qs if bool(q['references']) == (body['has_references'] == 'yes')]
     words = str(body.get('q') or '').split()
     if words:
         qs = [q for q in qs if all(w in (q['id'] + q['stem'] + q.get('topic', '') + ' '.join(q['options'].values())) for w in words)]
@@ -294,6 +296,7 @@ def search(paths, body):
             'stats': {'total': len(allq), 'verified': sum(q['answer_status'] == 'verified' for q in allq),
                       'classified': sum(q['classification'] == 'confirmed' for q in allq),
                       'references': sum(bool(q['references']) for q in allq)},
+            'reference_import': data.get('reference_import'),
             'job': dict(JOBS.get(str(paths.vault), {}))}
 
 
@@ -304,6 +307,7 @@ def detail(paths, body):
             raise CatalogError('找不到题目')
         # 未交参考练习前不泄露参考解析或已核验答案。
         out = copy.deepcopy(q)
+        out['reference_count'] = len(q['references'])
         if not body.get('reveal'):
             for k in ('answer', 'answer_source', 'analysis', 'references'):
                 out.pop(k, None)
@@ -541,7 +545,16 @@ def references(paths, body):
         name = body.get('name') or '上传参考.json'
         datasets = [(Path(name).name, body.get('rows'))]
     hits = match_references(snapshot['questions'], datasets)
+    usable = with_options = 0
+    for name, rows in datasets:
+        for row in rows:
+            if isinstance(row, list) and len(row) == 1:
+                row = row[0]
+            if isinstance(row, dict) and row.get('output'):
+                usable += 1
+                with_options += bool(reference_input(row)[1])
     matched = 0
+    full = 0
     with LOCK:
         data = load(paths)
         for ident, refs in hits.items():
@@ -551,9 +564,15 @@ def references(paths, body):
             old = {(r['dataset'], r['row']): r for r in q['references']}
             old.update({(r['dataset'], r['row']): r for r in refs})
             q['references'] = list(old.values()); q['revision'] += 1; matched += 1
+            full += any(r['match'] == 'full' for r in refs)
+        report = {'matched': matched, 'full': full, 'stem_only': matched - full,
+                  'records': sum(len(rows) for name, rows in datasets), 'usable_records': usable,
+                  'records_with_options': with_options, 'records_without_options': usable - with_options,
+                  'total': len(snapshot['questions']), 'unmatched': len(snapshot['questions']) - matched,
+                  'datasets': [name for name, rows in datasets], 'date': dt.datetime.now().isoformat(timespec='seconds')}
+        data['reference_import'] = report
         save(paths, data)
-    return {'matched': matched, 'full': sum(any(r['match'] == 'full' for r in refs) for refs in hits.values()),
-            'records': sum(len(rows) for name, rows in datasets), 'total': len(snapshot['questions'])}
+    return report
 
 
 def classify(paths, body):
