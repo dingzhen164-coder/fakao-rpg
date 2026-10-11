@@ -38,7 +38,7 @@
   }
   function referenceReport() {
     const r = data.reference_import;
-    return r ? `<div class="ex-reference-report"><b>上次匹配已保存：${r.matched} 道题 · 完整匹配 ${r.full} 道</b><p>读取 ${r.records} 条数据，其中 ${r.records_with_options} 条带四个选项，${r.records_without_options} 条没有完整四选项。${r.unmatched} 道本地题未在本批数据中找到匹配。</p><p class="small muted">${esc(r.date.replace('T', ' '))} · 保存到对应题目，关闭或重启后仍可查看。</p></div>` : `<p class="small muted">${data.stats.references ? '已有参考解析已保存在对应题目中。下方直接列出这些题目，点开即可阅读。' : '尚未导入参考解析。点击下载匹配，或选择你已有的 JSON 文件。'}</p>`;
+    return r ? `<details class="ex-reference-report"><summary><b>匹配报告：已保存 ${r.matched} 道题 · 完整匹配 ${r.full} 道</b></summary><p>读取 ${r.records} 条数据，其中 ${r.records_with_options} 条带四个选项，${r.records_without_options} 条没有完整四选项。${r.unmatched} 道本地题未在本批数据中找到匹配。</p><p class="small muted">${esc(r.date.replace('T', ' '))} · 保存到对应题目，关闭或重启后仍可查看。</p></details>` : `<p class="small muted">${data.stats.references ? '已有参考解析已保存在对应题目中。下方直接列出这些题目，点开即可阅读。' : '尚未导入参考解析。点击下载匹配，或选择你已有的 JSON 文件。'}</p>`;
   }
   function renderList() {
     question = null;
@@ -46,7 +46,7 @@
     const chapters = data.chapters.filter(c => !filters.board || c.board === filters.board);
     content.innerHTML = `<div class="ex-heading"><div><div class="rune">📖 真题卷轴</div><h2>历年真题 · 科目与章节</h2></div><button data-close aria-label="关闭历年真题">关闭</button></div>
       <nav class="ex-tabs" aria-label="题库功能">${[['questions', '题目目录'], ['references', '参考解析'], ['import', '导入原卷'], ['classification', '分类管理']].map(([id, name]) => `<button data-catalog-tab="${id}" aria-pressed="${catalogTab === id}" class="${catalogTab === id ? 'on' : ''}">${name}</button>`).join('')}</nav>
-      <div class="ex-stats">${[['全部题目', s.total, 'questions'], ['章节已确认', s.classified, 'classification'], ['答案已核验', s.verified, 'verified'], ['有参考解析 · 点击查看', s.references, 'references']].map(([name, n, tab]) => `<button data-stat-tab="${tab}"><b>${n}</b><span>${name}</span></button>`).join('')}</div>
+      <div class="ex-stats" ${catalogTab === 'references' ? 'hidden' : ''}>${[['全部题目', s.total, 'questions'], ['章节已确认', s.classified, 'classification'], ['答案已核验', s.verified, 'verified'], ['有参考解析 · 点击查看', s.references, 'references']].map(([name, n, tab]) => `<button data-stat-tab="${tab}"><b>${n}</b><span>${name}</span></button>`).join('')}</div>
       <section class="card ex-import" ${catalogTab !== 'import' ? 'hidden' : ''}><h3>📥 导入原卷</h3><div class="ex-tools">
         <label>原卷文件夹（相对法考库）<input id="exFolder" value="60-真题库"></label><div class="row"><button data-scan>预览导入</button><button data-import>导入 / 更新原卷</button></div>
         <p class="small muted">识别“年份-试卷一/二/三.md”；按年份、卷次、题号去重，旧分科只作为待核对记录。章节来自 10-科目 的文件夹。</p>

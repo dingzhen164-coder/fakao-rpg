@@ -135,6 +135,7 @@ def main():
                 # 统计入口清除之前的科目/年份等筛选，显示保存的解析。
                 page.locator('#exYear').select_option('2025')
                 page.locator('[data-stat-tab="references"]').click()
+                page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                 assert page.locator('#exBoard').input_value() == ''
                 assert page.locator('#exYear').input_value() == ''
                 page.locator('[data-ref-question]').click()
