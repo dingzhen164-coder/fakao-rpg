@@ -54,9 +54,9 @@
         <label>离线分类结果（无需 API）<input type="file" id="exOfflineFile" accept=".json,application/json"></label><div class="row"><button data-offline-adopt>预览后采用离线分类</button><button data-suggestions>查看待确认建议</button></div><p class="small muted">先选分类包中的 JSON 预览，再点击采用。保留已确认归属；多专题或证据不足的题按章显示并标记待复核。答案、解析和练习记录保持原样。</p>
       </div></section><section class="card ex-references" ${catalogTab !== 'references' ? 'hidden' : ''}><h3>参考解析 · 已保存 ${s.references} 道题</h3>
         ${referenceReport()}
-        <p>数据条数不等于完整真题数：Lawyer LLaMA 包含单个选项判断、没有完整选项的问题，以及与你的原卷不同的题目。只挂接能核对的题干和选项，避免把别题解析放到本题。</p>
-        <div class="row"><button data-reference>下载并导入匹配解析</button><label class="small">或上传 JSON <input type="file" id="exReferenceFile" accept=".json,application/json"></label></div>
-        <p class="small muted">只作个人学习参考，遵循上游数据使用说明。首次下载需联网，之后本地可用。仅精确匹配题干及选项，保留原选项映射，不自动提取标准答案。</p>
+        <p>数据条数不等于完整真题数。Lawyer LLaMA 包含单个选项判断；只把能核对题干、选项的解析放入对应题目。</p>
+        <details ${s.references ? '' : 'open'}><summary>下载 / 上传更多参考数据</summary><div class="row"><button data-reference>下载并导入匹配解析</button><label class="small">或上传 JSON <input type="file" id="exReferenceFile" accept=".json,application/json"></label></div>
+        <p class="small muted">只作个人学习参考，遵循上游数据使用说明。首次下载需联网，之后本地可用。仅精确匹配题干及选项，保留原选项映射，不自动提取标准答案。</p></details>
       </section>
       <section class="ex-classification" ${catalogTab !== 'classification' ? 'hidden' : ''}>
       <div class="row ex-ai"><label class="small">本批 <select id="exLimit">${[20, 50, 100].map(n => option(n, n, batchLimit)).join('')}</select> 题</label><button data-classify>AI 建议章节</button><span class="muted small">只处理当前科目中尚无建议的题；已保存建议不重复请求。</span></div>
@@ -65,17 +65,17 @@
       </section>
       <p data-message class="ex-message" role="status" aria-live="polite"></p>
       <section class="ex-directory" ${catalogTab === 'import' ? 'hidden' : ''}>
-      <div class="ex-filters"><label>科目<select id="exBoard">${option('', '全部科目', filters.board)}${data.boards.map(b => option(b, b, filters.board)).join('')}</select></label>
+      <details class="ex-filter-box" ${catalogTab === 'references' ? '' : 'open'}><summary>筛选题目</summary><div class="ex-filters"><label>科目<select id="exBoard">${option('', '全部科目', filters.board)}${data.boards.map(b => option(b, b, filters.board)).join('')}</select></label>
       <label>章节<select id="exChapter">${option('', '全部章节', filters.chapter)}${chapters.map(c => option(c.id, c.subject + ' · ' + c.name, filters.chapter)).join('')}</select></label>
       <label>年份<select id="exYear">${option('', '全部年份', filters.year)}${data.years.map(y => option(y, y, filters.year)).join('')}</select></label>
       <label>卷次<select id="exPaper">${option('', '全部卷次', filters.paper)}${['试卷一', '试卷二', '试卷三'].map(p => option(p, p, filters.paper)).join('')}</select></label>
       <label>分类状态<select id="exClass">${option('', '全部状态', filters.classification)}${Object.entries(labels).map(([k, v]) => option(k, v, filters.classification)).join('')}</select></label>
-      <label class="ex-keyword">关键词<input id="exQuery" value="${esc(filters.q)}" placeholder="题干、选项、题号或知识点"></label><button data-search>搜索</button></div>
+      <label class="ex-keyword">关键词<input id="exQuery" value="${esc(filters.q)}" placeholder="题干、选项、题号或知识点"></label><button data-search>搜索</button></div></details>
       <div class="row"><b>共 ${data.total} 题</b><button data-start-sequence>开始 / 继续刷题</button><span class="spacer"></span><button data-select-page ${catalogTab !== 'classification' ? 'hidden' : ''}>全选本页建议</button><button data-confirm ${catalogTab !== 'classification' ? 'hidden' : ''}>采用勾选的章节建议</button></div>
       <div class="ex-list">${data.rows.map(q => { const c = data.chapters.find(c => c.id === q.suggestion?.chapter); return `<article class="ex-row">
         <div>${c && catalogTab === 'classification' ? `<input type="checkbox" data-confirm-id="${esc(q.id)}" aria-label="选择${esc(q.id)}的章节建议">` : ''}<button class="ex-question" data-question="${esc(q.id)}"><b>${esc(q.id)}</b><span>${esc(q.text)}</span></button></div>
         <p class="small muted">${esc(q.subject || '未分科')} · ${esc(labels[q.classification])}${q.chapter ? ' · ' + esc(data.chapters.find(c => c.id === q.chapter)?.name || q.chapter) : ''} · ${q.answer_status === 'verified' ? '答案已核验' : '答案待核验'}${q.references ? ` · <button class="ex-ref-link" data-ref-question="${esc(q.id)}">查看参考解析（${q.references} 份）</button>` : ''}${q.warnings ? ' · 原文需核对' : ''}</p>
-        ${q.suggestion ? `<div class="ex-suggestion small">建议：${esc(c ? c.subject + ' · ' + c.name : '无法确定章节')} · ${esc(q.suggestion.topic)}<br>${esc(q.suggestion.reason)}</div>` : ''}</article>`; }).join('') || '<p class="muted">${catalogTab === 'references' ? '没有匹配到参考解析的题目。可以下载匹配数据，或清空筛选条件。' : '没有符合筛选条件的题目。'}</p>'}</div>
+        ${q.suggestion ? `<div class="ex-suggestion small">建议：${esc(c ? c.subject + ' · ' + c.name : '无法确定章节')} · ${esc(q.suggestion.topic)}<br>${esc(q.suggestion.reason)}</div>` : ''}</article>`; }).join('') || `<p class="muted">${catalogTab === 'references' ? '没有匹配到参考解析的题目。可以下载匹配数据，或清空筛选条件。' : '没有符合筛选条件的题目。'}</p>`}</div>
       <div class="row ex-pagination"><button data-prev ${!data.page ? 'disabled' : ''}>上一页</button><span>${data.pages ? data.page + 1 : 0} / ${data.pages}</span><button data-next ${data.page + 1 >= data.pages ? 'disabled' : ''}>下一页</button></div></section>`;
     bindList();
   }
