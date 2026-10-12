@@ -128,8 +128,9 @@ async function go(view) {
   VIEW = view;
   if (window.DRAW) setTimeout(() => DRAW.refresh(), 0);
   document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.view === view));
-  render();
+  return render();
 }
+window.MAP_NAVIGATION?.configure({go, current:()=>VIEW, room:()=>W("nav.home").replace(/^\S+\s/, ""), error:showError});
 document.querySelectorAll("#nav a").forEach((a) => (a.onclick = () => go(a.dataset.view)));
 // 平板 App 的返回键（android/…/MainActivity.java 调这个）：先关画面、弹窗、草稿，再回营地；返回 false 表示没得退了
 window.xcBack = () => {
@@ -169,8 +170,8 @@ function configurePortal() {
     {id:'dwelling',label:'营地',view:'dwelling',x:14,y:78},{id:'train',label:'冒险大厅',view:'train',x:40,y:45},
     {id:'skeleton',label:'咒文书馆',view:'skeleton',x:73,y:44},{id:'bank',label:'试炼塔',view:'bank',x:82,y:70},
     {id:'notes',label:'魔法手记',view:'notes',x:55,y:80},{id:'contest',label:'竞技场',view:'contest',x:28,y:70},
-    {id:'log',label:'成长档案',view:'log',x:65,y:60},{id:'settings',label:'学院设置',view:'settings',x:89,y:32},
-  ]},p=>go(p.view));
+    {id:'log',label:'成长档案',view:'log',x:65,y:60},{id:'journal',label:'学院纪事与委托',view:'journal',x:89,y:32},
+  ]},p=>p.view==='journal'?NARRATIVE.open():go(p.view));
 }
 
 async function refresh() {
@@ -202,6 +203,7 @@ function banner() {
 }
 
 async function render() {
+  window.MAP_NAVIGATION?.beforeRender();
   document.body.classList.remove("portal-home");
   const v = $("#view");
   document.documentElement.classList.remove("in-chat");
@@ -221,6 +223,7 @@ async function render() {
     else if (VIEW === "settings") { await refresh(); await AMB.load(); v.innerHTML = await views.settings(); bindSettings(); }
     mountNarrative();
     SCENE_PORTAL.mount(VIEW);
+    window.MAP_NAVIGATION?.mount(VIEW);
   } catch (e) { showError(e); }
 }
 
@@ -573,7 +576,7 @@ const views = {
     const s = await api("/api/settings");
     const cur = DASH?.theme?.name;
     const cp = chatPrefs();
-    return SCENE_PORTAL.settingsHtml() + (await DEVICE.html()) + AMB.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
+    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + (await DEVICE.html()) + AMB.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
       <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
@@ -1480,7 +1483,7 @@ function bindLog() {
 function foldCards(root) {
   root.querySelectorAll(":scope > .card, :scope > div > .card").forEach((c) => {
     const h = c.firstElementChild;
-    if (!h || h.tagName !== "H3" || !c.querySelector("input, select, textarea") || c.closest("details")) return;
+    if (c.classList.contains("shortcut-settings") || !h || h.tagName !== "H3" || !c.querySelector("input, select, textarea") || c.closest("details")) return;
     const d = document.createElement("details");
     d.className = c.className + " card-fold";
     if (c.id) d.id = c.id;

@@ -39,6 +39,7 @@ jobs:
         run: |
           node tests/test_narrative_ink.cjs
           node tests/test_journey_dom.cjs
+          node tests/ui_map_navigation.cjs
           node tests/ui_narrative.cjs
           node tests/ui_world.cjs
           node tests/ui_layout_check.cjs

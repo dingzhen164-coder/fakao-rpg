@@ -42,10 +42,10 @@ def main():
                 errors = []
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.goto(url)
-                page.locator('#nav [data-view="train"]').click()
+                page.evaluate("go('train')")
                 page.locator('[data-hall="shizhan"]').click()
                 assert page.locator('[data-open-exams]').count() == 0
-                page.locator('#nav [data-view="skeleton"]').click()
+                page.evaluate("go('skeleton')")
                 page.locator('[data-libtab="yujian"]').click()
                 page.locator('[data-open-exams]').click()
                 page.locator('[data-catalog-tab="import"]').click()
@@ -207,7 +207,7 @@ def main():
                 assert exam_catalog.detail(pth, {'id': first_id, 'reveal': True})['history'][-1]['ok'] is None
                 page.locator('[data-close]').click()
                 page.locator('.ex-page').wait_for(state='detached')
-                page.locator('#nav [data-view="train"]').click()
+                page.evaluate("go('train')")
                 page.locator('[data-hall="shizhan"]').click()
                 page.locator('[data-ex-shelf]').wait_for()
                 assert page.locator('[data-open-exams]').count() == 0
@@ -230,14 +230,14 @@ def main():
                 paper.locator('summary').click()
                 paper.locator('[data-ex-id="2025-试卷一-003"]').click()
                 page.locator('.ex-study-head').get_by_text('2025-试卷一-003', exact=True).wait_for()
-                page.locator('#nav [data-view="home"]').click()
+                page.evaluate("go('home')")
                 page.locator('.ex-page').wait_for(state='detached')
                 page.locator('.portal-world').wait_for()
                 assert page.locator('.hero').count() == 0
                 page.set_viewport_size({'width': 1280, 'height': 860})
                 page.locator('[data-portal-go="dwelling"]').click()
                 page.locator('.hero').wait_for()
-                page.locator('#nav [data-view="settings"]').click()
+                page.evaluate("go('settings')")
                 page.locator('.portal-settings').wait_for()
                 page.locator('.portal-settings').evaluate("el => { if (el.tagName === 'DETAILS') el.open = true; }")
                 page.locator('[data-portal-device]').select_option('desktop')
@@ -245,7 +245,7 @@ def main():
                 page.locator('[data-portal-x]').fill('37')
                 page.locator('[data-portal-x]').press('Tab')
                 page.locator('[data-portal-save]').click()
-                page.locator('#nav [data-view="home"]').click()
+                page.evaluate("go('home')")
                 page.locator('.portal-world').wait_for()
                 assert page.locator('[data-portal-go="dwelling"]').evaluate("el => el.style.getPropertyValue('--px')") == '37%'
                 page.reload()
