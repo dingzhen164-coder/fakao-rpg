@@ -20,4 +20,5 @@
 - 第二位 y：较大的更新（一个板块里加一个新功能）；
 - 第一位 x：增加大板块（顶栏多一个新板块），或整体大改。
 同时在 rpg/data/changelog.md 最上面加一节（tests/test_device.py 会检查）。
-推到 main 且 rpg/version.py 变了，GitHub Actions 自动打包 exe / Mac / APK 发 Release。
+日常在 `dev` 分支开发、不改版本号、不打包；用户说“统一验证并发布”后才改版本号和更新记录、合入 main、触发打包（详见 AGENTS.md「开发与统一发布」）。
+界面检查先跑 `node tests/ui_layout_check.cjs`，出问题或改外观时才看截图（详见 AGENTS.md「界面检查」）。开工前先读 交接.md。
