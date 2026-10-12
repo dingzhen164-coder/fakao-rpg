@@ -43,7 +43,7 @@ def main():
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.goto(url)
                 page.evaluate("go('train')")
-                page.locator('[data-hall="shizhan"]').click()
+                page.evaluate("go('bank')")
                 assert page.locator('[data-open-exams]').count() == 0
                 page.evaluate("go('skeleton')")
                 page.locator('[data-libtab="yujian"]').click()
@@ -208,7 +208,7 @@ def main():
                 page.locator('[data-close]').click()
                 page.locator('.ex-page').wait_for(state='detached')
                 page.evaluate("go('train')")
-                page.locator('[data-hall="shizhan"]').click()
+                page.evaluate("go('bank')")
                 page.locator('[data-ex-shelf]').wait_for()
                 assert page.locator('[data-open-exams]').count() == 0
                 for width, height in [(1280, 860), (800, 1280)]:
