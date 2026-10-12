@@ -27,6 +27,7 @@
   document.documentElement.dataset.theme = m; document.documentElement.style.colorScheme = m;
   // 老一些的平板浏览器内核不认 color-mix()：打个记号，style.css 末尾给这些地方换成普通颜色（不然圆框、底色整个不画）
   try { if (!(window.CSS && CSS.supports("color", "color-mix(in srgb, red 50%, blue)"))) document.documentElement.classList.add("no-cmix"); } catch (e) {} })();</script>
+<link rel="stylesheet" href="scene_portal.css">
 </head>
 <body class="xiuxian">
 <div id="bgLayer"></div>
@@ -35,6 +36,7 @@
   <div class="brand">🔮 法师成长记</div>
   <nav id="nav">
     <a data-view="home" class="active">营地</a>
+    <a data-view="dwelling">营地</a>
     <a data-view="train">冒险</a>
     <a data-view="notes">魔法手记</a>
     <!-- 竞技场（粉笔模考分析）、星象密报（时政简报）是行测修仙传的板块，法考暂不用：模考成绩在 编年史 里记 -->
@@ -58,6 +60,7 @@
 <script src="settle.js"></script>
 <script src="ceremony.js"></script>
 <script src="device.js"></script>
+<script src="scene_portal.js"></script>
 <script src="app.js"></script>
 <script src="exams.js"></script>
 <script src="contest.js"></script>

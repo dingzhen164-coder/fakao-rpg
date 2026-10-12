@@ -418,3 +418,9 @@ summary 新增 tower，trainer battle 中也含 tower（只有计数，无题目
 - 测试：`tests/test_cards.py` 的 `CardGenTest`（用 PyMuPDF 现画一页合成 PDF，没装 opencv 时跳过）。
 
 
+
+## 待发布：学院全景与地点排布（2026-10-12）
+
+默认home为王立法学魔法学院原创SVG全景，原home功能移入dwelling营地；原题库页面、学院训练、八科和配置不变。scene_portal.js/css与公考版使用同一前端模块，魔法学院config.id=mage；点击地点进入原go路由。
+
+localStorage scene-layout:mage={desktop:{地点:{x,y}},narrow:{地点:{x,y}}}，百分比位置校验有限数值并限制5—95；损坏值/缺失地点回退默认。设置中拖动、方向键或横纵坐标微调，显式保存；拖动取消回滚，保存失败不丢当前调整。横屏与竖屏分开，仅本机外观，不写题库或存档。日常dev不修改正式2.5.2版本或触发安装包；统一发布时汇总更新。

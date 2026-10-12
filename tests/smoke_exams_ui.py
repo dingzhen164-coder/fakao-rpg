@@ -232,6 +232,30 @@ def main():
                 page.locator('.ex-study-head').get_by_text('2025-试卷一-003', exact=True).wait_for()
                 page.locator('#nav [data-view="home"]').click()
                 page.locator('.ex-page').wait_for(state='detached')
+                page.locator('.portal-world').wait_for()
+                assert page.locator('.hero').count() == 0
+                page.set_viewport_size({'width': 1280, 'height': 860})
+                page.locator('[data-portal-go="dwelling"]').click()
+                page.locator('.hero').wait_for()
+                page.locator('#nav [data-view="settings"]').click()
+                page.locator('.portal-settings').wait_for()
+                page.locator('.portal-settings').evaluate("el => { if (el.tagName === 'DETAILS') el.open = true; }")
+                page.locator('[data-portal-device]').select_option('desktop')
+                page.locator('[data-portal-selected]').select_option('dwelling')
+                page.locator('[data-portal-x]').fill('37')
+                page.locator('[data-portal-x]').press('Tab')
+                page.locator('[data-portal-save]').click()
+                page.locator('#nav [data-view="home"]').click()
+                page.locator('.portal-world').wait_for()
+                assert page.locator('[data-portal-go="dwelling"]').evaluate("el => el.style.getPropertyValue('--px')") == '37%'
+                page.reload()
+                page.locator('.portal-world').wait_for()
+                assert page.locator('[data-portal-go="dwelling"]').evaluate("el => el.style.getPropertyValue('--px')") == '37%'
+                for width, height in [(1280, 860), (800, 1280)]:
+                    page.set_viewport_size({'width': width, 'height': height})
+                    for theme in ['light', 'dark']:
+                        page.evaluate("t => document.documentElement.dataset.theme = t", theme)
+                        page.screenshot(path=str(out / ('portal-%s-%s.png' % (width, theme))))
                 assert page.evaluate('EXAMS.isOpen()') is False
                 assert not errors, '\n'.join(errors)
 
