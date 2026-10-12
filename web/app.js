@@ -165,7 +165,7 @@ function applyTheme() {
 }
 
 function configurePortal() {
-  SCENE_PORTAL.configure({id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',image:'art/academy.svg',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+  SCENE_PORTAL.configure({progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',image:'art/academy.svg',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
     {id:'dwelling',label:'营地',view:'dwelling',x:14,y:78},{id:'train',label:'冒险大厅',view:'train',x:40,y:45},
     {id:'skeleton',label:'咒文书馆',view:'skeleton',x:73,y:44},{id:'bank',label:'试炼塔',view:'bank',x:82,y:70},
     {id:'notes',label:'魔法手记',view:'notes',x:55,y:80},{id:'contest',label:'竞技场',view:'contest',x:28,y:70},
@@ -230,6 +230,7 @@ function mountNarrative() {
     api, error: showError,
     task: t => t.type === "cards" ? (go("train").then(() => CARDS.review(""))) : startTask({task_id:t.id}),
     updated: () => refresh(),
+    route: view => ["train","skeleton","log","contest"].includes(view) && go(view),
     study: () => go('train'), review: () => go('log'),
     tutor: () => startTask({ task: { type: 'chat', board: '', target: '', title: `💬 ${W('tutor_room')}` } }),
     legacy: () => window.XC_SECT?.openStory(),

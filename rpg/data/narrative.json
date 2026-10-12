@@ -1,6 +1,6 @@
 {
   "mage": {
-    "version": 1,
+    "version": 2,
     "chapters": [
       {
         "id": "prologue",
@@ -147,6 +147,122 @@
           "study_echo_end": {
             "lines": [
               "学院的灯火亮起。艾琳为你留下一页书签：“准备好了，就从眼前的一门课程开始。”学院纪事可以随时重读。"
+            ],
+            "choices": []
+          }
+        }
+      },
+      {
+        "id": "peer_method",
+        "title": "莉娅 · 页边的方向",
+        "character": "peer_method",
+        "condition": "always",
+        "start": "peer_method_start",
+        "end": "peer_method_end",
+        "nodes": {
+          "peer_method_start": {
+            "lines": [
+              "法典页边还空着。你想先画出规则脉络，还是用一个问题检验边界？",
+              "这是内置同伴对话，选择只影响后续台词与纪念；正式学习仍使用原功能。"
+            ],
+            "choices": [
+              {
+                "id": "method",
+                "text": "先梳理与回忆",
+                "target": "peer_method_method"
+              },
+              {
+                "id": "practice",
+                "text": "先独立练习",
+                "target": "peer_method_practice"
+              }
+            ]
+          },
+          "peer_method_method": {
+            "lines": [
+              "莉娅留下几条空白索引：“按要件、例外、效果分开整理；不确定的内容留待核对。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "记下这个方向",
+                "target": "peer_method_end"
+              }
+            ]
+          },
+          "peer_method_practice": {
+            "lines": [
+              "莉娅递来一页练习纸：“先独立作答，再核对可靠答案与法源。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "带着问题去学习",
+                "target": "peer_method_end"
+              }
+            ]
+          },
+          "peer_method_end": {
+            "lines": [
+              "这次交谈已经记下。学习入口随时开放；交付首段真实学习成果后，已读支线可留下同伴纪念。"
+            ],
+            "choices": []
+          }
+        }
+      },
+      {
+        "id": "peer_review",
+        "title": "诺亚 · 再看一遍",
+        "character": "peer_review",
+        "condition": "learned",
+        "start": "peer_review_start",
+        "end": "peer_review_end",
+        "nodes": {
+          "peer_review_start": {
+            "lines": [
+              "学过的内容还值得回看。你想温习一张符文，还是复练一道题？",
+              "这是内置同伴对话，选择只影响后续台词与纪念；正式学习仍使用原功能。"
+            ],
+            "choices": [
+              {
+                "id": "method",
+                "text": "先梳理与回忆",
+                "target": "peer_review_method"
+              },
+              {
+                "id": "practice",
+                "text": "先独立练习",
+                "target": "peer_review_practice"
+              }
+            ]
+          },
+          "peer_review_method": {
+            "lines": [
+              "诺亚在灯下留出一张空白书签：“先说出答案，再翻看背面，按真实表现评分。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "记下这个方向",
+                "target": "peer_review_end"
+              }
+            ]
+          },
+          "peer_review_practice": {
+            "lines": [
+              "诺亚指向试炼塔：“复练保留原规则，弄清判断依据比多点一次领奖更有用。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "带着问题去学习",
+                "target": "peer_review_end"
+              }
+            ]
+          },
+          "peer_review_end": {
+            "lines": [
+              "这次交谈已经记下。学习入口随时开放；交付首段真实学习成果后，已读支线可留下同伴纪念。"
             ],
             "choices": []
           }

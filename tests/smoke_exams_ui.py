@@ -37,7 +37,7 @@ def main():
         threading.Thread(target=srv.serve_forever, daemon=True).start()
         try:
             with sync_playwright() as pw:
-                browser = pw.chromium.launch()
+                browser = pw.chromium.launch(executable_path=os.environ.get("CHROMIUM_PATH"))
                 page = browser.new_page(viewport={'width': 1280, 'height': 860})
                 errors = []
                 page.on('pageerror', lambda e: errors.append(str(e)))
@@ -255,7 +255,7 @@ def main():
                     page.set_viewport_size({'width': width, 'height': height})
                     for theme in ['light', 'dark']:
                         page.evaluate("t => document.documentElement.dataset.theme = t", theme)
-                        page.screenshot(path=str(out / ('portal-%s-%s.png' % (width, theme))))
+                        page.screenshot(path=str(output / ('portal-%s-%s.png' % (width, theme))))
                 assert page.evaluate('EXAMS.isOpen()') is False
                 assert not errors, '\n'.join(errors)
 

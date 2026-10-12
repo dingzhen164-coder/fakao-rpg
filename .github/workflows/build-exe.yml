@@ -6,7 +6,7 @@ name: build-exe
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'validate/**']
     paths: [.github/release-request.json]
   workflow_dispatch:
 
@@ -16,7 +16,7 @@ permissions:
 jobs:
   ui:
     # 日常 dev 推送不打包；手动选择开发分支也不允许发布。
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/validate/')
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -24,20 +24,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Install browser test tools
         run: |
           pip install playwright
+          npm install --no-save playwright jsdom
           python -m playwright install --with-deps chromium
           sudo apt-get install -y fonts-noto-cjk
       - name: Check scene layout regression
         run: node tests/test_scene_portal.cjs
+      - name: Complete layout and narrative checks
+        run: |
+          node tests/test_narrative_ink.cjs
+          node tests/test_journey_dom.cjs
+          node tests/ui_narrative.cjs
+          node tests/ui_world.cjs
+          node tests/ui_layout_check.cjs
       - name: Check exams UI
         run: python tests/smoke_exams_ui.py ui-screenshots
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: exams-ui-screenshots
-          path: ui-screenshots/
+          path: |
+            ui-screenshots/
+            ui-artifacts/
   build:
     needs: ui
     runs-on: windows-latest
@@ -91,6 +104,7 @@ jobs:
           if (-not $ok) { throw "换文件后重开的程序没起来" }
 
       - name: Publish release
+        if: github.ref == 'refs/heads/main'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -115,6 +129,7 @@ jobs:
         run: bash android/build.sh
 
       - name: Upload to release
+        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -167,6 +182,7 @@ jobs:
           echo "$out" | grep -q SMOKE-OK
 
       - name: Upload to release
+        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

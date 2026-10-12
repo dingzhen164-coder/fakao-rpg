@@ -51,3 +51,39 @@ VAR boss = false
 === study_echo_end ===
 学院的灯火亮起。艾琳为你留下一页书签：“准备好了，就从眼前的一门课程开始。”学院纪事可以随时重读。
 -> END
+=== peer_method_start ===
+法典页边还空着。你想先画出规则脉络，还是用一个问题检验边界？
+这是内置同伴对话，选择只影响后续台词与纪念；正式学习仍使用原功能。
++ [先梳理与回忆] # choice:method
+  -> peer_method_method
++ [先独立练习] # choice:practice
+  -> peer_method_practice
+=== peer_method_method ===
+莉娅留下几条空白索引：“按要件、例外、效果分开整理；不确定的内容留待核对。”
++ [记下这个方向] # choice:continue
+  -> peer_method_end
+=== peer_method_practice ===
+莉娅递来一页练习纸：“先独立作答，再核对可靠答案与法源。”
++ [带着问题去学习] # choice:continue
+  -> peer_method_end
+=== peer_method_end ===
+这次交谈已经记下。学习入口随时开放；交付首段真实学习成果后，已读支线可留下同伴纪念。
+-> END
+=== peer_review_start ===
+学过的内容还值得回看。你想温习一张符文，还是复练一道题？
+这是内置同伴对话，选择只影响后续台词与纪念；正式学习仍使用原功能。
++ [先梳理与回忆] # choice:method
+  -> peer_review_method
++ [先独立练习] # choice:practice
+  -> peer_review_practice
+=== peer_review_method ===
+诺亚在灯下留出一张空白书签：“先说出答案，再翻看背面，按真实表现评分。”
++ [记下这个方向] # choice:continue
+  -> peer_review_end
+=== peer_review_practice ===
+诺亚指向试炼塔：“复练保留原规则，弄清判断依据比多点一次领奖更有用。”
++ [带着问题去学习] # choice:continue
+  -> peer_review_end
+=== peer_review_end ===
+这次交谈已经记下。学习入口随时开放；交付首段真实学习成果后，已读支线可留下同伴纪念。
+-> END
