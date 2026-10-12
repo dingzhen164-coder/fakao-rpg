@@ -118,9 +118,10 @@ function realmUp(e) {
 }
 
 // ------------------------------------------------------------ 导航 / 风格
-function go(view) {
+async function go(view) {
+  window.NARRATIVE?.close();
   if (window.EXAMS?.isOpen()) EXAMS.leave();
-  if (VIEW === "notes" && view !== "notes" && window.NOTES) NOTES.flush();
+  if (VIEW === "notes" && view !== "notes" && window.NOTES && !(await NOTES.flush())) return;
   if (view === "tianji" && VIEW === "tianji" && window.TIANJI && TIANJI.isOpen()) TIANJI.close();   // 在一期里再点顶栏：回天机简报首页
   if (window.CARDS && CARDS.isOpen()) CARDS.close();
   if (window.MINDMAP && MINDMAP.isOpen()) MINDMAP.close();
@@ -132,6 +133,7 @@ function go(view) {
 document.querySelectorAll("#nav a").forEach((a) => (a.onclick = () => go(a.dataset.view)));
 // 平板 App 的返回键（android/…/MainActivity.java 调这个）：先关画面、弹窗、草稿，再回营地；返回 false 表示没得退了
 window.xcBack = () => {
+  if (window.NARRATIVE?.close()) return true;
   if (window.EXAMS?.isOpen()) { EXAMS.close(); return true; }
   const click = (sel) => { const b = document.querySelector(sel); if (b) b.click(); return !!b; };
   if (click(".img-zoom") || click(".cer-ok") || click(".st-btn")) return true;
@@ -158,7 +160,17 @@ function applyTheme() {
   document.body.classList.toggle("xuanhuan", DASH.theme.name === "玄幻");
   $(".brand").textContent = W("brand");
   document.title = W("brand").replace(/^\S+\s/, "");
-  document.querySelectorAll("#nav a").forEach((a) => (a.textContent = W("nav." + a.dataset.view)));
+  configurePortal();
+  document.querySelectorAll("#nav a").forEach((a) => (a.textContent = a.dataset.view === "home" ? "🏰 魔法学院" : a.dataset.view === "dwelling" ? W("nav.home") : W("nav." + a.dataset.view)));
+}
+
+function configurePortal() {
+  SCENE_PORTAL.configure({progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',image:'art/academy.svg',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+    {id:'dwelling',label:'营地',view:'dwelling',x:14,y:78},{id:'train',label:'冒险大厅',view:'train',x:40,y:45},
+    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:73,y:44},{id:'bank',label:'试炼塔',view:'bank',x:82,y:70},
+    {id:'notes',label:'魔法手记',view:'notes',x:55,y:80},{id:'contest',label:'竞技场',view:'contest',x:28,y:70},
+    {id:'log',label:'成长档案',view:'log',x:65,y:60},{id:'settings',label:'学院设置',view:'settings',x:89,y:32},
+  ]},p=>go(p.view));
 }
 
 async function refresh() {
@@ -168,7 +180,7 @@ async function refresh() {
     handleEvents(DASH.events);
     updatePill();
     banner();
-    if (DASH.first_today && DASH.greeting && VIEW !== "home") npcToast(DASH.greeting);
+    if (DASH.first_today && DASH.greeting && VIEW !== "home" && VIEW !== "dwelling") npcToast(DASH.greeting);
   } catch (e) { showError(e); }
 }
 function updatePill() {
@@ -190,12 +202,14 @@ function banner() {
 }
 
 async function render() {
+  document.body.classList.remove("portal-home");
   const v = $("#view");
   document.documentElement.classList.remove("in-chat");
   document.documentElement.classList.toggle("in-notes", VIEW === "notes");
   try {
     if (window.EXAMS?.isOpen()) return EXAMS.renderPage(v);
-    if (VIEW === "home") { await refresh(); v.innerHTML = views.home(); bindHome(); }
+    if (VIEW === "home") { await refresh(); v.innerHTML = SCENE_PORTAL.homeHtml(); }
+    else if (VIEW === "dwelling") { await refresh(); v.innerHTML = views.home(); bindHome(); }
     else if (VIEW === "train") { if (!DASH) await refresh(); v.innerHTML = await views.train(); bindTrain(); }
     else if (VIEW === "contest") { if (!DASH) await refresh(); await CONTEST.render(v); }
     else if (VIEW === "tianji") { if (!DASH) await refresh(); await TIANJI.render(v); }
@@ -205,7 +219,26 @@ async function render() {
     else if (VIEW === "wrong" || VIEW === "pill") { VIEW = "log"; return go("log"); }   // 心魔录、丹房在 3.0 去掉了
     else if (VIEW === "log") { await refresh(); v.innerHTML = views.log(); bindLog(); }
     else if (VIEW === "settings") { await refresh(); await AMB.load(); v.innerHTML = await views.settings(); bindSettings(); }
+    mountNarrative();
+    SCENE_PORTAL.mount(VIEW);
   } catch (e) { showError(e); }
+}
+
+// 纪事入口仅在全景/个人空间出现；真实训练仍使用原任务与AI会话。
+function mountNarrative() {
+  window.NARRATIVE?.mount(DASH, VIEW, {
+    api, error: showError,
+    task: t => t.type === "cards" ? (go("train").then(() => CARDS.review(""))) : startTask({task_id:t.id}),
+    updated: () => refresh(),
+    route: view => ["train","skeleton","log","contest"].includes(view) && go(view),
+    study: () => go('train'), review: () => go('log'),
+    tutor: () => startTask({ task: { type: 'chat', board: '', target: '', title: `💬 ${W('tutor_room')}` } }),
+    legacy: () => window.XC_SECT?.openStory(),
+  });
+  if (VIEW === 'dwelling' && DASH?.narrative) {
+    const el = document.createElement('section'); el.className = 'card narrative-dwelling';
+    el.innerHTML = NARRATIVE.homeHtml(DASH.narrative); document.getElementById('view').prepend(el);
+  }
 }
 
 // ------------------------------------------------------------ 小组件
@@ -540,7 +573,7 @@ const views = {
     const s = await api("/api/settings");
     const cur = DASH?.theme?.name;
     const cp = chatPrefs();
-    return (await DEVICE.html()) + AMB.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
+    return SCENE_PORTAL.settingsHtml() + (await DEVICE.html()) + AMB.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
       <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
@@ -935,6 +968,7 @@ function fitChat() {
 }
 window.addEventListener("resize", () => { if ($(".train")) fitChat(); });
 async function renderTrain() {
+  window.NARRATIVE?.close();
   if (VIEW !== "train") return;
   const html = await views.train().catch((e) => { showError(e); return ''; });
   if (VIEW !== "train") return;
@@ -1459,6 +1493,7 @@ function foldCards(root) {
   });
 }
 function bindSettings() {
+  SCENE_PORTAL.mount("settings");
   foldCards($("#view"));
   DEVICE.bind();
   const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify(p)); } catch {} };
@@ -1559,7 +1594,7 @@ setInterval(async () => {
       cards: carding || null, cards_board: carding ? CARDS.board() : null, tianji: tj || null });
     if (DASH) { DASH.minutes.today = r.minutes; DASH.other_device = r.other_device; DASH.rest = r.rest; updatePill(); banner(); }
     handleEvents(r.events);
-    if (DASH?.retreat && !r.retreat_on && VIEW === "home") render();
+    if (DASH?.retreat && !r.retreat_on && VIEW === "dwelling") render();
   } catch (e) { /* 程序关了就不提示 */ }
 }, BEAT * 1000);
 setInterval(updateStudyDot, 5000);

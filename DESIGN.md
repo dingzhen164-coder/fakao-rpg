@@ -418,3 +418,54 @@ summary 新增 tower，trainer battle 中也含 tower（只有计数，无题目
 - 测试：`tests/test_cards.py` 的 `CardGenTest`（用 PyMuPDF 现画一页合成 PDF，没装 opencv 时跳过）。
 
 
+
+## 待发布：学院全景与地点排布（2026-10-12）
+
+默认home为王立法学魔法学院原创SVG全景，原home功能移入dwelling营地；原题库页面、学院训练、八科和配置不变。scene_portal.js/css与公考版使用同一前端模块，魔法学院config.id=mage；点击地点进入原go路由。
+
+localStorage scene-layout:mage={desktop:{地点:{x,y}},narrow:{地点:{x,y}}}，百分比位置校验有限数值并限制5—95；损坏值/缺失地点回退默认。设置中拖动、方向键或横纵坐标微调，显式保存；拖动取消回滚，保存失败不丢当前调整。横屏与竖屏分开，仅本机外观，不写题库或存档。日常dev不修改正式2.5.2版本或触发安装包；统一发布时汇总更新。
+
+
+## 3.0 第一批：人物与离线纪事（P01—P03 开发记录，2026-10-12）
+
+保留现有scene_portal全景、个人空间与地点编辑。home全景台头、dwelling个人空间增加人物/纪事按钮，其他页面不挂载；进入训练、导航离页、Esc或安卓返回时收起对话。法考离开魔法手记先等待NOTES.flush，保存失败留在原页，避免切页时漏存草稿。
+
+故事定义为rpg/data/narrative.json；人物名词在themes.NARRATIVE_PROFILES。申论人物读取当前career.leader（女性直属领导），不重写用户人设；行测沈清禾是引导师尊，具体授业仍用原导师。两仓库分别分发其主题故事，没有共享服务、共享题库或共享存档。立绘有现成素材或用户导师头像就使用；缺素材显示主题印记，不伪造未提供的表情图。
+
+inkjs固定2.4.0（MIT），web/vendor/inkjs原样保留运行时与许可，本地加载，不使用CDN。tools/compile_narrative.cjs从定义生成web/stories/<world>.ink及编译JSON；Node与编译器仅开发时使用，用户无需安装。每个章节、节点、选项使用稳定字符串ID，节点对应Ink knot；Ink变量learned/tower/boss只取服务端facts，选项与目标同服务端定义逐一回归检查。恢复以服务端稳定节点定位Ink；不把引擎内部数组位置或可伪造的浏览器状态作为学习事实。
+
+存档新增narrative={schema:1,worlds:{世界id:{revision,chapters:{章节id:{node,trail:[{node,choice}],read,skipped,record,unlocked}},memories:{事件id:{date,text,source}}}}。GET /api/narrative展示人物与章节；POST /api/narrative携world/chapter/action及修改用的revision/node，action=open/choose/finish/skip/replay。Store锁、原子保存与每日备份沿用，不写训练目录之外的用户文件。修改前核验科目、章节、选项、当前节点和CAS版本；冲突拒绝且不覆盖。服务端不接受前端自报learned、分数、奖励或任意状态JSON。没有学习库不能保存剧情。未知schema/损坏章节不清空；dashboard给出提示并保留正常学习功能。
+
+每主题两段原创短分支：入门章随时可读；回望章由真实任务/项目掌握、有效秒数、正式题库作答或批改事件开放。初始化空项目和总经验不是学习证据。已解锁保持；人物只记三类必要摘要及来源，不复制题干、答案、作答全文或密钥。旧sect_story五章及原入口保留，arrival/five_paths已读映射到新prologue/study_echo；新章阅读同步回原已读集合，不删除旧记录。关闭只收起；跳过记已读，从头重读不重置已读/首次对话记录，不改经验、成绩、学时或原任务。
+
+对话纸笺提供人物介绍、分支选项、当前选择记录、首次阅读记录、人物记忆、继续/跳过/重读、简短模式与原学习/复盘/AI请教入口。静态呈现，无自动弹出、逐字强制等待或后台AI请求；简短模式仅本机显示偏好，进度存原存档。异步操作串行、epoch防止离页后迟到回包再次弹窗；可关闭正在保存的对话，已接受的选择仍由服务端保存。未知更新节点提供保留已读的重读入口。
+
+本轮检查：Python相关单元、旧宗门回归、Ink全部节点/条件/跳转、地点存储检查、真实临时库API+jsdom交互均通过。jsdom是开发依赖，不进入客户端，不能替代浏览器像素/触控验证。新增tests/ui_narrative.cjs覆盖浏览器续读、冲突、返回、简短模式、布局和草稿保存契约。当前环境浏览器启动失败（SIGTRAP），ui_layout_check与浏览器交互/截图尚未完成，必须在可用浏览器环境补验。第一批当时未运行无关全量测试或三端发布；第二批及浏览器补验结果见下节。
+
+
+## 3.0 第二批：任务、短主线与收藏（P04—P06，2026-10-12）
+
+入口在home全景与dwelling个人空间的「任务与收藏」，复用原人物纸笺。三主题各有两段原创学习主线：领取课程研习/以题检验 → 领取后真实学习 → 交付人物书信 → 新的一次复习/复练/正式批改 → 交付徽记/印章与摆件。选择影响书信回顾，学习标准相同；学习仍可直接进入，不受剧情门槛阻断。每日只选原今日计划中一项尚未完成的功课，领取快照保留，去学习使用原任务入口；未完成的每日委托次日到期，主线可跨日继续，已核验的旧日委托仍可交付。
+
+新增rpg/journey.py由narrative/API展示，原cards.answer、question_bank.record与engine._award在原有效记录落盘流程内提供证据。正式题库新题/复练区分；复盘阶段不接受新题或默写。草稿批改、手工计时、听课、模考录分、旧经验/历史总量和前端自报成果不计证据。卡片评分允许忘记/答错，题库允许答错：奖励记录完成学习行动，不宣称掌握或答对；每天的整项功课仍须原plan标记done。核验不调用AI；具体讲题仍沿用用户主动调用的原AI流程。
+
+原存档增加journey={schema:1,worlds:{世界id:{revision,tasks:{实例id:{status,created,kind,task,approach,evidence,proof}},collection:{收藏id:{title,text,author,date,reason,proof,slot}},placements:{desk|shelf|wall:收藏id}}}}。实例ID为main:study/main:review/daily:日期，收藏ID为实例ID:reward及main:ornament；proof/evidence仅存服务端事件id、kind、date、source、board、item，不复制题干、答案、评分全文或密钥。题库证据token绑定run.token与题位置，已消费事件不可再给下一阶段；旧档缺模块懒初始化，未知schema/损坏模块保留并提示，原学习继续。Store锁、训练目录内原子写入与每日备份沿用。
+
+POST /api/journey动作claim/deliver/place携world/id/revision，领取每日功课还需task_id，主线选择approach=study/practice，陈列携slot。服务端校验当前科目、原任务、真实证据与CAS；冲突拒绝且不覆盖。重复领取/交付同实例返回原结果，不重复收藏。撤销卡片评分撤回未交付的证据；已交付外观纪念保留，不补发经验或成绩。收藏册记录来源、日期、人物及原因；只支持相应案头/书架/纪念墙位置，陈列存档持久化，不修改题库、学习评分、经验公式或学时。申论书信署名取交付时实际女性直属领导。
+
+修复第一批平板全景台头纪事按钮与地点重叠：台头与stage分行，地点竖坐标限定在stage内；保留百分比布局数据、设置编辑及原导航。纸笺内长内容可滚动，收藏展开状态在更新后保留。
+
+针对性检查：tests/test_journey.py覆盖旧档/伪造、CAS、完整循环、幂等、撤销、跨日、Store重启、真实卡片/正式批改/题库复练；tests/test_journey_dom.cjs在隔离临时库真实HTTP接口上覆盖三主题按钮、撤销、冲突、陈列与恢复。运行命令为python -m unittest discover -s tests -p test_journey.py、node tests/test_journey_dom.cjs（公考分别追加--subject=行测、--subject=申论；jsdom仅开发依赖）。相关旧用例需隔离Path.home、本机settings和AI环境变量，避免读入开发机器配置。
+
+本轮Python相关回归：法考72项（8项因缺少可选PDF依赖跳过），公考61项；三主题真实API+DOM、原Ink/地点检查通过。在可用内置浏览器临时库实际完成三主题领取/原卡片复习/交付/收藏与刷新，补验第一批续读、跳过、重读；申论新增面板检查1280×860及800×1280明/暗均无横向溢出。标准Playwright浏览器驱动在本环境仍启动失败（SIGABRT/SIGTRAP），不把替代浏览器检查或jsdom称为ui_layout_check通过；发布前须在可用驱动环境补齐原全量布局/交互/草稿等待检查与三端验证。版本、更新记录、发布请求及工作流不改；P07—P10未实现，先由用户试用P05循环，再扩展。
+
+
+## 3.0第三批：同伴与阶段世界（P07—P10）
+
+- `themes.WORLD_PROFILES`保存三个主题各自阶段、区域和两位原创同伴的文案；`peer_method`、`peer_review`为稳定支线ID。人物选择写入已有`narrative`模块，首读记录保留`choice_id`，重读不覆盖首次反馈。熟悉程度仅表示是否交谈，没有好感经验。
+- `world_progress={schema:1,worlds:{世界ID:{unlocked:{阶段ID:{date,reason}}}}}`；`arrival/foundation/restored/assembly/departure`依次由首次进入、首段学习交付、复习交付、原模考录分、真实学习且进入考前日程触发。世界ID分别为`mage/xingce/office`。每次读取核验新来源并沿用原Store原子落盘，已解锁永久保留。
+- 考前窗口读`规则.md`中的`世界考前提醒天数`（默认30）；旧规则缺项读取默认值，不覆盖用户规则。日程从原学习计划/目标日读取，调日期不回收收藏或阶段。区域链接指向原骨架、日志、模考界面；其他原学习入口始终开放。
+- 主线完成懒补`main:title`称号；同伴支线已读且首段真实学习已交付才获得`peer_method:keepsake`或`peer_review:keepsake`。纪念记录人物、日期、原因与原任务proof，重播、刷新与旧档升级幂等。
+- 未支持的模块schema和损坏记录保留并提示；学习成绩、经验、学时与题库不迁移到剧情模块。三主题独立，原行测五章及阅读记录保留。
+- P07评估后采用原生CSS云雾、灯火与短暂人物/交付演出：当前仅两个装饰层，Phaser画布和循环没有必要。装饰不拦截点击，无后台计时器；页面隐藏暂停，系统减少动画、节省流量和本机减少动画设置提供静态显示。动画只在场景显示，训练页面等待渲染后撤去场景。
+- 验收：`test_world.py`覆盖来源、跨主题、时间线、重读和旧档；`ui_world.cjs`使用临时库与真实卡片UI完成交付/陈列/阶段导航和触控减少动画；`ui_narrative.cjs`验收续读、CAS、草稿与异步离页；发布前全量Python、全部页面布局和三端构建。
