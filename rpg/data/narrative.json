@@ -1,0 +1,157 @@
+{
+  "mage": {
+    "version": 1,
+    "chapters": [
+      {
+        "id": "prologue",
+        "title": "法典前的选择",
+        "condition": "always",
+        "start": "prologue_start",
+        "end": "prologue_end",
+        "nodes": {
+          "prologue_start": {
+            "lines": [
+              "学院钟楼敲响。艾琳学姐站在法典长廊，朝你挥了挥手。",
+              "欢迎来到王立法学魔法学院，小法师。法典的力量来自理解与论证。你想先了解什么？"
+            ],
+            "choices": [
+              {
+                "id": "understand",
+                "text": "我想先梳理方法",
+                "target": "prologue_understand"
+              },
+              {
+                "id": "practice",
+                "text": "我想先试着作答",
+                "target": "prologue_practice"
+              },
+              {
+                "id": "recorded",
+                "text": "聊聊已有的学习记录",
+                "target": "prologue_recorded",
+                "when": "learned"
+              }
+            ]
+          },
+          "prologue_understand": {
+            "lines": [
+              "艾琳翻开法典：“先理清构成要件、例外与法律效果。咒文书馆保留八科资料，冒险大厅仍按原课程安排训练。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "记下这个方向",
+                "target": "prologue_end"
+              }
+            ]
+          },
+          "prologue_practice": {
+            "lines": [
+              "艾琳合拢法典：“已核验题按原规则判分；未核验卷轴只留练习记录，不当成标准答案。遇到疑点，先核对教材与法源。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "带着问题去练习",
+                "target": "prologue_end"
+              }
+            ]
+          },
+          "prologue_recorded": {
+            "lines": [
+              "你的学习记录已经留在法典中。先弄清规则与适用条件，再用题目检验自己的理解。"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "继续前行",
+                "target": "prologue_end"
+              }
+            ]
+          },
+          "prologue_end": {
+            "lines": [
+              "学院的灯火亮起。艾琳为你留下一页书签：“准备好了，就从眼前的一门课程开始。”学院纪事可以随时重读。"
+            ],
+            "choices": []
+          }
+        }
+      },
+      {
+        "id": "study_echo",
+        "title": "灯下的学习记录",
+        "condition": "learned",
+        "start": "study_echo_start",
+        "end": "study_echo_end",
+        "nodes": {
+          "study_echo_start": {
+            "lines": [
+              "你的学习记录已经留在法典中。先弄清规则与适用条件，再用题目检验自己的理解。",
+              "这段对话因已有学习记录开放；阅读与选项不会改变成绩或学习时长。"
+            ],
+            "choices": [
+              {
+                "id": "understand",
+                "text": "我想先梳理方法",
+                "target": "study_echo_understand"
+              },
+              {
+                "id": "practice",
+                "text": "我想先试着作答",
+                "target": "study_echo_practice"
+              },
+              {
+                "id": "recorded",
+                "text": "聊聊已有的学习记录",
+                "target": "study_echo_recorded",
+                "when": "learned"
+              }
+            ]
+          },
+          "study_echo_understand": {
+            "lines": [
+              "艾琳翻开法典：“先理清构成要件、例外与法律效果。咒文书馆保留八科资料，冒险大厅仍按原课程安排训练。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "记下这个方向",
+                "target": "study_echo_end"
+              }
+            ]
+          },
+          "study_echo_practice": {
+            "lines": [
+              "艾琳合拢法典：“已核验题按原规则判分；未核验卷轴只留练习记录，不当成标准答案。遇到疑点，先核对教材与法源。”"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "带着问题去练习",
+                "target": "study_echo_end"
+              }
+            ]
+          },
+          "study_echo_recorded": {
+            "lines": [
+              "你的学习记录已经留在法典中。先弄清规则与适用条件，再用题目检验自己的理解。"
+            ],
+            "choices": [
+              {
+                "id": "continue",
+                "text": "继续前行",
+                "target": "study_echo_end"
+              }
+            ]
+          },
+          "study_echo_end": {
+            "lines": [
+              "学院的灯火亮起。艾琳为你留下一页书签：“准备好了，就从眼前的一门课程开始。”学院纪事可以随时重读。"
+            ],
+            "choices": []
+          }
+        }
+      }
+    ]
+  }
+}

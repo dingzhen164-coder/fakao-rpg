@@ -210,3 +210,7 @@ def realm_name(theme, score_int):
 def realm_of_gate(theme, gate):
     return get(theme)["realms"][band_of(gate)[0]]
 
+
+
+# 3.0人物与纪事的风格名词；申论人物名由实际职务履历覆盖。
+NARRATIVE_PROFILES = {'mage': {'title': '学院纪事', 'character': '艾琳学姐', 'role': '学院引导', 'mark': '法', 'portrait': '', 'intro': '王立法学魔法学院的引导学姐。陪你研习法考八科，具体讲题仍使用你设定的导师与AI方案。', 'greeting': '欢迎来到王立法学魔法学院，小法师。法典的力量来自理解与论证。你想先了解什么？', 'study': '今天的课程', 'review': '案例复盘', 'room': '营地', 'echo': '你的学习记录已经留在法典中。先弄清规则与适用条件，再用题目检验自己的理解。'}}

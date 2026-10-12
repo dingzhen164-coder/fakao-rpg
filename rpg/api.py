@@ -125,7 +125,37 @@ def dashboard(body):
                  greet_pending=bool(not cached and tutor.enabled(g)), upgraded=upgraded, notices=notices,
                  vault=str(g.paths.vault) if g.paths.vault else None, ai=ai.available(),
                  other_device=g.store.heartbeat(), conflicts=g.store.conflicts())
+        from . import narrative
+        try:
+            d["narrative"] = narrative.view(g, d)
+        except ValueError as e:
+            d["narrative"] = None
+            d["notices"].append("纪事暂不可读取：" + str(e) + "；学习功能照常可用")
         return d
+
+
+def narrative_view(body):
+    from . import narrative
+    with open_game() as g:
+        d = g.dashboard()
+        d['persona'] = _persona_view(g)
+        try:
+            return narrative.view(g, d)
+        except ValueError as e:
+            raise ApiError(str(e))
+
+
+def narrative_action(body):
+    from . import narrative
+    with open_game() as g:
+        if not g.paths.vault:
+            raise ApiError('请先在设置中选择学习库，再保存纪事进度')
+        d = g.dashboard()
+        d['persona'] = _persona_view(g)
+        try:
+            return narrative.act(g, d, body)
+        except ValueError as e:
+            raise ApiError(str(e))
 
 
 def tutor_greet(body):
@@ -739,6 +769,8 @@ def settings_test(body):
 
 
 ROUTES = {
+    ("GET", "/api/narrative"): narrative_view,
+    ("POST", "/api/narrative"): narrative_action,
     ("GET", "/api/exams"): _exam_route(exam_catalog.search),
     ("POST", "/api/exams/search"): _exam_route(exam_catalog.search),
     ("POST", "/api/exams/overview"): _exam_route(exam_catalog.overview),

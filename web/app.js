@@ -118,9 +118,10 @@ function realmUp(e) {
 }
 
 // ------------------------------------------------------------ 导航 / 风格
-function go(view) {
+async function go(view) {
+  window.NARRATIVE?.close();
   if (window.EXAMS?.isOpen()) EXAMS.leave();
-  if (VIEW === "notes" && view !== "notes" && window.NOTES) NOTES.flush();
+  if (VIEW === "notes" && view !== "notes" && window.NOTES && !(await NOTES.flush())) return;
   if (view === "tianji" && VIEW === "tianji" && window.TIANJI && TIANJI.isOpen()) TIANJI.close();   // 在一期里再点顶栏：回天机简报首页
   if (window.CARDS && CARDS.isOpen()) CARDS.close();
   if (window.MINDMAP && MINDMAP.isOpen()) MINDMAP.close();
@@ -132,6 +133,7 @@ function go(view) {
 document.querySelectorAll("#nav a").forEach((a) => (a.onclick = () => go(a.dataset.view)));
 // 平板 App 的返回键（android/…/MainActivity.java 调这个）：先关画面、弹窗、草稿，再回营地；返回 false 表示没得退了
 window.xcBack = () => {
+  if (window.NARRATIVE?.close()) return true;
   if (window.EXAMS?.isOpen()) { EXAMS.close(); return true; }
   const click = (sel) => { const b = document.querySelector(sel); if (b) b.click(); return !!b; };
   if (click(".img-zoom") || click(".cer-ok") || click(".st-btn")) return true;
@@ -163,7 +165,7 @@ function applyTheme() {
 }
 
 function configurePortal() {
-  SCENE_PORTAL.configure({id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',image:'art/academy.svg',places:[
+  SCENE_PORTAL.configure({id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',image:'art/academy.svg',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
     {id:'dwelling',label:'营地',view:'dwelling',x:14,y:78},{id:'train',label:'冒险大厅',view:'train',x:40,y:45},
     {id:'skeleton',label:'咒文书馆',view:'skeleton',x:73,y:44},{id:'bank',label:'试炼塔',view:'bank',x:82,y:70},
     {id:'notes',label:'魔法手记',view:'notes',x:55,y:80},{id:'contest',label:'竞技场',view:'contest',x:28,y:70},
@@ -217,8 +219,23 @@ async function render() {
     else if (VIEW === "wrong" || VIEW === "pill") { VIEW = "log"; return go("log"); }   // 心魔录、丹房在 3.0 去掉了
     else if (VIEW === "log") { await refresh(); v.innerHTML = views.log(); bindLog(); }
     else if (VIEW === "settings") { await refresh(); await AMB.load(); v.innerHTML = await views.settings(); bindSettings(); }
+    mountNarrative();
     SCENE_PORTAL.mount(VIEW);
   } catch (e) { showError(e); }
+}
+
+// 纪事入口仅在全景/个人空间出现；真实训练仍使用原任务与AI会话。
+function mountNarrative() {
+  window.NARRATIVE?.mount(DASH, VIEW, {
+    api, error: showError,
+    study: () => go('train'), review: () => go('log'),
+    tutor: () => startTask({ task: { type: 'chat', board: '', target: '', title: `💬 ${W('tutor_room')}` } }),
+    legacy: () => window.XC_SECT?.openStory(),
+  });
+  if (VIEW === 'dwelling' && DASH?.narrative) {
+    const el = document.createElement('section'); el.className = 'card narrative-dwelling';
+    el.innerHTML = NARRATIVE.homeHtml(DASH.narrative); document.getElementById('view').prepend(el);
+  }
 }
 
 // ------------------------------------------------------------ 小组件
@@ -948,6 +965,7 @@ function fitChat() {
 }
 window.addEventListener("resize", () => { if ($(".train")) fitChat(); });
 async function renderTrain() {
+  window.NARRATIVE?.close();
   if (VIEW !== "train") return;
   const html = await views.train().catch((e) => { showError(e); return ''; });
   if (VIEW !== "train") return;
