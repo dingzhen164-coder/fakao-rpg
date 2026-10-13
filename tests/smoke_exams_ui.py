@@ -55,6 +55,8 @@ def main():
                 page.evaluate("go('skeleton')")
                 page.locator('[data-libtab="yujian"]').click()
                 page.locator('[data-open-exams]').click()
+                page.locator('#studyHud #drawBtn').wait_for()
+                assert page.locator('#studyHud #todayPill').is_visible()
                 page.locator('[data-catalog-tab="import"]').click()
                 page.locator('.ex-content[aria-busy]').wait_for(state='detached')
                 page.locator('[data-scan]').click()
