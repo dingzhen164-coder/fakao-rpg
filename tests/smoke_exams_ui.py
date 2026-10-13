@@ -39,13 +39,20 @@ def main():
             with sync_playwright() as pw:
                 browser = pw.chromium.launch(executable_path=os.environ.get("CHROMIUM_PATH"))
                 page = browser.new_page(viewport={'width': 1280, 'height': 860})
+                def show_panel(selector):
+                    page.locator(selector).wait_for(state='attached')
+                    page.wait_for_timeout(100)
+                    ids = page.locator(selector).first.evaluate("(el) => {const ids=[];for(let p=el;p;p=p.parentElement)if(p.hidden&&getComputedStyle(p).display==='none'&&p.getAttribute('role')==='tabpanel')ids.unshift(p.id);return ids;}")
+                    for panel_id in ids:
+                        page.locator('[role=tab][aria-controls="%s"]' % panel_id).click()
+
                 errors = []
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.goto(url)
-                page.locator('#nav [data-view="train"]').click()
-                page.locator('[data-hall="shizhan"]').click()
+                page.evaluate("go('train')")
+                page.evaluate("go('bank')")
                 assert page.locator('[data-open-exams]').count() == 0
-                page.locator('#nav [data-view="skeleton"]').click()
+                page.evaluate("go('skeleton')")
                 page.locator('[data-libtab="yujian"]').click()
                 page.locator('[data-open-exams]').click()
                 page.locator('[data-catalog-tab="import"]').click()
@@ -207,8 +214,14 @@ def main():
                 assert exam_catalog.detail(pth, {'id': first_id, 'reveal': True})['history'][-1]['ok'] is None
                 page.locator('[data-close]').click()
                 page.locator('.ex-page').wait_for(state='detached')
-                page.locator('#nav [data-view="train"]').click()
-                page.locator('[data-hall="shizhan"]').click()
+                page.evaluate("go('train')")
+                page.evaluate("go('bank')")
+                # 3.0.4试炼类型分面板，按真实模块标签进入科目卷轴。
+                page.locator('[data-ex-shelf]').wait_for(state='attached')
+                page.wait_for_timeout(100)
+                ids = page.locator('[data-ex-shelf]').evaluate("(el) => {const ids=[];for(let p=el;p;p=p.parentElement)if(p.hidden&&getComputedStyle(p).display==='none'&&p.getAttribute('role')==='tabpanel')ids.unshift(p.id);return ids;}")
+                for panel_id in ids:
+                    page.locator('[role=tab][aria-controls="%s"]' % panel_id).click()
                 page.locator('[data-ex-shelf]').wait_for()
                 assert page.locator('[data-open-exams]').count() == 0
                 for width, height in [(1280, 860), (800, 1280)]:
@@ -230,14 +243,20 @@ def main():
                 paper.locator('summary').click()
                 paper.locator('[data-ex-id="2025-试卷一-003"]').click()
                 page.locator('.ex-study-head').get_by_text('2025-试卷一-003', exact=True).wait_for()
-                page.locator('#nav [data-view="home"]').click()
+                page.evaluate("go('home')")
                 page.locator('.ex-page').wait_for(state='detached')
                 page.locator('.portal-world').wait_for()
                 assert page.locator('.hero').count() == 0
                 page.set_viewport_size({'width': 1280, 'height': 860})
                 page.locator('[data-portal-go="dwelling"]').click()
+                page.locator('.hero').wait_for(state='attached')
+                page.wait_for_timeout(100)
+                hero_panel = page.locator('.hero').evaluate("(el) => el.closest('[role=tabpanel]')?.id")
+                if hero_panel:
+                    page.locator('[role=tab][aria-controls="%s"]' % hero_panel).click()
                 page.locator('.hero').wait_for()
-                page.locator('#nav [data-view="settings"]').click()
+                page.evaluate("go('settings')")
+                show_panel('.portal-settings')
                 page.locator('.portal-settings').wait_for()
                 page.locator('.portal-settings').evaluate("el => { if (el.tagName === 'DETAILS') el.open = true; }")
                 page.locator('[data-portal-device]').select_option('desktop')
@@ -245,7 +264,7 @@ def main():
                 page.locator('[data-portal-x]').fill('37')
                 page.locator('[data-portal-x]').press('Tab')
                 page.locator('[data-portal-save]').click()
-                page.locator('#nav [data-view="home"]').click()
+                page.evaluate("go('home')")
                 page.locator('.portal-world').wait_for()
                 assert page.locator('[data-portal-go="dwelling"]').evaluate("el => el.style.getPropertyValue('--px')") == '37%'
                 page.reload()

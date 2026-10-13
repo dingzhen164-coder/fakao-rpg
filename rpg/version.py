@@ -1,3 +1,3 @@
-"""程序版本。日常推送 dev；明确统一发布时更新版本并请求 main 打包。"""
-VERSION = "3.0.0"
+"""程序版本。3.0.5累计界面更新；验证分支检查三端，main构建正式安装包。"""
+VERSION = "3.0.5"
 REPO = "dingzhen164-coder/fakao-rpg"
