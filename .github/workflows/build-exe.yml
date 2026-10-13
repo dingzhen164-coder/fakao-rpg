@@ -43,6 +43,8 @@ jobs:
           node tests/ui_status_navigation.cjs
           node tests/ui_study_regions.cjs
           node tests/ui_fixed_layout.cjs
+          node tests/ui_grouped_rewards.cjs
+          node tests/ui_compact_review.cjs
           node tests/ui_narrative.cjs
           node tests/ui_world.cjs
           node tests/ui_layout_check.cjs
