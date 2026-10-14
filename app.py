@@ -64,6 +64,8 @@ def main():
         webview = None
     if webview is None or "--browser" in sys.argv:
         webbrowser.open(url)
+        from rpg.mac_update import confirm_startup
+        confirm_startup()
         print("（没有窗口组件，已用浏览器打开；关掉这个程序才会退出）")
         threading.Event().wait()
         return
@@ -81,10 +83,14 @@ def main():
                 return str(r[0]) if r else ""
 
         win = webview.create_window("法师成长记", url, width=1440, height=920, min_size=(900, 600), text_select=True, js_api=Bridge())
+        from rpg.mac_update import confirm_startup
+        win.events.loaded += confirm_startup
         webview.start(private_mode=False, storage_path=str(data))
     except Exception:
         traceback.print_exc()
         webbrowser.open(url)        # 窗口开不了（比如缺 WebView2）：退回浏览器
+        from rpg.mac_update import confirm_startup
+        confirm_startup()
         threading.Event().wait()
     os._exit(0)                     # 关掉窗口 = 退出（后台服务一起停）
 

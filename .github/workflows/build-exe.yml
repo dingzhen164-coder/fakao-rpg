@@ -45,6 +45,7 @@ jobs:
           node tests/ui_fixed_layout.cjs
           node tests/ui_grouped_rewards.cjs
           node tests/ui_compact_review.cjs
+          node tests/ui_mac_update.cjs
           node tests/ui_narrative.cjs
           node tests/ui_world.cjs
           node tests/ui_layout_check.cjs
@@ -186,6 +187,12 @@ jobs:
           out=$("dist/法师成长记.app/Contents/MacOS/FakaoMage" --run-script tests/smoke_frozen.py)
           echo "$out"
           echo "$out" | grep -q SMOKE-OK
+
+      - name: Mac update restart smoke
+        run: |
+          out=$("dist/法师成长记.app/Contents/MacOS/FakaoMage" --run-script tests/smoke_mac_update.py fakao-mage-mac.zip)
+          echo "$out"
+          echo "$out" | grep -q MAC-UPDATE-FROZEN-OK
 
       - name: Upload to release
         if: github.ref == 'refs/heads/main'
