@@ -513,7 +513,6 @@ const views = {
   },
 
   async train() {
-    const tasks = DASH?.plan?.tasks || [];
     const idle = () => TRAIN_ROUTE !== VIEW || (!T.session && !T.msgs.length && !T.busy);
     if (idle()) {
       const hub = await hubHtml();
@@ -535,7 +534,6 @@ const views = {
     else if (T.finished && T_TYPE === "mock_review") composer = `<div class="row"><button class="primary" id="backContest">回${esc(NAV("contest"))}</button><button class="ghost" id="backHome">回当前训练板块</button></div>`;
     else if (T.finished) composer = `<div class="row"><button class="primary" id="nextTask">下一项功课</button><button class="ghost" id="backHome">回当前训练板块</button></div>`;
     return `<div class="train">
-      <div class="card"><h3>📜 学姐荐课</h3>${tasks.map(taskRow).join("")}<button class="ghost small" id="toHall" style="margin-top:8px">↩ 回当前训练板块</button></div>
       <div class="card chat ${MAT_OPEN && currentMaterial() ? "with-mat" : ""}">${sessionHead()}${materialPane()}<div class="msgs" id="msgs">${T.msgs.map(msgHtml).join("")}</div>
         <div class="composer">${composer}</div></div></div>`;
   },
@@ -594,8 +592,7 @@ const views = {
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
         <div style="flex:1" class="small muted" id="cfDemo">示例：<span style="font-size:calc(15px * ${cp.fs / 100})">人民是历史的创造者，人民是真正的英雄。</span></div></div>
-      <div class="row"><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="csideR" style="width:auto" ${cp.side ? "checked" : ""}> 左边显示“学姐荐课”栏</label><span class="spacer"></span>
-        <button class="ghost small" id="cResetR">恢复默认（宽 80%、高 100%、字体 110%）</button></div>
+      <div class="row"><button class="ghost small" id="cResetR">恢复默认（宽 100%、高 100%、字体 110%）</button></div>
       <p class="small muted">高度 100% = 从顶栏下面一直到屏幕底；对话框底边总是贴着屏幕底。改了马上生效，下次做功课就是这个大小。</p></div>
       <div class="card"><h3>本机设置 <small>保存在本机 ~/.fakao-rpg/settings.json，不会同步、不会上传</small></h3>
       <label class="small muted">法考库路径（Obsidian 法考库的根目录，含 10-科目 或 训练 文件夹；程序放在库里时会自动找到）</label>
@@ -623,7 +620,7 @@ const views = {
       <div class="card"><h3>改规则 / 人设 / 台词</h3>
       <p>在 Obsidian 里直接编辑库里的这些文件，保存后刷新网页就生效：</p>
       <ul><li><b>训练/规则.md</b>：目标日、位阶分数线、晋升试炼条件、天赋门槛、药剂、周常、经验值……</li>
-      <li><b>训练/角色设定.md</b>：ID、头像；两种风格各自的称呼、导师名 / 头像 / 人设</li>
+      <li><b>训练/角色设定.md</b>：ID、头像；本项目的称呼、导师名 / 头像 / 人设</li>
       <li><b>训练/台词库.md</b>（修仙）/ <b>台词库·玄幻.md</b>：导师的备用台词（没连 AI 时用）</li>
       <li><b>训练/骨架/板块.md</b>：每个板块的${esc(W("skeleton"))}（默写标准）</li></ul>
       <p class="small muted">头像：把图片放进 <b>训练/</b>，文件名写进角色设定.md 的“头像”“修仙.导师头像”。</p></div>`;
@@ -960,9 +957,9 @@ function applyResp(r) {
   }
 }
 // 做功课时对话框钉在屏幕上：底边贴着屏幕底，宽高在“设置 → 对话框大小”里调（存在本机浏览器）
-const CHAT_DEF = { w: 80, h: 100, side: true, fs: 110 };   // fs：对话框里的字号（%）
+const CHAT_DEF = { w: 100, h: 100, fs: 110 };   // fs：对话框里的字号（%）
 function chatPrefs() {
-  try { return Object.assign({}, CHAT_DEF, JSON.parse(localStorage.getItem("chatLayout") || "{}")); } catch { return { ...CHAT_DEF }; }
+  try { const p=JSON.parse(localStorage.getItem("chatLayout") || "{}");return {w:p.schema!==2&&p.w===80&&p.h===100&&p.fs===110?100:Number(p.w)||CHAT_DEF.w,h:Number(p.h)||CHAT_DEF.h,fs:Number(p.fs)||CHAT_DEF.fs}; } catch { return { ...CHAT_DEF }; }
 }
 function applyChatLayout(p = chatPrefs()) {
   const root = document.documentElement;
@@ -973,7 +970,6 @@ function applyChatLayout(p = chatPrefs()) {
   const avail = Math.max(240, innerHeight - top);
   root.style.setProperty("--chat-w", Math.max(40, Math.min(100, p.w)) + "vw");
   root.style.setProperty("--chat-top", Math.round(innerHeight - avail * Math.max(40, Math.min(100, p.h)) / 100) + "px");
-  root.classList.toggle("chat-noside", !p.side);
   root.style.setProperty("--chat-fs", String(Math.max(80, Math.min(160, p.fs || 100)) / 100));
 }
 function fitChat() {
@@ -1016,11 +1012,6 @@ function bindTrain() {
   if (nx) nx.onclick = () => {
     const t = (DASH?.plan?.tasks || []).find((x) => !x.done);
     t ? startTask({ task_id: t.id }) : (toast(`${W("tasks")}全部完成 ✦`), go("home"));
-  };
-  const th = $("#toHall");
-  if (th) th.onclick = () => {
-    if (T.session && !T.finished && !confirm("这项功课还没结束，先回当前训练板块吗？（试炼的进度会保存，其他功课需要重新开始）")) return;
-    Object.assign(T, { session: null, msgs: [], battle: null }); clearInterval(TIMER); renderTrain();
   };
   const bh = $("#backHome"); if (bh) bh.onclick = () => { Object.assign(T, { session: null, msgs: [], battle: null }); renderTrain(); };
   const bc = $("#backContest"); if (bc) bc.onclick = () => { Object.assign(T, { session: null, msgs: [], battle: null }); go("contest"); };
@@ -1516,18 +1507,15 @@ function bindSettings() {
   SCENE_PORTAL.mount("settings");
   foldCards($("#view"));
   DEVICE.bind();
-  const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify(p)); } catch {} };
-  const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), side: $("#csideR").checked, fs: Number($("#cfR").value) });
+  const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify({...p,schema:2})); } catch {} };
+  const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), fs: Number($("#cfR").value) });
   if ($("#cwR")) {
     const upd = () => { const p = readChat(); $("#cwV").textContent = p.w + "%"; $("#chV").textContent = p.h + "%"; $("#cfV").textContent = p.fs + "%";
       $("#cfDemo span").style.fontSize = `calc(15px * ${p.fs / 100})`; saveChat(p); applyChatLayout(p); };
-    $("#cwR").oninput = upd; $("#chR").oninput = upd; $("#cfR").oninput = upd; $("#csideR").onchange = upd;
-    $("#cResetR").onclick = () => { $("#cwR").value = CHAT_DEF.w; $("#chR").value = CHAT_DEF.h; $("#csideR").checked = CHAT_DEF.side; $("#cfR").value = CHAT_DEF.fs; upd(); };
+    $("#cwR").oninput = upd; $("#chR").oninput = upd; $("#cfR").oninput = upd;
+    $("#cResetR").onclick = () => { $("#cwR").value = CHAT_DEF.w; $("#chR").value = CHAT_DEF.h; $("#cfR").value = CHAT_DEF.fs; upd(); };
   }
   AMB.bindSettings(showError);
-  document.querySelectorAll("button[data-style]").forEach((b) => (b.onclick = async () => {   // 风格按钮（不能用 data-theme：<html data-theme> 是明暗）
-    try { await api("/api/theme", { theme: b.dataset.style }); await refresh(); render(); } catch (e) { showError(e); }
-  }));
   const prof = $("#sProf");
   if (prof) prof.onchange = async () => {
     if (!prof.value) return;
