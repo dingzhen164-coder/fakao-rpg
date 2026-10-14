@@ -156,7 +156,7 @@ class Paths:
         from .mdconf import parse, to_num
         if not self.vault:
             return []
-        for d in (self.train, self.skeletons, self.save_dir, self.train / "外观" / "背景", self.train / "外观" / "音乐"):
+        for d in (self.train, self.skeletons, self.save_dir, self.train / "外观" / "背景", self.train / "外观" / "音乐", self.train / "外观" / "五脉"):
             d.mkdir(parents=True, exist_ok=True)
         mark = self.train / MARKER          # 标记：这个 训练/ 是法师成长记的（自动找库认它）
         if not mark.exists():
