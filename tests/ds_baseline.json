@@ -1,0 +1,47 @@
+{
+ "ds.css": {
+  "colors": 0,
+  "font_px": 0,
+  "radius_px": 0
+ },
+ "exams.css": {
+  "colors": 23,
+  "font_px": 11,
+  "radius_px": 7
+ },
+ "fantasy.css": {
+  "colors": 180,
+  "font_px": 0,
+  "radius_px": 8
+ },
+ "fixed_layout.css": {
+  "colors": 2,
+  "font_px": 6,
+  "radius_px": 0
+ },
+ "map_navigation.css": {
+  "colors": 0,
+  "font_px": 10,
+  "radius_px": 17
+ },
+ "narrative.css": {
+  "colors": 0,
+  "font_px": 4,
+  "radius_px": 4
+ },
+ "scene_portal.css": {
+  "colors": 0,
+  "font_px": 2,
+  "radius_px": 2
+ },
+ "study_hud.css": {
+  "colors": 0,
+  "font_px": 7,
+  "radius_px": 9
+ },
+ "style.css": {
+  "colors": 398,
+  "font_px": 43,
+  "radius_px": 30
+ }
+}

@@ -216,6 +216,16 @@ def realm_of_gate(theme, gate):
 NARRATIVE_PROFILES = {'mage': {'title': '学院纪事', 'character': '艾琳学姐', 'role': '学院引导', 'mark': '法', 'portrait': '', 'intro': '王立法学魔法学院的引导学姐。陪你研习法考八科，具体讲题仍使用你设定的导师与AI方案。', 'greeting': '欢迎来到王立法学魔法学院，小法师。法典的力量来自理解与论证。你想先了解什么？', 'study': '今天的课程', 'review': '案例复盘', 'room': '营地', 'echo': '你的学习记录已经留在法典中。先弄清规则与适用条件，再用题目检验自己的理解。'}}
 
 
+
+# 3.4半身立绘：基础图+4个表情+眨眼叠层（眨眼框为占整图的比例）。路径相对web/；缺图时前端回退到portrait或主题印记。
+def _portraits(base, name, blink):
+    d = {k: '%s/%s-%s.webp' % (base, name, k) for k in ('calm', 'cheer', 'explain', 'concern', 'proud')}
+    d['blink'] = dict(src='%s/%s-blink.webp' % (base, name), **blink)
+    return d
+NARRATIVE_PROFILES['mage']['portrait'] = 'assets/academy/portrait/mg-eileen-calm.webp'
+NARRATIVE_PROFILES['mage']['portraits'] = _portraits('assets/academy/portrait', 'mg-eileen', {'x': 0.4667, 'y': 0.1562, 'w': 0.1833, 'h': 0.0563})
+
+
 # 3.0学习委托与收藏的三主题名词/内置台词，程序核验逻辑在journey.py。
 JOURNEY_PROFILES = {
     'xingce': {'cards': '温简', 'exercise': '修习', 'title': '五脉初课', 'daily': '今日修习', 'first': '明理初试', 'second': '回望与再练',
