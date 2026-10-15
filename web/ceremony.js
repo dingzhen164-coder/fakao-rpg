@@ -78,6 +78,7 @@
         <div class="cer-title ${title.length > 2 ? "long" : ""}">${[...(o.title || "")].map((c, i) => `<span style="animation-delay:${0.25 + i * 0.22}s">${esc(c)}</span>`).join("")}</div>
       </div>
       <div class="cer-band">
+        ${o.badge && window.BeautyBadge ? `<div class="cer-badge">${BeautyBadge.svg({ tier: o.badgeTier ?? BeautyBadge.tierOf(o.badge), sub: o.badgeSub || 0, label: o.badge, size: 92 })}</div>` : ""}
         <p class="cer-text">${esc(o.text || "")}</p>
         ${o.subtitle ? `<div class="cer-sub"><i></i><span>${esc(o.subtitle)}</span><i></i></div>` : ""}
         ${(o.stats || []).length ? `<div class="cer-stats">${o.stats.map((row) => `<div>${row.map(([k, v]) => `<span><em>${esc(k)}：</em>${esc(v)}</span>`).join("")}</div>`).join("")}</div>` : ""}
@@ -96,6 +97,7 @@
     const el = build(o);
     document.body.appendChild(el);
     requestAnimationFrame(() => el.classList.add("in"));
+    if (window.BeautyFx && BeautyFx.ceremonyBurst) setTimeout(() => el.isConnected && BeautyFx.ceremonyBurst(el, { major: !!o.major, tribulation: o.tone === "gold" }), 450);
     let done = false;
     const close = () => {
       if (done) return;
@@ -119,7 +121,7 @@
         : MINOR[Math.floor(Math.random() * MINOR.length)];
     const stats = [[["魔力", `${e.score} 分`], ["目标", `${e.target || "—"} 分`]]];
     if (e.next) stats.push([["下一阶", e.next], ...(e.from ? [["来自", e.from]] : [])]);
-    return show({ title: major ? big : e.name, subtitle: e.name, text, stats, tone: e.tribulation ? "gold" : "jade" });
+    return show({ title: major ? big : e.name, subtitle: e.name, text, stats, tone: e.tribulation ? "gold" : "jade", badge: e.big_name || e.name, badgeSub: e.sub || 0, badgeTier: window.DASH_REF && DASH_REF() && DASH_REF().realm ? DASH_REF().realm.big : undefined, major });
   }
 
   // 宗门大比出成绩
