@@ -1,5 +1,14 @@
 # DESIGN · 法师成长记（法考 RPG）
 
+## 3.4开发批次：艾琳半身立绘、白天/夜晚全景（第一批，2026-10-15，未发布）
+
+素材由用户用Gemini生成，来源见`web/assets/academy/README.md`。
+- 艾琳学姐半身立绘：`mg-eileen-calm/cheer/explain/concern/proud.webp`（900×1200，色键去底）+`mg-eileen-blink.webp`（眼部眨眼叠层，位置比例在`rpg/themes.py _portraits`）。用户在角色设定里自定义导师头像时优先用自定义图，不再显示内置表情立绘（rpg/narrative.py）。
+- 对话框动效与表情映射同shenlun-rpg（narrative.js/css共用，见该仓库DESIGN.md“3.4开发批次”）。
+- 学院全景：新图`mg-academy-day/night.webp`（1672×941，九个模块逐一设计景物）取代矢量草图`art/academy.svg`（保留文件，不再引用）。亮色主题白天、暗色主题夜晚；`layoutId`为`mage-v2`；地点带`nx/ny`竖屏默认位置。
+- 未做：季节变体、按时间段自动切换、飘落光点、法考其他场景与同伴立绘。
+- 验证：法考ui_layout_check（36页）与纪事、世界、地图导航、状态牌、固定布局、合并奖励等专项通过。
+
 ## 界面规范（3.1.2开发批次：设计系统，2026-10-15）
 
 只做规整，不换视觉语言，不新增功能行为；首要设备是平板（安卓APK、iPad浏览器），不再做手机界面。fakao-rpg与shenlun-rpg两份实现相同。

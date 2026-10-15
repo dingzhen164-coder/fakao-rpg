@@ -174,12 +174,12 @@ function applyTheme() {
 }
 
 function configurePortal() {
-  SCENE_PORTAL.configure({progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',image:'art/academy.svg',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
-    {id:'dwelling',label:'营地',view:'dwelling',x:14,y:78},{id:'train',label:'冒险大厅',view:'train',x:40,y:45},
-    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:73,y:44},{id:'bank',label:'试炼塔',view:'bank',x:82,y:70},
-    {id:'notes',label:'魔法手记',view:'notes',x:55,y:80},{id:'contest',label:'竞技场',view:'contest',x:28,y:70},
-    {id:'log',label:'成长档案',view:'log',x:65,y:60},{id:'journal',label:'学院纪事与委托',view:'journal',x:89,y:32},
-    {id:'tianji',label:'天机台',view:'tianji',x:55,y:24},
+  SCENE_PORTAL.configure({progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',images:{day:'assets/academy/scene/mg-academy-day.webp',night:'assets/academy/scene/mg-academy-night.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+    {id:'dwelling',label:'营地',view:'dwelling',x:8,y:91,nx:14,ny:84},{id:'train',label:'冒险大厅',view:'train',x:40,y:51,nx:27,ny:56},
+    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:68,y:46,nx:82,ny:50},{id:'bank',label:'试炼塔',view:'bank',x:92,y:55,nx:86,ny:88},
+    {id:'notes',label:'魔法手记',view:'notes',x:49,y:87,nx:47,ny:86},{id:'contest',label:'竞技场',view:'contest',x:16,y:67,nx:14,ny:62},
+    {id:'log',label:'成长档案',view:'log',x:76,y:76,nx:84,ny:70},{id:'journal',label:'学院纪事与委托',view:'journal',x:87,y:44,nx:80,ny:28},
+    {id:'tianji',label:'天机台',view:'tianji',x:59,y:0,nx:72,ny:2},
   ]},p=>p.view==='journal'?NARRATIVE.open():go(p.view));
 }
 
