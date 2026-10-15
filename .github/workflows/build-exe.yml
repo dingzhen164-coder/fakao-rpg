@@ -46,6 +46,8 @@ jobs:
           node tests/ui_grouped_rewards.cjs
           node tests/ui_compact_review.cjs
           node tests/ui_mac_update.cjs
+          node tests/ui_workspace_309.cjs
+          node tests/ui_reader_310.cjs
           node tests/ui_narrative.cjs
           node tests/ui_world.cjs
           node tests/ui_layout_check.cjs

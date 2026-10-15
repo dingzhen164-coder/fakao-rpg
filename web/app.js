@@ -124,7 +124,7 @@ async function go(view) {
   if (VIEW === "notes" && view !== "notes" && window.NOTES && !(await NOTES.flush())) return;
   if (view === "tianji" && VIEW === "tianji" && window.TIANJI && TIANJI.isOpen()) TIANJI.close();   // 在一期里再点顶栏：回天机简报首页
   if (window.CARDS && CARDS.isOpen()) CARDS.close();
-  if (window.MINDMAP && MINDMAP.isOpen()) MINDMAP.close();
+  if (window.MINDMAP && MINDMAP.isOpen() && (await MINDMAP.close()) === false) return;
   VIEW = view;
   if (view === "train" || view === "bank") HALL = view === "bank" ? "shizhan" : "xiulian";
   window.STUDY_HUD?.mount(DASH, VIEW);
@@ -513,7 +513,6 @@ const views = {
   },
 
   async train() {
-    const tasks = DASH?.plan?.tasks || [];
     const idle = () => TRAIN_ROUTE !== VIEW || (!T.session && !T.msgs.length && !T.busy);
     if (idle()) {
       const hub = await hubHtml();
@@ -535,19 +534,20 @@ const views = {
     else if (T.finished && T_TYPE === "mock_review") composer = `<div class="row"><button class="primary" id="backContest">回${esc(NAV("contest"))}</button><button class="ghost" id="backHome">回当前训练板块</button></div>`;
     else if (T.finished) composer = `<div class="row"><button class="primary" id="nextTask">下一项功课</button><button class="ghost" id="backHome">回当前训练板块</button></div>`;
     return `<div class="train">
-      <div class="card"><h3>📜 学姐荐课</h3>${tasks.map(taskRow).join("")}<button class="ghost small" id="toHall" style="margin-top:8px">↩ 回当前训练板块</button></div>
       <div class="card chat ${MAT_OPEN && currentMaterial() ? "with-mat" : ""}">${sessionHead()}${materialPane()}<div class="msgs" id="msgs">${T.msgs.map(msgHtml).join("")}</div>
         <div class="composer">${composer}</div></div></div>`;
   },
 
   async skeleton() {
     const tabs = `<div class="lib-head"><h2>${esc(NAV('skeleton'))}</h2><div class="lib-tabs">
+      <button class="${LIB.tab === 'mindmaps' ? 'on' : ''}" data-libtab="mindmaps">🌿 知识导图</button>
       <button class="${LIB.tab === 'cards' ? 'on' : ''}" data-libtab="cards">📗 ${esc(W('yj'))} · 知识点</button>
       <button class="${LIB.tab === 'yujian' ? 'on' : ''}" data-libtab="yujian">📖 真题卷轴 · 题库</button>
       <button class="${LIB.tab === 'jiaocai' ? 'on' : ''}" data-libtab="jiaocai">📚 典籍 · 教材</button></div></div>`;
     if (LIB.tab === 'idioms') LIB.tab = 'cards';     // 成语实词录是行测专用，法师成长记不显示
     if (LIB.tab === 'yujian') return tabs + (window.EXAMS ? await EXAMS.shelfHtml() : '') + await yujianHtml() + importCardHtml();
     if (LIB.tab === 'jiaocai') return tabs + await jiaocaiHtml();
+    if (LIB.tab === 'mindmaps') return tabs + await MINDMAP.hubHtml(null, true);
     return tabs + await cardsLibHtml();
   },
 
@@ -594,8 +594,7 @@ const views = {
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
         <div style="flex:1" class="small muted" id="cfDemo">示例：<span style="font-size:calc(15px * ${cp.fs / 100})">人民是历史的创造者，人民是真正的英雄。</span></div></div>
-      <div class="row"><label style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="csideR" style="width:auto" ${cp.side ? "checked" : ""}> 左边显示“学姐荐课”栏</label><span class="spacer"></span>
-        <button class="ghost small" id="cResetR">恢复默认（宽 80%、高 100%、字体 110%）</button></div>
+      <div class="row"><button class="ghost small" id="cResetR">恢复默认（宽 100%、高 100%、字体 110%）</button></div>
       <p class="small muted">高度 100% = 从顶栏下面一直到屏幕底；对话框底边总是贴着屏幕底。改了马上生效，下次做功课就是这个大小。</p></div>
       <div class="card"><h3>本机设置 <small>保存在本机 ~/.fakao-rpg/settings.json，不会同步、不会上传</small></h3>
       <label class="small muted">法考库路径（Obsidian 法考库的根目录，含 10-科目 或 训练 文件夹；程序放在库里时会自动找到）</label>
@@ -623,7 +622,7 @@ const views = {
       <div class="card"><h3>改规则 / 人设 / 台词</h3>
       <p>在 Obsidian 里直接编辑库里的这些文件，保存后刷新网页就生效：</p>
       <ul><li><b>训练/规则.md</b>：目标日、位阶分数线、晋升试炼条件、天赋门槛、药剂、周常、经验值……</li>
-      <li><b>训练/角色设定.md</b>：ID、头像；两种风格各自的称呼、导师名 / 头像 / 人设</li>
+      <li><b>训练/角色设定.md</b>：ID、头像；本项目的称呼、导师名 / 头像 / 人设</li>
       <li><b>训练/台词库.md</b>（修仙）/ <b>台词库·玄幻.md</b>：导师的备用台词（没连 AI 时用）</li>
       <li><b>训练/骨架/板块.md</b>：每个板块的${esc(W("skeleton"))}（默写标准）</li></ul>
       <p class="small muted">头像：把图片放进 <b>训练/</b>，文件名写进角色设定.md 的“头像”“修仙.导师头像”。</p></div>`;
@@ -960,9 +959,9 @@ function applyResp(r) {
   }
 }
 // 做功课时对话框钉在屏幕上：底边贴着屏幕底，宽高在“设置 → 对话框大小”里调（存在本机浏览器）
-const CHAT_DEF = { w: 80, h: 100, side: true, fs: 110 };   // fs：对话框里的字号（%）
+const CHAT_DEF = { w: 100, h: 100, fs: 110 };   // fs：对话框里的字号（%）
 function chatPrefs() {
-  try { return Object.assign({}, CHAT_DEF, JSON.parse(localStorage.getItem("chatLayout") || "{}")); } catch { return { ...CHAT_DEF }; }
+  try { const p=JSON.parse(localStorage.getItem("chatLayout") || "{}");return {w:p.schema!==2&&p.w===80&&p.h===100&&p.fs===110?100:Number(p.w)||CHAT_DEF.w,h:Number(p.h)||CHAT_DEF.h,fs:Number(p.fs)||CHAT_DEF.fs}; } catch { return { ...CHAT_DEF }; }
 }
 function applyChatLayout(p = chatPrefs()) {
   const root = document.documentElement;
@@ -973,7 +972,6 @@ function applyChatLayout(p = chatPrefs()) {
   const avail = Math.max(240, innerHeight - top);
   root.style.setProperty("--chat-w", Math.max(40, Math.min(100, p.w)) + "vw");
   root.style.setProperty("--chat-top", Math.round(innerHeight - avail * Math.max(40, Math.min(100, p.h)) / 100) + "px");
-  root.classList.toggle("chat-noside", !p.side);
   root.style.setProperty("--chat-fs", String(Math.max(80, Math.min(160, p.fs || 100)) / 100));
 }
 function fitChat() {
@@ -1016,11 +1014,6 @@ function bindTrain() {
   if (nx) nx.onclick = () => {
     const t = (DASH?.plan?.tasks || []).find((x) => !x.done);
     t ? startTask({ task_id: t.id }) : (toast(`${W("tasks")}全部完成 ✦`), go("home"));
-  };
-  const th = $("#toHall");
-  if (th) th.onclick = () => {
-    if (T.session && !T.finished && !confirm("这项功课还没结束，先回当前训练板块吗？（试炼的进度会保存，其他功课需要重新开始）")) return;
-    Object.assign(T, { session: null, msgs: [], battle: null }); clearInterval(TIMER); renderTrain();
   };
   const bh = $("#backHome"); if (bh) bh.onclick = () => { Object.assign(T, { session: null, msgs: [], battle: null }); renderTrain(); };
   const bc = $("#backContest"); if (bc) bc.onclick = () => { Object.assign(T, { session: null, msgs: [], battle: null }); go("contest"); };
@@ -1478,6 +1471,7 @@ function bindLibrary() {
 }
 function bindSkeleton() {
   bindLibrary();
+  window.MINDMAP?.bindHub($("#view"));
   if ($('#importCard')) $('#importCard').ontoggle = (e) => { if (e.target.open) loadImport(); };
   document.querySelectorAll("[data-skel]").forEach((b) => (b.onclick = () =>
     startTask({ task: { type: "skeleton", board: b.dataset.skel, target: b.dataset.skel, title: `📜 「${b.dataset.skel}」${W("skeleton")}` } })));
@@ -1516,18 +1510,15 @@ function bindSettings() {
   SCENE_PORTAL.mount("settings");
   foldCards($("#view"));
   DEVICE.bind();
-  const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify(p)); } catch {} };
-  const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), side: $("#csideR").checked, fs: Number($("#cfR").value) });
+  const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify({...p,schema:2})); } catch {} };
+  const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), fs: Number($("#cfR").value) });
   if ($("#cwR")) {
     const upd = () => { const p = readChat(); $("#cwV").textContent = p.w + "%"; $("#chV").textContent = p.h + "%"; $("#cfV").textContent = p.fs + "%";
       $("#cfDemo span").style.fontSize = `calc(15px * ${p.fs / 100})`; saveChat(p); applyChatLayout(p); };
-    $("#cwR").oninput = upd; $("#chR").oninput = upd; $("#cfR").oninput = upd; $("#csideR").onchange = upd;
-    $("#cResetR").onclick = () => { $("#cwR").value = CHAT_DEF.w; $("#chR").value = CHAT_DEF.h; $("#csideR").checked = CHAT_DEF.side; $("#cfR").value = CHAT_DEF.fs; upd(); };
+    $("#cwR").oninput = upd; $("#chR").oninput = upd; $("#cfR").oninput = upd;
+    $("#cResetR").onclick = () => { $("#cwR").value = CHAT_DEF.w; $("#chR").value = CHAT_DEF.h; $("#cfR").value = CHAT_DEF.fs; upd(); };
   }
   AMB.bindSettings(showError);
-  document.querySelectorAll("button[data-style]").forEach((b) => (b.onclick = async () => {   // 风格按钮（不能用 data-theme：<html data-theme> 是明暗）
-    try { await api("/api/theme", { theme: b.dataset.style }); await refresh(); render(); } catch (e) { showError(e); }
-  }));
   const prof = $("#sProf");
   if (prof) prof.onchange = async () => {
     if (!prof.value) return;
@@ -1578,22 +1569,24 @@ let lastActive = Date.now();
 let T_TYPE = "";
 ["mousemove", "keydown", "click", "scroll", "input"].forEach((ev) => addEventListener(ev, () => (lastActive = Date.now()), { passive: true }));
 function studyingNow() {
-  return VIEW === TRAIN_ROUTE && !!T.session && STUDY.includes(T_TYPE) && document.visibilityState === "visible"
+  return !window.MINDMAP?.isOpen() && !window.CARDS?.isOpen() && VIEW === TRAIN_ROUTE && !!T.session && STUDY.includes(T_TYPE) && document.visibilityState === "visible"
     && (T.busy || Date.now() - lastActive < 120000);
 }
 // 在 🪶 手札里写字也算复习：按秒累计“1 分钟内写过字”的时间，心跳时连同本子编号一起报（服务器核对这本最近真的存过笔迹）
 let noteSec = 0;
 let cardSec = 0;   // 温简也算复习：按秒累计正在温简的时间（web/cards.js 的 active：在温、看得见、2 分钟内有操作）
+let mapSec=0, mapToken="", cardBoard="";
 let tjSec = 0;     // 🔮 天机简报：开着一期、2 分钟内动过（web/tianji.js 的 active）
 let tjMode = "";
 setInterval(() => {
   if (window.NOTES && NOTES.writingId()) noteSec += 1;
-  if (window.CARDS && CARDS.active()) cardSec += 1;
+  if (window.CARDS && CARDS.active()) {cardSec += 1;cardBoard=CARDS.board();}
+  if (window.MINDMAP && MINDMAP.active()) {mapSec+=1;mapToken=MINDMAP.token();}
   const tj = window.TIANJI ? TIANJI.active() : "";
   if (tj) { tjSec += 1; tjMode = tj; }
 }, 1000);
 function updateStudyDot() {
-  const on = studyingNow() || !!(window.NOTES && NOTES.writingId()) || !!(window.CARDS && CARDS.active()) || !!(window.TIANJI && TIANJI.active());
+  const on = !!window.MINDMAP?.active() || studyingNow() || !!(window.NOTES && NOTES.writingId()) || !!(window.CARDS && CARDS.active()) || !!(window.TIANJI && TIANJI.active());
   const lamp=$("#todayPill");if(!lamp){window.STUDY_HUD?.ensure();return;}
   lamp.classList.toggle("on", on);
   lamp.title = on ? "正在计时：修炼中" : "未计时：只有做功课时才算修炼时间";
@@ -1603,22 +1596,33 @@ setInterval(async () => {
   updateStudyDot();
   const on = studyingNow();
   beatCount += 1;
-  if (!on && !noteSec && !cardSec && !tjSec && beatCount % 2) return;          // 不修炼时每分钟只刷新一次状态（多设备提醒、调息、闭关）
+  if (!on && !noteSec && !cardSec && !mapSec && !tjSec && beatCount % 2) return;          // 不修炼时每分钟只刷新一次状态（多设备提醒、调息、闭关）
   try {
     const nid = !on && window.NOTES ? NOTES.writingId() || (noteSec ? NOTES.lastId() : "") : "";
     const carding = !on && !nid && cardSec > 0;
-    const tj = !on && !nid && !carding && tjSec > 0 ? tjMode : "";
-    const sec = on ? BEAT : Math.min(BEAT, nid ? noteSec : carding ? cardSec : tjSec);
-    noteSec = 0; cardSec = 0; tjSec = 0;
+    const mapping = !on && !nid && !carding && mapSec>0;
+    const tj = !on && !nid && !carding && !mapping && tjSec > 0 ? tjMode : "";
+    const sec = on ? BEAT : Math.min(BEAT, nid ? noteSec : carding ? cardSec : mapping ? mapSec : tjSec);
+    noteSec = 0; cardSec = 0; mapSec = 0; tjSec = 0;
     if (nid && sec) await NOTES.save();          // 先把刚写的存上，服务器才认得“最近写过”
     const r = await api("/api/heartbeat", { seconds: sec, session: on ? T.session : null, notes: nid || null,
-      cards: carding || null, cards_board: carding ? CARDS.board() : null, tianji: tj || null });
+      cards: carding || null, cards_board: carding ? cardBoard : null, mindmap: mapping ? mapToken : null, tianji: tj || null });
     if (DASH) { Object.assign(DASH, {xp:r.xp, realm:r.realm, study_status:r.study_status, today:r.today}); DASH.minutes.today = r.minutes; DASH.other_device = r.other_device; DASH.rest = r.rest; updatePill(); banner(); }
     handleEvents(r.events);
     if (DASH?.retreat && !r.retreat_on && VIEW === "dwelling") render();
   } catch (e) { /* 程序关了就不提示 */ }
 }, BEAT * 1000);
 setInterval(updateStudyDot, 5000);
+// 退出导图前结算不足一次心跳的秒数，避免短次复习丢失；仍走同一个计时后端。
+window.finishMindmapReading=async token=>{
+  const sec=token===mapToken?Math.min(90,mapSec):0;mapSec=0;
+  if(!sec)return;
+  try{const r=await api('/api/heartbeat',{seconds:sec,mindmap:token});
+    if(DASH){Object.assign(DASH,{xp:r.xp,realm:r.realm,study_status:r.study_status});DASH.minutes.today=r.minutes;updatePill();}
+    handleEvents(r.events);
+  }catch(_){}
+};
+
 
 render();
 

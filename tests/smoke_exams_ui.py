@@ -42,6 +42,7 @@ def main():
                 def show_panel(selector):
                     page.locator(selector).wait_for(state='attached')
                     page.wait_for_timeout(100)
+                    page.locator(selector).first.evaluate("el => { for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true; }")
                     ids = page.locator(selector).first.evaluate("(el) => {const ids=[];for(let p=el;p;p=p.parentElement)if(p.hidden&&getComputedStyle(p).display==='none'&&p.getAttribute('role')==='tabpanel')ids.unshift(p.id);return ids;}")
                     for panel_id in ids:
                         page.locator('[role=tab][aria-controls="%s"]' % panel_id).click()
