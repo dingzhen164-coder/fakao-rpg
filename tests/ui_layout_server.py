@@ -27,6 +27,14 @@ def main():
         os.environ["FAKAO_VAULT"] = str(v)
         paths.save_settings({"vault": str(v)})
         paths.Paths(v).ensure_train_dir()
+        if '--art-fixture' in sys.argv:
+            # 美术文件夹覆盖测试：首页白天全景、营地背景各放一张纯色小图
+            import base64
+            png = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==')
+            d = v / '训练/外观/美术'
+            (d / '首页全景').mkdir(parents=True, exist_ok=True); (d / '子地图背景').mkdir(parents=True, exist_ok=True)
+            (d / '首页全景' / '白天.png').write_bytes(png)
+            (d / '子地图背景' / '营地.png').write_bytes(png)
         if '--journey-fixture' in sys.argv:
             # 第二批交互用自编卡片，不连接AI、不读取真实题库。
             from rpg import cards
