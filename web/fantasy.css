@@ -78,7 +78,7 @@ body.has-bg::before { display: none; }
   background: radial-gradient(circle, var(--gold) 1.2px, transparent 1.6px) center / 14px 4px repeat-x; opacity: .7; }
 .brand { color: #f3d27c; font-family: var(--display); letter-spacing: 3px;
   text-shadow: 0 0 10px rgba(243, 210, 124, .45), 0 1px 0 #3a2410; }
-nav a { color: #d9c9a6; font-family: var(--serif); letter-spacing: .08em; border-radius: 4px; position: relative; }
+nav a { color: #d9c9a6; font-family: var(--serif); letter-spacing: .08em; border-radius: var(--ds-r-4); position: relative; }
 nav a:hover { color: #fff3d0; background: rgba(243, 210, 124, .1); }
 nav a.active { color: #f3d27c; background: rgba(243, 210, 124, .12); box-shadow: inset 0 -2px 0 #f3d27c; }
 .today-pill { background: rgba(0, 0, 0, .25); color: #e6d6b3; border-color: rgba(243, 210, 124, .45); }
@@ -106,21 +106,21 @@ html[data-theme="light"] .hero { background: radial-gradient(120% 140% at 0% 0%,
 .avatar .def { background: radial-gradient(circle at 30% 25%, #b48cff, #5a2d91 50%, #1d1240); color: #f6dc94; }
 
 /* ---------------------------------------------------------------- 按钮：附魔紫 + 金边 / 羊皮纸 */
-button { border-radius: 6px; border-color: var(--frame); background: linear-gradient(180deg, var(--panel), var(--panel2)); }
+button { border-radius: var(--ds-r-6); border-color: var(--frame); background: linear-gradient(180deg, var(--panel), var(--panel2)); }
 button:hover { border-color: var(--gold); box-shadow: 0 0 10px var(--glow-gold); }
 button.primary { background: linear-gradient(180deg, var(--btn-from), var(--btn-to)); color: var(--btn-text);
   border: 1px solid var(--gold); text-shadow: 0 1px 0 rgba(0, 0, 0, .45);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 2px 8px rgba(0, 0, 0, .3); }
 button.primary:hover { filter: brightness(1.12); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 0 14px var(--glow-arcane), 0 0 6px var(--glow-gold); }
 button.ghost { background: transparent; }
-input, textarea, select { border-radius: 6px; border-color: var(--frame); }
+input, textarea, select { border-radius: var(--ds-r-6); border-color: var(--frame); }
 input:focus, textarea:focus, select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--glow-gold); }
-.tag { border-radius: 4px; }
+.tag { border-radius: var(--ds-r-4); }
 
 /* 进度条：符文槽 */
-.bar { border-radius: 3px; border: 1px solid var(--frame-in); background: rgba(0, 0, 0, .25); }
+.bar { border-radius: var(--ds-r-3); border: 1px solid var(--frame-in); background: rgba(0, 0, 0, .25); }
 html[data-theme="light"] .bar { background: rgba(120, 80, 30, .12); }
-.bar > div { border-radius: 2px; background: linear-gradient(90deg, #4f8fd9, #8b5cf6 55%, #e0b354);
+.bar > div { border-radius: var(--ds-r-2); background: linear-gradient(90deg, #4f8fd9, #8b5cf6 55%, #e0b354);
   box-shadow: 0 0 10px var(--glow-arcane); }
 
 /* ---------------------------------------------------------------- 学习时长：三枚法阵印（Ⅰ 聆听 · Ⅱ 历练 · Ⅲ 温习） */
@@ -133,13 +133,13 @@ html[data-theme="light"] .bar { background: rgba(120, 80, 30, .12); }
 /* ---------------------------------------------------------------- 冒险大厅两扇门、标签页 */
 :root { --jade: #8b5cf6; }
 :root[data-theme="light"] { --jade: #5a2d91; }
-.gate { border-radius: 10px; border-color: var(--frame); outline: 1px solid var(--frame-in); outline-offset: -6px; }
+.gate { border-radius: var(--ds-r-10); border-color: var(--frame); outline: 1px solid var(--frame-in); outline-offset: -6px; }
 .gate-name { font-family: var(--display); color: var(--title); }
 .gate-cloud { background: radial-gradient(60% 40% at 85% 20%, var(--glow-gold), transparent 70%),
                           radial-gradient(50% 35% at 10% 110%, var(--glow-arcane), transparent 70%); }
-.lib-tabs { border-radius: 8px; border-color: var(--frame); }
-.lib-tabs button { border-radius: 6px; }
-.sancai-tabs a, .toc-chip { border-radius: 4px; }
+.lib-tabs { border-radius: var(--ds-r-8); border-color: var(--frame); }
+.lib-tabs button { border-radius: var(--ds-r-6); }
+.sancai-tabs a, .toc-chip { border-radius: var(--ds-r-4); }
 
 /* ---------------------------------------------------------------- 咒文书页：符文卡 = 皮面魔法书，教材 = 烫金典籍 */
 .slip { width: 104px; border-radius: 4px 10px 10px 4px;
@@ -149,7 +149,7 @@ html[data-theme="light"] .bar { background: rgba(120, 80, 30, .12); }
               0 0 22px rgba(139, 92, 246, .35), 0 14px 24px rgba(0, 0, 0, .35); }
 .slip::before { top: auto; bottom: -22px; left: 68%; width: 8px; height: 30px; background: linear-gradient(#9c2a3a, #6b1626);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
-.slip::after { top: 12px; left: calc(50% - 6px); width: 12px; height: 12px; border-radius: 2px; transform: rotate(45deg);
+.slip::after { top: 12px; left: calc(50% - 6px); width: 12px; height: 12px; border-radius: var(--ds-r-2); transform: rotate(45deg);
   background: radial-gradient(circle at 35% 35%, #fff3c4, #e0b354 45%, #8a5a12); box-shadow: 0 0 8px rgba(224, 179, 84, .7); }
 .slip:hover { box-shadow: inset 0 0 0 2px #e0b354, inset 0 0 0 6px rgba(0, 0, 0, .25), inset 0 0 0 7px rgba(224, 179, 84, .5),
               0 0 36px rgba(180, 140, 255, .6), 0 18px 28px rgba(0, 0, 0, .4); }
@@ -164,12 +164,12 @@ html[data-theme="light"] .bar { background: rgba(120, 80, 30, .12); }
 
 /* ---------------------------------------------------------------- 弹窗、提示、导师气泡 */
 .modal-box, .levelup { border: 1px solid var(--frame); outline: 1px solid var(--frame-in); outline-offset: -6px; border-radius: var(--radius); }
-.toast { border-radius: 6px; border-color: var(--frame); }
+.toast { border-radius: var(--ds-r-6); border-color: var(--frame); }
 .npc .who { font-family: var(--display); color: var(--title); }
 .greet .face, .npc .face { box-shadow: 0 0 0 2px var(--gold), 0 0 14px var(--glow-arcane); }
 
 /* ---------------------------------------------------------------- 晋升按钮 */
-.rb-btn { border-radius: 6px; font-family: var(--display); }
+.rb-btn { border-radius: var(--ds-r-6); font-family: var(--display); }
 
 /* ---------------------------------------------------------------- 大典画面：夜空、城堡剪影、旋转法阵 */
 .ceremony { background: radial-gradient(ellipse at 50% 38%, #1d1638 0%, #0b0818 55%, #04030a 100%); color: #ece2c8;
