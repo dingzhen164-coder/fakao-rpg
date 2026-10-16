@@ -77,12 +77,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Isolate test HOME
+        shell: bash
+        run: |
+          python - <<'PYHOME'
+          import os
+          from pathlib import Path
+          home = Path(os.environ['RUNNER_TEMP']) / 'fakao-isolated-home'
+          home.mkdir(parents=True, exist_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as f:
+              for key in ('HOME', 'USERPROFILE'):
+                  f.write(key + '=' + str(home) + '\n')
+          PYHOME
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install build tools
-        run: pip install pyinstaller pywebview segno pymupdf numpy opencv-python-headless
+        run: pip install pyinstaller pywebview segno pymupdf numpy opencv-python-headless pillow certifi
 
       - name: Tests
         run: python -m unittest discover -s tests
@@ -162,12 +175,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Isolate test HOME
+        run: |
+          mkdir -p "$RUNNER_TEMP/fakao-isolated-home"
+          echo "HOME=$RUNNER_TEMP/fakao-isolated-home" >> "$GITHUB_ENV"
+          echo "USERPROFILE=$RUNNER_TEMP/fakao-isolated-home" >> "$GITHUB_ENV"
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install build tools
-        run: pip install pyinstaller pywebview segno pymupdf numpy opencv-python-headless pillow pyobjc-framework-Vision
+        run: pip install pyinstaller pywebview segno pymupdf numpy opencv-python-headless pillow pyobjc-framework-Vision certifi
 
       - name: Build app
         run: >
