@@ -140,3 +140,10 @@
 @media(prefers-reduced-motion:reduce) { .ex-options label { transition:none; } }
 
 .ex-parchment>.ex-sequence { display:flex; justify-content:space-between; border:0; border-top:1px solid var(--line); border-radius:0; margin:16px 0 0; padding:16px 0 0; background:none; }
+
+/* 历年真题在试炼塔卷宗内保留独立目录，按卷宗实际宽度排版。 */
+#th-pane-catalog .ex-shelf{margin:0;min-width:0}
+#th-pane-catalog .ex-scroll-grid,#th-pane-catalog .ex-paper-grid,#th-pane-catalog .ex-scroll-previews{grid-template-columns:minmax(0,1fr)}
+#th-pane-catalog .ex-scroll[open]>summary{grid-template-columns:auto minmax(0,1fr) auto}
+#th-pane-catalog .ex-scroll[open] .ex-scroll-hint{grid-column:1/-1}
+#th-pane-catalog .ex-scroll-inside{padding:var(--ds-sp-12)}

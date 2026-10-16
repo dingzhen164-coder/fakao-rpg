@@ -1,6 +1,11 @@
 """打包后的 exe / Mac App 自检（CI 用）：fakao-mage.exe --run-script tests/smoke_frozen.py
 确认 exe 里带齐了 pymupdf、segno、网页文件和程序模块。"""
 import sys
+import certifi
+from PIL import Image
+from pathlib import Path
+
+assert Path(certifi.where()).is_file(), "更新下载根证书未打包"
 
 import cv2  # noqa: F401
 import numpy  # noqa: F401

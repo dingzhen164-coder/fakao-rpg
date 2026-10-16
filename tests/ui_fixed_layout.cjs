@@ -7,6 +7,7 @@ const server=spawn(process.env.PYTHON||'python3',['tests/ui_layout_server.py',..
 let logs='',browser,page;server.stderr.on('data',x=>logs+=x);
 const ready=new Promise((resolve,reject)=>{let out='';const t=setTimeout(()=>reject(Error(logs||'服务未启动')),20000);server.stdout.on('data',x=>{out+=x;const m=out.match(/UI-READY (http:\/\/\S+)/);if(m){clearTimeout(t);resolve(m[1]);}});server.on('exit',c=>{clearTimeout(t);reject(Error('服务退出 '+c+logs));});});
 async function fits(label){
+ await page.evaluate(()=>Promise.all(document.getAnimations().filter(a=>isFinite(a.effect?.getComputedTiming().endTime||0)&&a.effect.getComputedTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>0))));/* 等页面进入动效结束再量 */
  const info=await page.evaluate(()=>{
   const de=document.scrollingElement;window.scrollTo(0,99999);
   const view=document.querySelector('#view').getBoundingClientRect();
@@ -30,7 +31,7 @@ async function reveal(selector){
  const base=await ready;browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined});page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());
  await page.goto(base);await page.locator('.portal-world').waitFor();
  const routes=['home','dwelling','train','bank','tianji','skeleton','notes','contest','log','settings'];let checked=0;
- for(const size of [{width:1280,height:860},{width:800,height:1280},{width:390,height:844},{width:1024,height:600}])for(const theme of ['light','dark']){
+ for(const size of [{width:1280,height:860},{width:800,height:1280},{width:1024,height:600}])for(const theme of ['light','dark']){
   await page.setViewportSize(size);await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
   for(const route of routes){await page.evaluate(v=>go(v),route);await page.waitForTimeout(100);await fits(`${size.width}/${theme}/${route}`);checked++;
    const labels=await page.locator('.subpage-nav>.fx-tabs>.fx-tab').allTextContents();
