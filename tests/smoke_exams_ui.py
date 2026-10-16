@@ -219,7 +219,8 @@ def main():
                 page.locator('.ex-page').wait_for(state='detached')
                 page.evaluate("go('train')")
                 page.evaluate("go('bank')")
-                # 3.0.4试炼类型分面板，按真实模块标签进入科目卷轴。
+                # 全高塔景的历年真题入口打开原卷轴，不绕过原生面板。
+                page.locator('[data-th-enter=catalog]').click()
                 page.locator('[data-ex-shelf]').wait_for(state='attached')
                 page.wait_for_timeout(100)
                 ids = page.locator('[data-ex-shelf]').evaluate("(el) => {const ids=[];for(let p=el;p;p=p.parentElement)if(p.hidden&&getComputedStyle(p).display==='none'&&p.getAttribute('role')==='tabpanel')ids.unshift(p.id);return ids;}")
@@ -242,6 +243,7 @@ def main():
                 page.locator('[data-close]').click()
                 page.locator('.ex-page').wait_for(state='detached')
                 # 套卷题目目录中的每一题可直达详情。
+                page.locator('[data-th-enter=catalog]').click()
                 paper = page.locator('.ex-paper-roll').first
                 paper.locator('summary').click()
                 paper.locator('[data-ex-id="2025-试卷一-003"]').click()

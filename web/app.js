@@ -1058,12 +1058,14 @@ async function shizhanHtml() {
   const [d,c]=await Promise.all([api('/api/bank'),api('/api/library')]);
   return TRIAL_HALL.html(d,c,{scope:DASH?.vault||'',subject:DASH?.subject||'',
     title:SCENE_PORTAL.title('bank'),mage:document.body.classList.contains('xuanhuan'),
+    catalogHtml:window.EXAMS?await EXAMS.shelfHtml('adventure'):'',
     wrong:W('bank_wrong'),rank:code=>W('bank_rank.'+code)});
 }
 
 function bindHub() {
   if ($('#view .trial-hall')) {
     TRIAL_HALL.bind($('#view'),{api,error:showError,start:task=>startTask({task})});
+    window.EXAMS?.bindHub($('#view'));
     return;
   }
   window.STUDY_REGIONS?.bind($("#view"));
