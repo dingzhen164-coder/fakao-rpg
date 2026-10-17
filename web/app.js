@@ -353,7 +353,7 @@ function currentMaterial() {
 function materialPane() {
   const mat = currentMaterial();
   if (!mat || !MAT_OPEN) return "";
-  return `<div class="mat-pane"><div class="mat-head"><b>📄 材料</b><span class="small faint" style="margin-left:8px">点图片放大</span><span class="spacer"></span><button class="ghost small mat-btn">收起材料</button></div>${blocksHtml(mat, true)}</div>`;
+  return `<div class="mat-pane" role="region" aria-label="共用材料">${blocksHtml(mat, true)}</div>`;
 }
 // 材料里的图：点一下全屏看（再点 / Esc / 返回键关）
 function zoomImg(src) {
@@ -597,10 +597,10 @@ const views = {
   },
 
   async settings() {
-    const [s,taskSettings,deviceHtml]=await Promise.all([api('/api/settings'),TASK_BOARD.settingsHtml(),DEVICE.html()]);
+    const [s,taskSettings,deviceHtml,calendarHtml]=await Promise.all([api('/api/settings'),TASK_BOARD.settingsHtml(),DEVICE.html(),CONTEST_SCENE.settingsHtml()]);
     const cur = DASH?.theme?.name;
     const cp = chatPrefs();
-    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
+    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + calendarHtml + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
       <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
@@ -1421,6 +1421,7 @@ function bindLog() {
 // 设置页：有输入框 / 下拉框的卡片都收成可展开的（默认收起，点标题展开）
 function bindSettings() {
   TASK_BOARD.bindSettings();
+  window.CONTEST_SCENE?.bindSettings();
   SCENE_PORTAL.mount("settings");
   DEVICE.bind();
   const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify({...p,schema:2})); } catch {} };
@@ -1581,7 +1582,7 @@ function bankHead(b) {
     `<span>${b.phase === "review" ? "复盘 " : ""}第 ${b.position}/${b.total} 关</span>`, tower, `<span>已作答 ${b.answered}</span>`,
     b.timer ? `<span>⏱ 本题 <b id="tQ">${clock(b.timer.question)}</b> · 总 <b id="tT">${clock(b.timer.total)}</b></span>` : "",
     b.correct === null ? "" : `<span class="ok">破关 ${b.correct}</span><span class="bad">${esc(W("bank_wrong"))} ${b.answered - b.correct}</span>`,
-  ], b.answered / b.total);
+  ], b.answered / b.total).replace('class="review-head"', 'class="review-head bank-head"');
 }
 
 function towerProgress(t) {

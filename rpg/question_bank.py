@@ -346,7 +346,7 @@ def sets(g):
 
 def count(g):
     n = g.rules.num('实战每组题数')
-    return 15 if n == 15 else 10
+    return int(n) if n in (10, 15, 20) else 10
 
 
 ORDERS = ('seq', 'shuffle')

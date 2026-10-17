@@ -68,7 +68,7 @@
         if(has('.shortcut-settings,.portal-settings'))group('navigation','地图与操作',n,true);
         else if(has('#ambTheme,#cwR,#xcSize,#slCursorToggle,[data-style]'))group('appearance','外观与声音',n,true);
         else if(has('#sSave'))group('ai','AI与资料',n);
-        else if(has('#scheduleSave,[data-subject],.qb-settings')||/改规则/.test(name))group('learning','学习与成长',n);
+        else if(has('#scheduleSave,[data-subject],.qb-settings,.cc-settings')||/改规则/.test(name))group('learning','学习与成长',n);
         else if(has('#updCheck')||/版本/.test(name))group('updates','版本与更新',n);
         else group('device','设备与工具',n);
       }else if(route==='contest'){
@@ -141,6 +141,8 @@
   }
   function pageBar(root) {
     const slot=root.querySelector('#studyHud .subpage-nav');if(!slot)return;
+    const head=root.querySelector('.chat>.bank-head');
+    if(head){slot.querySelector('.bank-head')?.remove();head.closest('.chat').classList.add('compact-bank');slot.append(head);}
     root.querySelectorAll('.fx-shell>.fx-tabs,.lib-head>.lib-tabs,.sl-ui-section-tabs>.lib-tabs').forEach(nav=>slot.append(nav));
     root.querySelectorAll('.lib-head,.sl-ui-masthead').forEach(h=>{if(!h.querySelector('button')||h.matches('.sl-ui-masthead'))h.hidden=true;});
   }
