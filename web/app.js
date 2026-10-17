@@ -249,7 +249,7 @@ function mountNarrative() {
     api, error: showError,
     task: t => t.type === "cards" ? (go("train").then(() => CARDS.review(""))) : startTask({task_id:t.id}),
     updated: () => refresh(),
-    route: view => ["train","skeleton","log","contest"].includes(view) && go(view),
+    route: view => ["train","skeleton","log","contest","settings"].includes(view) && go(view),
     study: () => go('train'), review: () => go('log'),
     tutor: () => startTask({ task: { type: 'chat', board: '', target: '', title: `💬 ${W('tutor_room')}` } }),
     legacy: () => window.XC_SECT?.openStory(),
@@ -589,7 +589,7 @@ const views = {
     const s = await api("/api/settings");
     const cur = DASH?.theme?.name;
     const cp = chatPrefs();
-    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + (await DEVICE.html()) + AMB.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
+    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + (await DEVICE.html()) + AMB.settingsHtml() + await TASK_BOARD.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
       <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
@@ -1405,24 +1405,9 @@ function bindLog() {
   };
 }
 // 设置页：有输入框 / 下拉框的卡片都收成可展开的（默认收起，点标题展开）
-function foldCards(root) {
-  root.querySelectorAll(":scope > .card, :scope > div > .card").forEach((c) => {
-    const h = c.firstElementChild;
-    if (c.classList.contains("shortcut-settings") || c.classList.contains("portal-settings") || !h || h.tagName !== "H3" || !c.querySelector("input, select, textarea") || c.closest("details")) return;
-    const d = document.createElement("details");
-    d.className = c.className + " card-fold";
-    if (c.id) d.id = c.id;
-    const s = document.createElement("summary");
-    s.innerHTML = h.innerHTML;
-    d.appendChild(s);
-    h.remove();
-    while (c.firstChild) d.appendChild(c.firstChild);
-    c.replaceWith(d);
-  });
-}
 function bindSettings() {
+  TASK_BOARD.bindSettings();
   SCENE_PORTAL.mount("settings");
-  foldCards($("#view"));
   DEVICE.bind();
   const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify({...p,schema:2})); } catch {} };
   const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), fs: Number($("#cfR").value) });
