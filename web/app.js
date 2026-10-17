@@ -118,18 +118,19 @@ function realmUp(e) {
 }
 
 // ------------------------------------------------------------ 导航 / 风格
+let navigationTicket=0,renderTicket=0;
 async function go(view) {
+  const ticket=++navigationTicket;
   window.NARRATIVE?.close();
   if (window.EXAMS?.isOpen()) EXAMS.leave();
   if (VIEW === "notes" && view !== "notes" && window.NOTES && !(await NOTES.flush())) return;
   if (view === "tianji" && VIEW === "tianji" && window.TIANJI && TIANJI.isOpen()) TIANJI.close();   // 在一期里再点顶栏：回天机简报首页
   if (window.CARDS && CARDS.isOpen()) CARDS.close();
   if (window.MINDMAP && MINDMAP.isOpen() && (await MINDMAP.close()) === false) return;
+  if(ticket!==navigationTicket)return;
   VIEW = view;
   if (view === "train" || view === "bank") HALL = view === "bank" ? "shizhan" : "xiulian";
-  window.STUDY_HUD?.mount(DASH, VIEW);
   if (window.DRAW) setTimeout(() => DRAW.refresh(), 0);
-  document.querySelectorAll("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.view === view));
   return render();
 }
 // 复盘/导师会话沿用训练引擎，地点标题仍显示其原功能归属。
@@ -167,10 +168,10 @@ function applyTheme() {
   if (!DASH?.theme) return;
   document.body.classList.toggle("xiuxian", DASH.theme.name === "修仙");
   document.body.classList.toggle("xuanhuan", DASH.theme.name === "玄幻");
-  $(".brand").textContent = W("brand");
+  if($(".brand").textContent!==W("brand"))$(".brand").textContent=W("brand");
   document.title = W("brand").replace(/^\S+\s/, "");
   configurePortal();
-  document.querySelectorAll("#nav a").forEach((a) => (a.textContent = a.dataset.view === "home" ? "🏰 魔法学院" : a.dataset.view === "dwelling" ? W("nav.home") : W("nav." + a.dataset.view)));
+  document.querySelectorAll("#nav a").forEach(a=>{const label=a.dataset.view==="home"?"🏰 魔法学院":a.dataset.view==="dwelling"?W("nav.home"):W("nav."+a.dataset.view);if(a.textContent!==label)a.textContent=label;});
 }
 
 function configurePortal() {
@@ -197,7 +198,7 @@ function updatePill() {
   if (!DASH) return;
   const m = DASH.minutes;
   window.STUDY_HUD?.ensure();
-  if($("#todayPill"))$("#todayPill").textContent = `🕯 今日功行 ${m.today} / ${m.goal} 分钟（${W("study")} ${m.study ?? m.today} · ${W("lecture")} ${m.lecture ?? 0}）` + (m.today >= m.goal ? " ✦" : "");
+  if(!window.STUDY_HUD&&$("#todayPill"))$("#todayPill").textContent = `🕯 今日功行 ${m.today} / ${m.goal} 分钟（${W("study")} ${m.study ?? m.today} · ${W("lecture")} ${m.lecture ?? 0}）` + (m.today >= m.goal ? " ✦" : "");
   updateStudyDot();
   window.STUDY_HUD?.mount(DASH, VIEW);
 }
@@ -210,37 +211,47 @@ function banner() {
   if (DASH.upgraded?.length) w.push("程序升级了配置文件：" + DASH.upgraded.map((n) => `训练/${esc(n)}`).join("、") + "。原来的版本备份成了同名的“.旧版.md”。");
   if (DASH.other_device) w.push(`另一台电脑（${esc(DASH.other_device)}）10 分钟内在用本程序。两台同时用，坚果云同步可能冲突，请先关掉那台。`);
   if (DASH.conflicts?.length) w.push("存档文件夹里有坚果云冲突副本：" + DASH.conflicts.map(esc).join("、") + "。保留较新的一份，删掉另一份。");
-  $("#banner").innerHTML = w.map((x) => `<div class="warn">${x}</div>`).join("");
+  const html=w.map(x=>`<div class="warn">${x}</div>`).join("");if($("#banner").innerHTML!==html)$("#banner").innerHTML=html;
 }
 
 async function render() {
-  window.STUDY_HUD?.suspend(true);
-  window.STUDY_HUD?.beforeRender();
-  window.MAP_NAVIGATION?.beforeRender();
-  document.body.classList.remove("portal-home");
-  const v = $("#view");
-  document.documentElement.classList.remove("in-chat");
-  document.documentElement.classList.toggle("in-notes", VIEW === "notes");
+  const ticket=++renderTicket, page=VIEW, v=$("#view");
+  const current=()=>ticket===renderTicket&&VIEW===page;
+  let committed=false;
+  // 数据准备期间保留旧画面；内容、背景与工具栏在同一提交中切换。
+  const prepare=()=>{
+    if(!current())return false;
+    if(committed)return true;
+    committed=true;
+    window.STUDY_HUD?.suspend(true);window.STUDY_HUD?.beforeRender();window.MAP_NAVIGATION?.beforeRender();
+    document.body.classList.toggle('portal-home',page==='home');
+    document.documentElement.classList.remove('in-chat');document.documentElement.classList.toggle('in-notes',page==='notes');
+    document.querySelectorAll('#nav a').forEach(a=>{const on=a.dataset.view===page;if(a.classList.contains('active')!==on)a.classList.toggle('active',on);});
+    window.BeautyArt?.mount(page);
+    return true;
+  };
+  const commit=(html,bind)=>{if(!prepare())return;v.innerHTML=html;bind?.();};
   try {
-    if (window.EXAMS?.isOpen()) return EXAMS.renderPage(v);
-    if (VIEW === "home") { await refresh(); v.innerHTML = SCENE_PORTAL.homeHtml(); }
-    else if (VIEW === "dwelling") { await refresh(); v.innerHTML = views.home(); bindHome(); }
-    else if (VIEW === "train") { if (!DASH) await refresh(); v.innerHTML = await views.train(); bindTrain(); }
-    else if (VIEW === "contest") { if (!DASH) await refresh(); await CONTEST.render(v); }
-    else if (VIEW === "tianji") { if (!DASH) await refresh(); await TIANJI.render(v); }
-    else if (VIEW === "notes") { if (!DASH) await refresh(); await NOTES.render(v); }
-    else if (VIEW === "skeleton") { if (!DASH) await refresh(); v.innerHTML = await views.skeleton(); bindSkeleton(); }
-    else if (VIEW === "bank") { if (!DASH) await refresh(); v.innerHTML = await views.train(); bindTrain(); }
-    else if (VIEW === "wrong" || VIEW === "pill") { VIEW = "log"; return go("log"); }   // 心魔录、丹房在 3.0 去掉了
-    else if (VIEW === "log") { await refresh(); v.innerHTML = views.log(); bindLog(); }
-    else if (VIEW === "settings") { await refresh(); await AMB.load(); v.innerHTML = await views.settings(); bindSettings(); }
-    mountNarrative();
-    SCENE_PORTAL.mount(VIEW);
-    window.MAP_NAVIGATION?.mount(VIEW);
-    window.STUDY_HUD?.mount(DASH,VIEW);
-    window.FIXED_LAYOUT?.mount(VIEW);
-  } catch (e) { showError(e); }
-  finally { window.STUDY_HUD?.suspend(false);window.STUDY_HUD?.mount(DASH,VIEW); }
+    if(['home','dwelling','log'].includes(page)||!DASH)await refresh();
+    if(!current())return;
+    await window.BeautyArt?.prepare(page);if(!current())return;
+    if(page==='home')commit(SCENE_PORTAL.homeHtml());
+    else if(page==='dwelling')commit(views.home(),bindHome);
+    else if(page==='train'||page==='bank')commit(await views.train(),bindTrain);
+    else if(page==='contest')await CONTEST.render(v,prepare);
+    else if(page==='tianji')await TIANJI.render(v,prepare);
+    else if(page==='notes')await NOTES.render(v,prepare);
+    else if(page==='skeleton')commit(await views.skeleton(),bindSkeleton);
+    else if(page==='wrong'||page==='pill')return go('log');
+    else if(page==='log')commit(views.log(),bindLog);
+    else if(page==='settings'){
+      await AMB.load({cached:true});if(!current())return;
+      commit(await views.settings(),bindSettings);
+    }
+    if(!current()||!committed)return;
+    mountNarrative();SCENE_PORTAL.mount(page);window.MAP_NAVIGATION?.mount(page);window.FIXED_LAYOUT?.mount(page);
+  }catch(e){if(current())showError(e);}
+  finally{if(committed&&current()){window.STUDY_HUD?.suspend(false);window.STUDY_HUD?.mount(DASH,page);}}
 }
 
 // 纪事入口仅在全景/个人空间出现；真实训练仍使用原任务与AI会话。
@@ -586,10 +597,10 @@ const views = {
   },
 
   async settings() {
-    const s = await api("/api/settings");
+    const [s,taskSettings,deviceHtml]=await Promise.all([api('/api/settings'),TASK_BOARD.settingsHtml(),DEVICE.html()]);
     const cur = DASH?.theme?.name;
     const cp = chatPrefs();
-    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + (await DEVICE.html()) + AMB.settingsHtml() + await TASK_BOARD.settingsHtml() + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
+    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
       <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
         <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
       <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
@@ -985,9 +996,12 @@ window.addEventListener("resize", () => { if ($(".train")) fitChat(); });
 async function renderTrain() {
   window.NARRATIVE?.close();
   if (!["train", "bank"].includes(VIEW)) return;
+  const ticket=++renderTicket,page=VIEW;
   const html = await views.train().catch((e) => { showError(e); return ''; });
-  if (!["train", "bank"].includes(VIEW)) return;
+  if(ticket!==renderTicket||VIEW!==page)return;
+  await window.BeautyArt?.prepare(page);if(ticket!==renderTicket||VIEW!==page)return;
   window.STUDY_HUD?.beforeRender();
+  window.BeautyArt?.mount(page);
   $("#view").innerHTML = html;
   bindTrain();
   window.STUDY_HUD?.mount(DASH,VIEW);
@@ -1487,7 +1501,7 @@ setInterval(() => {
 function updateStudyDot() {
   const on = !!window.MINDMAP?.active() || studyingNow() || !!(window.NOTES && NOTES.writingId()) || !!(window.CARDS && CARDS.active()) || !!(window.TIANJI && TIANJI.active());
   const lamp=$("#todayPill");if(!lamp){window.STUDY_HUD?.ensure();return;}
-  lamp.classList.toggle("on", on);
+  if(lamp.classList.contains("on")!==on)lamp.classList.toggle("on",on);
   lamp.title = on ? "正在计时：修炼中" : "未计时：只有做功课时才算修炼时间";
 }
 let beatCount = 0;
