@@ -1,0 +1,23 @@
+{
+  "法考": {
+    "beauty/page/dwelling-growth.webp": "beauty/scenes/fakao/dwelling-growth.webp",
+    "beauty/page/dwelling-daily.webp": "beauty/scenes/fakao/dwelling-daily.webp",
+    "beauty/page/dwelling-records.webp": "beauty/scenes/fakao/dwelling-records.webp",
+    "beauty/page/skeleton.webp": "beauty/scenes/fakao/skeleton.webp",
+    "beauty/page/notes.webp": "beauty/scenes/fakao/notes.webp",
+    "beauty/page/settings.webp": "beauty/scenes/fakao/settings.webp",
+    "beauty/page/train-minfa.webp": "beauty/scenes/fakao/train-minfa.webp",
+    "beauty/page/train-xingfa.webp": "beauty/scenes/fakao/train-xingfa.webp",
+    "beauty/page/train-minsu.webp": "beauty/scenes/fakao/train-minsu.webp",
+    "beauty/page/train-xingsu.webp": "beauty/scenes/fakao/train-xingsu.webp",
+    "beauty/page/train-xingzheng.webp": "beauty/scenes/fakao/train-xingzheng.webp",
+    "beauty/page/train-shangjing.webp": "beauty/scenes/fakao/train-shangjing.webp",
+    "beauty/page/train-sanguo.webp": "beauty/scenes/fakao/train-sanguo.webp",
+    "beauty/page/train-lilun.webp": "beauty/scenes/fakao/train-lilun.webp",
+    "beauty/page/dwelling.webp": "beauty/scenes/fakao/dwelling-growth.webp",
+    "beauty/page/train.webp": "beauty/scenes/fakao/skeleton.webp",
+    "beauty/page/tianji.webp": "beauty/scenes/fakao/dwelling-daily.webp",
+    "beauty/page/dwelling-bag.webp": "beauty/scenes/fakao/skeleton.webp",
+    "beauty/page/dwelling-diary.webp": "beauty/scenes/fakao/notes.webp"
+  }
+}
