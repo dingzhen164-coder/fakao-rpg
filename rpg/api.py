@@ -62,6 +62,7 @@ HTTP 接口：把 engine / trainer / store 暴露给网页（web/app.js）。只
     GET  /                         web/ 下的静态文件
 """
 import datetime as dt
+from . import art
 import json
 import mimetypes
 import re
@@ -161,6 +162,30 @@ def narrative_action(body):
             return narrative.act(g, d, body)
         except ValueError as e:
             raise ApiError(str(e))
+
+
+def task_board_view(body):
+    from . import task_board
+    with open_game() as g:
+        if not g.paths.vault:
+            return {'unavailable': '请先在AI与资料中选择当前科目的学习库，再配置任务板。'}
+        try:
+            return task_board.view(g)
+        except ValueError as e:
+            raise ApiError(str(e))
+
+
+def task_board_action(body, record=False):
+    from . import task_board
+    with open_game() as g:
+        try:
+            return task_board.record(g, body) if record else task_board.save(g, body)
+        except ValueError as e:
+            raise ApiError(str(e))
+
+
+def task_board_record(body):
+    return task_board_action(body, record=True)
 
 
 def journey_action(body):
@@ -805,6 +830,9 @@ ROUTES = {
     ("GET", "/api/narrative"): narrative_view,
     ("POST", "/api/narrative"): narrative_action,
     ("POST", "/api/journey"): journey_action,
+    ("GET", "/api/task-board"): task_board_view,
+    ("POST", "/api/task-board/settings"): task_board_action,
+    ("POST", "/api/task-board/record"): task_board_record,
     ("GET", "/api/exams"): _exam_route(exam_catalog.search),
     ("POST", "/api/exams/search"): _exam_route(exam_catalog.search),
     ("POST", "/api/exams/overview"): _exam_route(exam_catalog.overview),
@@ -1534,13 +1562,31 @@ class Handler(BaseHTTPRequestHandler):
                     return self._send(200, b, "image/png")
             return self._send(200, p.read_bytes(), ctype)
         rel = url.path.lstrip("/") or "index.html"
-        f = (WEB_DIR / rel).resolve()
+        if rel.startswith('assets/'):
+            vp = find_vault()
+            ov = art.lookup(Paths(vp) if vp else None, '法考', rel[7:])
+            if ov:
+                ct = mimetypes.guess_type(ov.name)[0] or 'application/octet-stream'
+                if ov.suffix.lower() in art.AUD:
+                    return self._send_range(ov, ct)
+                if art.is_portrait('法考', rel[7:]):
+                    done = art.processed(ov)
+                    if done:
+                        return self._send(200, done[0], done[1])
+                return self._send(200, ov.read_bytes(), ct)
+        builtin = art.builtin_asset('法考', rel[7:]) if rel.startswith('assets/') else None
+        f = (builtin or WEB_DIR / rel).resolve()
         if WEB_DIR.resolve() not in f.parents or not f.is_file():
             return self._send(404, {"error": "not found"})
         ctype = mimetypes.guess_type(f.name)[0] or "text/plain"
         if ctype.startswith("text/") or ctype in ("application/javascript",):
             ctype += "; charset=utf-8"
-        self._send(200, f.read_bytes(), ctype, cache=rel.startswith("vendor/"))   # 第三方库（6MB 的思维导图编辑器）让平板缓存，不每次重下
+        raw = f.read_bytes()
+        if rel == 'index.html':
+            vp = find_vault(); p = Paths(vp) if vp else None
+            af = art.available(p, '法考'); ac = [r for r, _v in art.files(p, '法考')]
+            raw = raw.replace(b'</head>', ('<script>window.SUBJECT0="法考";window.ART_FILES=%s;window.ART_CUSTOM=%s;</script>\n</head>' % (json.dumps(af), json.dumps(ac))).encode('utf-8'), 1)
+        self._send(200, raw, ctype, cache=rel.startswith("vendor/"))
 
     def do_GET(self):
         self._handle("GET")
@@ -1587,3 +1633,22 @@ def mm_local(body):
     return _mm(open_document)
 ROUTES[("POST", "/api/mindmap/local")] = mm_local
 LOCAL_ONLY.add('/api/mindmap/local')
+
+
+def art_info(body):
+    vp = find_vault()
+    p = Paths(vp) if vp else None
+    return {'folder': '训练/外观/美术/', 'count': len(art.files(p, '法考')),
+            'exists': bool(p and art.art_dir(p).is_dir())}
+
+
+def art_export(body):
+    vp = find_vault()
+    if not vp:
+        raise ApiError('请先在设置中指定库路径')
+    return art.export(Paths(vp), '法考', WEB_DIR / 'assets')
+
+
+ROUTES[('GET', '/api/art')] = art_info
+ROUTES[('POST', '/api/art/export')] = art_export
+LOCAL_ONLY.add('/api/art/export')

@@ -125,10 +125,11 @@
   }
 
   async function load() { LIST = await api("/api/tianji"); }
-  async function render(v) {
+  async function render(v, beforeCommit=()=>true) {
     ROOT = v;
-    if (CUR) return renderIssue();
+    if (CUR) {if(beforeCommit())return renderIssue();return;}
     try { await load(); } catch (e) { showError(e); LIST = { month: [], topic: [] }; }
+    if(!beforeCommit())return;
     v.innerHTML = hubHtml();
     bindHub();
   }
