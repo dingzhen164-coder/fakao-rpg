@@ -14,9 +14,16 @@ async function fit(page,tag){assert.deepEqual(await page.evaluate(()=>{const e=[
  for(const [label,viewport] of [['desktop',{width:1280,height:860}],['tablet',{width:800,height:1280}]].filter(([l])=>!sizes||sizes.includes(l))){
   const base=await start();const page=await browser.newPage({viewport});active=page;const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept(d.type()==='prompt'?(d.message().includes('新的文件名')?'合同法.md':'合同.md'):undefined));
   await page.goto(base);await page.waitForFunction(()=>typeof go==='function'&&typeof DASH!=='undefined'&&!!DASH);
-  await page.evaluate(()=>{try{localStorage.removeItem('knowledge-pos')}catch{};LIB.tab='knowledge';go('skeleton');});await page.waitForSelector('.kn-root .kn-board');
+  await page.evaluate(()=>{try{localStorage.removeItem('knowledge-pos')}catch{};LIB.tab='knowledge';go('skeleton');});await page.waitForSelector('.kn-root.shelf .kn-tome');
   assert.match(await page.locator('[data-libtab="knowledge"]').textContent(),/典籍索引/);
-  const first=await page.locator('.kn-board.on').textContent();assert.match(first,/民法/);assert.match(first,/📝1/);
+  // 0 书架：一个科目一本会浮动的古籍，整块铺满内容区
+  const nBoards=await page.evaluate(async()=>(await api('/api/knowledge')).boards.length);
+  assert.equal(await page.locator('.kn-tome').count(),nBoards,'一个科目一本书');
+  assert((await page.locator('.kn-tome').first().evaluate(e=>getComputedStyle(e).animationName)).includes('tome-float'),'有浮动动画');
+  const wide=await page.evaluate(()=>{const r=document.querySelector('#view .scene-panel').getBoundingClientRect();return r.width/innerWidth;});
+  assert(wide>0.9,'藏经阁铺满宽度 '+wide);
+  await page.locator('.kn-tome').first().click({force:true});await page.waitForSelector('.kn-root.detail .kn-file');
+  const first=await page.locator('.kn-who').textContent();assert.match(first,/民法/);assert.match(first,/📝1/);
   // 1 知识点：只读浏览
   await page.locator('.kn-file',{hasText:'物权变动.md'}).locator('summary').click();await page.locator('.kn-sec',{hasText:'善意取得'}).first().click();
   await page.locator('.kn-read').filter({hasText:'善意取得所有权'}).waitFor();assert.match(await page.locator('.kn-view').textContent(),/只读/);
@@ -37,7 +44,8 @@ async function fit(page,tag){assert.deepEqual(await page.evaluate(()=>{const e=[
   await page.locator('.kn-note').filter({hasText:'已保存'}).waitFor();
   assert.match(await page.locator('.kn-read').textContent(),/我自己的理解/);
   await page.reload();await page.waitForFunction(()=>typeof go==='function'&&typeof DASH!=='undefined'&&!!DASH);
-  await page.evaluate(()=>{LIB.tab='knowledge';go('skeleton');});await page.waitForSelector('.kn-root .kn-board');
+  await page.evaluate(()=>{LIB.tab='knowledge';go('skeleton');});await page.waitForSelector('.kn-root.shelf .kn-tome');
+  await page.locator('.kn-tome').first().click({force:true});await page.waitForSelector('.kn-read');
   assert.match(await page.locator('.kn-read').textContent(),/我自己的理解/);
   // 4 历史与回滚
   await page.locator('[data-kn="history"]').click();await page.waitForSelector('.kn-ver');assert.equal(await page.locator('.kn-ver').count(),1);
@@ -62,6 +70,9 @@ async function fit(page,tag){assert.deepEqual(await page.evaluate(()=>{const e=[
   assert.equal(await page.locator('[data-kn="aiLocate"]').isDisabled(),true,'没填 AI key 不能点');
   await page.fill('#knQ','完全无关的内容zzz');await page.locator('[data-kn="locate"]').click();await page.locator('.kn-warn').filter({hasText:'没有在你的笔记里找到对应知识点'}).waitFor();
   await fit(page,label+' 预览');
+  await page.locator('[data-kn="shelf"]').click();await page.waitForSelector('.kn-root.shelf .kn-tome');
+  const t0=Date.now();await page.evaluate(()=>{go('home')});await page.evaluate(()=>{LIB.tab='knowledge';go('skeleton');});await page.waitForSelector('.kn-tome');
+  assert(Date.now()-t0<2500,'再次进入立即出书架');
   assert.deepEqual(errors,[]);await page.close();service.kill();console.log('法考 '+label+'：知识点只读/批注随时修改/采纳忽略/历史冲突/预览定位通过');
  }
 }catch(e){if(active&&!active.isClosed()){fs.mkdirSync(out,{recursive:true});await active.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});}throw e;}finally{await browser?.close();service?.kill();}})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,15 +1,17 @@
 /* 藏经阁·典籍索引（数据来自 /api/knowledge 和 /api/annotations，见 rpg/knowledge.py、rpg/annotations.py）。
    三个页签：① 知识点——你库里笔记的小节目录（只读）；② 我的批注——每个科目可随时修改，保存即生效，解惑时和笔记一起被定位；
    ③ 解惑预览——输入一道题，看学姐解惑时会读到哪些知识点（可请 AI 帮忙定位）。
+   先是一排会浮动的古籍书架（一个科目一本），点开才进入全屏页；知识点目录第一次要建索引，建好后缓存在模块里，再进来立刻出。
    选中的科目/页签/文件记在 localStorage knowledge-pos，没保存的草稿留在模块内存里。 */
 (function () {
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const POS = "knowledge-pos";
   const num = (n) => Number(n || 0).toLocaleString("en-US");
-  let DATA = [], FLAGS = { ai: false, budget: 30000 }, BOARD = "", TAB = "browse";
-  let TREE = [], SECTION = null, FILTER = "";
+  let DATA = [], LOADED = false, SHELF = true, LOADING = false, TREES = {}, FLAGS = { ai: false, budget: 30000 }, BOARD = "", TAB = "browse";
+  let SECTION = null, FILTER = "";
   let ANN = { files: [], proposals: [] }, FILE = "", CUR = null, MODE = "view", DRAFT = "", HIST = null, PREVIEW = null, NOTE = "", BUSY = false;
   let PV = { question: "", chapter: "", qid: "", result: null, msg: "" };
+  const tree = () => TREES[BOARD] || [];
   const board = () => DATA.find((b) => b.board === BOARD) || null;
   const savePos = () => { try { localStorage.setItem(POS, JSON.stringify({ b: BOARD, t: TAB, f: FILE })); } catch {} };
   const loadPos = () => { try { return JSON.parse(localStorage.getItem(POS) || "{}"); } catch { return {}; } };
@@ -27,10 +29,15 @@
 
   async function reload() {
     const v = await api("/api/knowledge");
-    DATA = v.boards; FLAGS = { ai: !!v.ai, budget: v.budget || 30000 };
+    DATA = v.boards; FLAGS = { ai: !!v.ai, budget: v.budget || 30000 }; LOADED = true;
     const p = loadPos();
     if (!board()) { BOARD = DATA.some((b) => b.board === p.b) ? p.b : (DATA[0]?.board || ""); TAB = ["browse", "ann", "preview"].includes(p.t) ? p.t : "browse"; FILE = p.f || ""; }
-    await loadTab();
+  }
+
+  async function enter() {                        // 点开一本书：先出页面和“正在整理”，再慢慢读
+    LOADING = true; SHELF = false; paint();
+    try { await loadTab(); } finally { LOADING = false; }
+    savePos(); paint();
   }
 
   async function loadAnn(keep) {
@@ -47,7 +54,7 @@
     const b = board();
     if (!b) return;
     NOTE = NOTE || "";
-    if (TAB === "browse" && b.notes && !TREE.length) { try { TREE = (await api("/api/knowledge/tree", { board: b.board })).files; } catch (e) { NOTE = e.message; TREE = []; } }
+    if (b.notes && !TREES[b.board] && (TAB === "browse" || TAB === "preview")) { try { TREES[b.board] = (await api("/api/knowledge/tree", { board: b.board })).files; } catch (e) { NOTE = e.message; } }
     if (TAB === "ann") await loadAnn(FILE);
   }
 
@@ -59,7 +66,7 @@
   function browse(b) {
     if (!b.notes) return `<p class="muted">规则里这个科目的资料「${esc(b.source || "未配置")}」没有找到笔记文件夹（应是库里的 10-科目/${esc(b.board)} 之类）。</p>`;
     const q = FILTER.trim();
-    const rows = TREE.map((f) => {
+    const rows = tree().map((f) => {
       const secs = f.sections.filter((s) => !q || s.title.includes(q) || f.display.includes(q));
       if (!secs.length) return "";
       return `<details class="kn-file" ${q ? "open" : ""}><summary>${f.annotation ? "📝 " : ""}${esc(f.display)} <small>${num(f.chars)} 字 · ${f.sections.length} 节</small></summary>
@@ -103,7 +110,7 @@
   // ---- ③ 解惑预览
   function preview(b) {
     if (!b.notes) return '<p class="muted">这个科目没有笔记文件夹，没有可定位的内容。</p>';
-    const chapters = [...new Set(TREE.filter((f) => !f.annotation).map((f) => f.display.split("/").slice(0, -1).join("/")).filter(Boolean))];
+    const chapters = [...new Set(tree().filter((f) => !f.annotation).map((f) => f.display.split("/").slice(0, -1).join("/")).filter(Boolean))];
     const r = PV.result;
     const res = !r ? "" : `<div class="kn-res"><div class="small"><b>学姐解惑时会读：</b>${r.sections.length} 个小节 · <b>${num(r.total)} / ${num(r.budget)}</b> 字（笔记共 ${num(r.sections_total)} 小节）</div>
       ${r.found ? "" : '<div class="kn-warn small">⚠ 没有在你的笔记里找到对应知识点。解惑时学姐会明说，并按通用法理讲、提示以现行法条和教材为准。</div>'}
@@ -116,18 +123,28 @@
       ${PV.msg ? `<div class="kn-note" role="status">${esc(PV.msg)}</div>` : ""}${res}</div>`;
   }
 
+  function shelf() {
+    return `<p class="lib-tip kn-tip small">每本古籍是一个科目：点开可看笔记小节、写批注、预览解惑会读到什么。</p>
+      <div class="tome-grid kn-shelf">${DATA.map((x, i) => `<div class="tome-slot"><button class="tome kn-tome ${x.notes ? "" : "none"}" style="--h:${(i * 47 + 20) % 360};--d:${(i * 0.9).toFixed(1)}s" data-kn-board="${esc(x.board)}" aria-label="${esc(x.board)}">
+        <span class="tome-cover"><span class="tome-label ${x.board.length > 4 ? "long" : ""}">${vlabel(x.board.slice(0, 6))}</span><span class="tome-seal">${x.notes ? (x.annotations ? "有批注" : "笔记") : "无笔记"}</span></span>${x.pending ? `<span class="kn-pend-badge" title="有待审建议">📝${x.pending}</span>` : ""}</button>
+        <div class="tome-cap">${esc(x.board)}<br>${x.annotations ? "批注 " + x.annotations + " 份" : "还没有批注"}</div></div>`).join("")}</div>`;
+  }
+
   function html() {
     if (!DATA.length) return '<div class="card"><p class="muted">还没有连接资料库。</p></div>';
     const b = board();
+    if (SHELF || !b) return shelf();
     const tabs = [["browse", "知识点"], ["ann", "我的批注"], ["preview", "解惑预览"]];
-    return `<aside class="kn-side card" aria-label="科目">${DATA.map((x) => `<button class="kn-board ${x.board === BOARD ? "on" : ""}" data-kn-board="${esc(x.board)}"><span>${esc(x.board)}</span>${badge(x)}</button>`).join("")}</aside>
-      <section class="kn-main card"><div class="kn-head"><h3>${esc(b.board)} · 典籍索引</h3><div class="kn-tabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" class="${TAB === k ? "on" : ""}" aria-selected="${TAB === k}" data-kn-tab="${k}">${t}</button>`).join("")}</div></div>
-        ${NOTE ? `<div class="kn-note" role="status">${esc(NOTE)}</div>` : ""}<div class="kn-panel">${TAB === "browse" ? browse(b) : TAB === "ann" ? ann(b) : preview(b)}</div></section>`;
+    return `<aside class="kn-side card" aria-label="科目"><button class="ghost small" data-kn="shelf">← 回书架</button>
+        <div class="kn-who"><b>${esc(b.board)}</b>${badge(b)}</div>
+        <div class="kn-tabs kn-vtabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" class="${TAB === k ? "on" : ""}" aria-selected="${TAB === k}" data-kn-tab="${k}">${t}</button>`).join("")}</div></aside>
+      <section class="kn-main card"><div class="kn-head"><h3>${esc(b.board)} · 典籍索引</h3></div>
+        ${NOTE ? `<div class="kn-note" role="status">${esc(NOTE)}</div>` : ""}<div class="kn-panel">${LOADING ? '<p class="muted" role="status">正在整理笔记目录……第一次打开要建索引，之后会很快。</p>' : TAB === "browse" ? browse(b) : TAB === "ann" ? ann(b) : preview(b)}</div></section>`;
   }
 
   function paint() {
     const root = document.getElementById("knRoot");
-    if (root) root.innerHTML = html();
+    if (root) { root.className = "kn-root " + (SHELF || !board() ? "shelf" : "detail"); root.innerHTML = html(); }
     const t = document.getElementById("knText");
     if (t) t.oninput = () => { DRAFT = t.value; };
     const f = document.getElementById("knFilter");
@@ -144,7 +161,10 @@
     const b = board();
     NOTE = "";
     try {
-      if (kind === "locate" || kind === "aiLocate") {
+      if (kind === "shelf") {
+        if (MODE === "edit" && DRAFT !== CUR?.text && !confirm("有没保存的修改，确定放弃吗？")) return;
+        MODE = "view"; SHELF = true; await refreshBadges();
+      } else if (kind === "locate" || kind === "aiLocate") {
         readPv();
         if (!PV.question.trim()) { PV.msg = "先粘贴一道题。"; paint(); return; }
         if (kind === "aiLocate" && !confirm("让 AI 从小节目录里挑相关的小节（只传路径和标题，不含笔记正文，调用一次 AI）。继续吗？")) return;
@@ -198,8 +218,11 @@
 
   window.KNOWLEDGE = {
     async render() {
-      try { await reload(); } catch (e) { return `<div class="card"><p class="muted">读取失败：${esc(e.message)}</p></div>`; }
-      return `<div class="kn-root" id="knRoot">${html()}</div>`;
+      SHELF = !(MODE === "edit" && board());          // 有没写完的草稿就回到那一页，否则先看书架
+      if (LOADED) { refreshBadges().then(() => { if (SHELF) paint(); }); }
+      else { try { await reload(); } catch (e) { return `<div class="card"><p class="muted">读取失败：${esc(e.message)}</p></div>`; } }
+      if (!SHELF) enter();
+      return `<div class="kn-root ${SHELF ? "shelf" : "detail"}" id="knRoot">${html()}</div>`;
     },
     bind(view) {
       const root = view?.querySelector("#knRoot");
@@ -209,13 +232,14 @@
         const bt = e.target.closest("[data-kn-board]");
         if (bt) {
           if (MODE === "edit" && DRAFT !== CUR?.text && !confirm("有没保存的修改，确定放弃吗？")) return;
-          BOARD = bt.dataset.knBoard; MODE = "view"; NOTE = ""; TREE = []; SECTION = null; FILE = ""; PV.result = null; PV.msg = "";
-          await loadTab(); savePos(); paint(); return;
+          if (MODE === "edit" && BOARD === bt.dataset.knBoard) { SHELF = false; paint(); return; }
+          BOARD = bt.dataset.knBoard; MODE = "view"; NOTE = ""; SECTION = null; FILE = ""; PV.result = null; PV.msg = "";
+          await enter(); return;
         }
         const tb = e.target.closest("[data-kn-tab]");
         if (tb) {
           if (MODE === "edit" && DRAFT !== CUR?.text && !confirm("有没保存的修改，确定放弃吗？")) return;
-          readPv(); TAB = tb.dataset.knTab; MODE = "view"; NOTE = ""; await loadTab(); savePos(); paint(); return;
+          readPv(); TAB = tb.dataset.knTab; MODE = "view"; NOTE = ""; await enter(); return;
         }
         const sec = e.target.closest("[data-kn-sec]");
         if (sec) { try { SECTION = await api("/api/knowledge/section", { board: BOARD, key: sec.dataset.knSec, title: sec.dataset.title }); } catch (err) { NOTE = err.message; } paint(); return; }
