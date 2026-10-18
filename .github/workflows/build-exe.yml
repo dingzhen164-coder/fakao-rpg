@@ -12,11 +12,12 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   ui:
     # 日常 dev 推送不打包；手动选择开发分支也不允许发布。
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/validate/')
+    if: startsWith(github.ref, 'refs/heads/validate/')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -56,6 +57,8 @@ jobs:
           node tests/ui_training339.cjs
           node tests/ui_daylight339.cjs
           node tests/ui_mock_html.cjs
+          node tests/ui_mock_details.cjs
+          node tests/ui_mock_imports.cjs
       - name: Complete layout and narrative checks
         run: |
           node tests/test_narrative_ink.cjs
@@ -82,7 +85,7 @@ jobs:
             ui-screenshots/
             ui-artifacts/
   build:
-    needs: ui
+    if: startsWith(github.ref, 'refs/heads/validate/')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -146,24 +149,15 @@ jobs:
           if (Test-Path "$d/app.new.exe") { throw "新 exe 没换上去" }
           if (-not $ok) { throw "换文件后重开的程序没起来" }
 
-      - name: Publish release
-        if: github.ref == 'refs/heads/main'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          V=$(python -c "import re;print(re.search(r'VERSION = \"(.+?)\"', open('rpg/version.py', encoding='utf-8').read()).group(1))")
-          if gh release view "v$V" >/dev/null 2>&1; then
-            gh release upload "v$V" dist/fakao-mage.exe --clobber
-          else
-            # 更新说明：取 rpg/data/changelog.md 里这一版的那一节（没有就用提交说明，去掉署名行）
-            NOTES=$(PYTHONIOENCODING=utf-8 python -c "import sys; sys.path.insert(0, '.'); from rpg import changelog; e = changelog.entries(); print('\n'.join('- ' + x for x in e[0]['items']) if e and e[0]['version'] == '$V' else '')")
-            [ -n "$NOTES" ] || NOTES=$(git log -1 --pretty=%B | grep -v -E '^(Co-Authored-By|Claude-Session):')
-            gh release create "v$V" dist/fakao-mage.exe --title "法师成长记 v$V" --notes "$NOTES"
-          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package-windows
+          path: dist/fakao-mage.exe
+          if-no-files-found: error
+          retention-days: 7
 
   apk:
-    needs: build
+    if: startsWith(github.ref, 'refs/heads/validate/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -171,16 +165,15 @@ jobs:
       - name: Build apk
         run: bash android/build.sh
 
-      - name: Upload to release
-        if: github.ref == 'refs/heads/main'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          V=$(sed -n 's/^VERSION = "\(.*\)"/\1/p' rpg/version.py)
-          gh release upload "v$V" android/build/fakao-mage.apk --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package-apk
+          path: android/build/fakao-mage.apk
+          if-no-files-found: error
+          retention-days: 7
 
   mac:
-    needs: build
+    if: startsWith(github.ref, 'refs/heads/validate/')
     runs-on: macos-latest          # Apple 芯片（M / A 系列）
     steps:
       - uses: actions/checkout@v4
@@ -236,11 +229,25 @@ jobs:
           echo "$out"
           echo "$out" | grep -q MAC-UPDATE-FROZEN-OK
 
-      - name: Upload to release
-        if: github.ref == 'refs/heads/main'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package-mac
+          path: fakao-mage-mac.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Publish verified packages without rebuilding
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          V=$(sed -n 's/^VERSION = "\(.*\)"/\1/p' rpg/version.py)
-          gh release upload "v$V" fakao-mage-mac.zip --clobber
-
+        run: python tools/publish_validated.py
