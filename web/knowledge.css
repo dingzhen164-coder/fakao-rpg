@@ -1,5 +1,18 @@
 /* 藏经阁·典籍索引：科目列表 + 三个页签。类名统一 kn- 前缀，避免和全局类名冲突。 */
-.kn-root{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px;flex:1;min-height:0;height:100%}
+.kn-root{flex:1;min-height:0;height:100%}
+.kn-root.detail{display:grid;grid-template-columns:clamp(200px,22%,280px) minmax(0,1fr);gap:var(--ds-sp-12)}
+.kn-root.shelf{overflow:auto;overscroll-behavior:contain}
+.kn-shelf{grid-template-columns:repeat(auto-fill,minmax(168px,1fr));justify-items:center;padding:var(--ds-sp-16) var(--ds-sp-8) 48px}
+.kn-tome{border:0;padding:0;font:inherit;color:inherit}
+.kn-tome.none{filter:grayscale(.85) brightness(.85)}
+.kn-pend-badge{position:absolute;top:-8px;right:-8px;background:var(--ds-warn);color:var(--ds-on-accent);font-size:var(--ds-fs-11);padding:1px 6px;border-radius:var(--ds-r-pill)}
+.kn-who{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:none}
+.kn-vtabs{flex-direction:column}
+.kn-vtabs button{text-align:left;font-size:var(--ds-fs-13);padding:8px 12px}
+.kn-tip{display:inline-block;margin:var(--ds-sp-8);padding:var(--ds-sp-4) var(--ds-sp-12);border-radius:var(--ds-r-pill);background:var(--panel);color:var(--text)}
+.kn-shelf .tome-cap{padding:var(--ds-sp-4) var(--ds-sp-12);border-radius:var(--ds-r-pill);background:var(--panel);color:var(--text);line-height:1.5}
+.kn-edit>input{width:auto;flex:none;margin:3px 0 0}
+.kn-edit>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .kn-side{display:flex;flex-direction:column;gap:6px;overflow:auto;margin:0;padding:10px;min-height:0}
 .kn-board{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;text-align:left;font-size:var(--ds-fs-13);padding:8px 10px;flex:none}
 .kn-board.on{outline:2px solid var(--accent);outline-offset:-2px}
