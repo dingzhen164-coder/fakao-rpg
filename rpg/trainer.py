@@ -1650,7 +1650,8 @@ def _mreview_show(g, s, events=None, extra=None, head=False, scroll_bottom=False
         i + 1, len(qs), s["season"], q["num"], s["source"], MOCK_ICON.get(q["icon"], q["icon"])),
         vault.render_blocks(g.paths, _fill_body(g, q), material=False), pin=True, material=vault.render_material(g.paths, q),
         qkey="mock:" + q["key"]))
-    msgs.append(_msg("sys", "你的答案：%s · 正确答案：%s\n\n复盘解析：" % (q["mine"] or "没做", q["correct"] or "?"),
+    duration=('\n原答题用时：'+_clock(q['seconds'])) if q.get('seconds') is not None else ''
+    msgs.append(_msg("sys", "你的答案：%s · 正确答案：%s%s\n\n复盘解析：" % (q["mine"] or "没做", q["correct"] or "?",duration),
                      vault.render_blocks(g.paths, {"body": q["analysis"] or "（这题还没写复盘解析，点「学姐解惑」让学姐讲；讲完自动写进这题的复盘笔记）",
                                                    "dir": q["dir"]})))
     if q["icon"] != "✅" and not head:
