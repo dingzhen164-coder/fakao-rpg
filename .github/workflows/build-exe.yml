@@ -59,6 +59,7 @@ jobs:
           node tests/ui_mock_html.cjs
           node tests/ui_mock_details.cjs
           node tests/ui_mock_imports.cjs
+          node tests/ui_knowledge.cjs
       - name: Complete layout and narrative checks
         run: |
           node tests/test_narrative_ink.cjs
