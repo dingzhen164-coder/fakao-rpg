@@ -51,6 +51,11 @@ jobs:
           node tests/ui_task_board.cjs
           node tests/ui_layout337.cjs
           node tests/ui_art338.cjs
+      - name: Training workspace, scene clock and folded entry
+        run: |
+          node tests/ui_training339.cjs
+          node tests/ui_daylight339.cjs
+          node tests/ui_mock_html.cjs
       - name: Complete layout and narrative checks
         run: |
           node tests/test_narrative_ink.cjs
