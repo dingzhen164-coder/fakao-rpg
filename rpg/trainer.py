@@ -24,7 +24,7 @@ import time
 import uuid
 from pathlib import Path
 
-from . import question_bank, ai, idioms, prompts, skeleton, tutor, vault
+from . import annotations, knowledge, knowledge_ai, question_bank, ai, idioms, prompts, skeleton, tutor, vault
 
 SESSIONS = {}
 FINISHED = {}   # 刚结束的会话 {id: (类型, 结束时间)}：结束后看解析的几分钟也算修炼时间
@@ -620,9 +620,31 @@ def _skill_name(g, board):
     return g.boards.get(board, {}).get("skill") or SIDE_SKILLS.get(board) or ""
 
 
-def _skill_digest(g, board):
+KNOW = "知识点"       # 法考：按这道题从笔记里定位知识点（见 knowledge.py）；有 skill 的板块仍走旧逻辑
+
+
+def _tutor_material(g, board, q=None, query=""):
+    """讲题资料 (文字, 读到的清单, 方式)。资料名指向笔记文件夹 → 先定位知识点再取相关小节（没找到清单为空，文字里明说）；
+    指向 skill 或没有资料 → 与以前一样"""
     skill = _skill_name(g, board)
-    return vault.skill_for_tutor(g.paths, skill)[0] if skill else ""
+    if skill and knowledge.notes_root(g.paths, skill):
+        text, used, found = knowledge.tutor_text(g.paths, board, skill, q or {"board": board, "stem": query, "topic": ""})
+        return text, (used if found else []), KNOW
+    text, used = vault.skill_for_tutor(g.paths, skill) if skill else ("", [])
+    return text, used, "skill"
+
+
+def _skill_digest(g, board, query="", q=None):
+    return _tutor_material(g, board, q, query)[0]
+
+
+def _source_note(skill, used):
+    """解惑后写给学员的“依据”一行：知识点定位的说清读了哪些小节，没找到就明说"""
+    if skill == KNOW:
+        return ("\n📚 依据知识点：%s" % ("、".join(used[:6]) + (" 等 %d 处" % len(used) if len(used) > 6 else ""))
+                if used else "\n⚠ 没有在你的笔记里找到这道题对应的知识点，学姐只能按通用法理讲；请以现行法条和教材为准")
+    return ("\n📜 依据 skill「%s」：%s" % (skill, "、".join(used[:8]) + (" 等 %d 个文件" % len(used) if len(used) > 8 else ""))
+            if used else "\n⚠ 这个板块没找到 skill 资料（%s），学姐只能按通用方法讲" % (skill or "未配置"))
 
 
 def _discuss_ask(g, s, text):
@@ -631,7 +653,7 @@ def _discuss_ask(g, s, text):
         return [_msg("npc", (_say(g, "试炼·解惑没AI") or "学姐今天不在研究室（没连上 AI）。") +
                      "\n（在“设置”里填 AI 的 API key 后，学姐就能按功法给你讲题、回答追问。）")]
     try:
-        r = ai.chat(prompts.discuss(g.persona, d, _skill_digest(g, d["board"]), text), temperature=0.6, max_tokens=1500)
+        r = ai.chat(prompts.discuss(g.persona, d, _skill_digest(g, d["board"], text), text), temperature=0.6, max_tokens=1500)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     d["history"] += [{"role": "user", "content": text}, {"role": "assistant", "content": r}]
@@ -706,7 +728,7 @@ def _start_teach(g, task):
                         + ["【思路】" + t for t in it.get("thoughts", [])] + ["【举例】" + t for t in it.get("examples", [])])
     if ai.available():
         try:
-            lecture = ai.chat(prompts.teach(g.persona, board, it, content, _skill_digest(g, board),
+            lecture = ai.chat(prompts.teach(g.persona, board, it, content, _skill_digest(g, board, str(content)[:800]),
                                             [dict(q, stem=_plain(q["stem"]), analysis=_plain(q["analysis"])[:600]) for q in examples]),
                               temperature=0.6, max_tokens=2200)
         except ai.AIError as e:
@@ -1391,6 +1413,8 @@ def _review_show(g, s, run, events=None, extra=None, head=False, scroll_bottom=F
     msgs += extra or []
     wrong_after = [k for k in range(i + 1, len(qs)) if not res[k]['ok']]
     btns = [('exam_explain:%s' % i, '🧙 学姐解惑' if str(i) not in run.get('explain', {}) else '🧙 再问学姐')]
+    if str(i) in run.get('explain', {}) and knowledge.notes_root(g.paths, _skill_name(g, q['board'])):
+        btns.append(('exam_annote:%s' % i, '📘 记入批注'))
     if i > 0:
         btns.append(('exam_rprev', '← 上一题'))
     if i + 1 < len(qs):
@@ -1432,9 +1456,13 @@ def _review_action(g, s, run, act):
         where = question_bank.save_tutor_to_bank(g.paths, qs[i], text, g.t)
         note = ('📌 已写进 训练/题库/%s 这道题的解析末尾（原解析保留；再问一次会换成新的）' % where if where
                 else '📌 题库里没找到这道题（可能改过编号），讲解存在 训练/题库/学姐解惑.md')
-        note += ('\n📜 依据 skill「%s」：%s' % (skill, '、'.join(used[:8]) + (' 等 %d 个文件' % len(used) if len(used) > 8 else ''))
-                 if used else '\n⚠ 这个板块没找到 skill 资料（copilot/skills/%s），学姐只能按通用方法讲' % (skill or '未配置'))
+        note += _source_note(skill, used)
         return _review_show(g, s, run, extra=[_msg('sys', note)], scroll_bottom=True)
+    elif act.startswith('exam_annote:'):
+        if act.split(':')[1] != str(i):
+            raise TrainError('题目已经切换，请重新点')
+        return _review_show(g, s, run, extra=_annote(g, qs[i]['board'], qs[i], qs[i]['answer'], res[i]['answer'],
+                                                     run.get('explain', {}).get(str(i)), '试炼复盘 ' + qs[i]['id']), scroll_bottom=True)
     elif act == 'exam_close':
         group = run['settled']
         table, total = _result_table(g, run)
@@ -1459,6 +1487,30 @@ def _explain_group(g, board, material, items):
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     return text, skill, used
+
+
+def _q_text(q):
+    opts = q.get("options")
+    return str(q.get("stem") or "") + ("\n" + "\n".join("%s. %s" % kv for kv in opts.items()) if isinstance(opts, dict) and opts else "")
+
+
+def _annote(g, board, q, answer, mine, explain, label):
+    """解惑后「记入批注」：AI 判断要不要补一条自己的批注，要补就起草一条待审建议（采纳前不写任何文件）"""
+    if not explain:
+        return [_msg("sys", "先点「学姐解惑」让学姐把这题讲完，再记入批注。")]
+    name = _skill_name(g, board)
+    if not (name and knowledge.notes_root(g.paths, name)):
+        return [_msg("sys", "这个科目没有笔记文件夹，批注只能到藏经阁「典籍索引」里手动写。")]
+    if not ai.available():
+        return [_msg("sys", "没连上 AI（设置里填 API key 后才能起草）。也可以直接到藏经阁「典籍索引」里手动写批注。")]
+    ctx = {"question": _q_text(q), "answer": answer, "mine": mine, "explain": explain}
+    try:
+        prop, why = knowledge_ai.note(g.paths, board, name, q, ctx, label)
+    except annotations.AnnError as e:
+        return [_msg("sys", "⚠ %s" % e)]
+    if not prop:
+        return [_msg("sys", "📘 %s。" % why)]
+    return [_msg("sys", "📘 %s：「%s」。到藏经阁「典籍索引」里看看，采纳后解惑就会用上。" % (why, prop.get("summary", "")))]
 
 
 def _skill_note(skill, used):
@@ -1496,12 +1548,13 @@ def _bank_group_explain(g, s, run, i, mat):
 def _explain(g, q, r):
     """学姐解惑：按这道题所属板块的 skill 讲题。返回 (讲解, skill 名, 读到的 skill 文件)"""
     skill = _skill_name(g, q['board'])
-    digest, used = vault.skill_for_tutor(g.paths, skill) if skill else ('', [])
+    digest, used, mode = _tutor_material(g, q['board'], q)
     try:
-        text = ai.chat(prompts.bank_explain(g.persona, q, r['answer'], digest, skill), temperature=0.5, max_tokens=1800)
+        msgs = prompts.law_explain(g.persona, q, r['answer'], digest) if mode == KNOW else prompts.bank_explain(g.persona, q, r['answer'], digest, skill)
+        text = ai.chat(msgs, temperature=0.5, max_tokens=1800)
     except ai.AIError as e:
         raise TrainError('学姐没回话：%s' % e)
-    return text, skill, used
+    return text, (KNOW if mode == KNOW else skill), used
 
 
 def _bank_resp(g, s, run, messages, events, inp):
@@ -1531,7 +1584,7 @@ def _review_chat(g, s, run, text):
            "question": q["stem"] + "\n" + "\n".join("%s. %s" % kv for kv in q["options"].items()),
            "answer": q["answer"], "mine": r["answer"], "reference": q.get("analysis", "")[:3000]}
     try:
-        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, q["board"]), text), temperature=0.6, max_tokens=1500)
+        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, q["board"], text, q), text), temperature=0.6, max_tokens=1500)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     hist += [{"role": "user", "content": text}, {"role": "assistant", "content": reply}]
@@ -1664,6 +1717,8 @@ def _mreview_show(g, s, events=None, extra=None, head=False, scroll_bottom=False
         msgs.append(_msg("me" if h["role"] == "user" else "npc", h["content"]))
     msgs += extra or []
     btns = [("mr_explain:%d" % i, "🧙 学姐解惑" if str(i) not in s["explain"] else "🧙 再问学姐")]
+    if str(i) in s["explain"] and knowledge.notes_root(g.paths, _skill_name(g, s["board"] or s["source"])):
+        btns.append(("mr_annote:%d" % i, "📘 记入批注"))
     if i > 0:
         btns.append(("mr_prev", "← 上一题"))
     if i + 1 < len(qs):
@@ -1723,9 +1778,14 @@ def _mreview_action(g, s, act):
         where = vault.save_tutor_note(g.paths, q["key"], text, g.t)
         note = ("📌 已写进这题的复盘笔记：%s 第 %s 题（再问一次会换成新的）" % (where, q["num"]) if where
                 else "📌 没找到这道题的复盘文件，讲解没存下来")
-        note += ("\n📜 依据 skill「%s」：%s" % (skill, "、".join(used[:8]) + (" 等 %d 个文件" % len(used) if len(used) > 8 else ""))
-                 if used else "\n⚠ 这个板块没找到 skill 资料（%s），学姐只能按通用方法讲" % (skill or "未配置"))
+        note += _source_note(skill, used)
         return _mreview_show(g, s, extra=[_msg("sys", note)], scroll_bottom=True)
+    elif act.startswith("mr_annote:"):
+        if act.split(":")[1] != str(i):
+            raise TrainError("题目已经切换，请重新点")
+        pq = _mreview_pq(s, qs[i])
+        return _mreview_show(g, s, extra=_annote(g, s["board"] or s["source"], pq, qs[i]["correct"] or "?", qs[i]["mine"] or "未作答",
+                                                 s["explain"].get(str(i)), "模考复盘 第%s季第%s题" % (s["season"], qs[i]["num"])), scroll_bottom=True)
     elif act in ("mr_pause", "bank_pause"):
         mock_saved(g, s["season"])[s["source"]] = qs[i]["num"]
         text = "进度已保存：第%s季 · %s 停在第 %d/%d 题（第 %s 题）。下次在宗门大比点这个板块，从这题接着复盘。" % (
@@ -1773,7 +1833,7 @@ def _mreview_chat(g, s, text):
     ctx = {"kind": "大比复盘", "title": "第%s季第%s题" % (s["season"], q["num"]), "board": pq["board"], "history": hist[-10:],
            "question": pq["stem"], "answer": q["correct"], "mine": q["mine"] or "没做", "reference": q["analysis"][:3000]}
     try:
-        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, pq["board"]), text), temperature=0.6, max_tokens=1500)
+        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, pq["board"], text, pq), text), temperature=0.6, max_tokens=1500)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     hist += [{"role": "user", "content": text}, {"role": "assistant", "content": reply}]

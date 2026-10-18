@@ -1,0 +1,45 @@
+/* 藏经阁·典籍索引：科目列表 + 三个页签。类名统一 kn- 前缀，避免和全局类名冲突。 */
+.kn-root{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px;flex:1;min-height:0;height:100%}
+.kn-side{display:flex;flex-direction:column;gap:6px;overflow:auto;margin:0;padding:10px;min-height:0}
+.kn-board{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;text-align:left;font-size:var(--ds-fs-13);padding:8px 10px;flex:none}
+.kn-board.on{outline:2px solid var(--accent);outline-offset:-2px}
+.kn-board .tag{font-size:var(--ds-fs-11)}
+.kn-pend{background:var(--ds-warn);color:var(--ds-on-accent)}
+.kn-main{display:flex;flex-direction:column;min-height:0;min-width:0;margin:0;padding:12px;overflow:hidden}
+.kn-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;flex:none}
+.kn-head h3{margin:0}
+.kn-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.kn-tabs button{font-size:var(--ds-fs-12);padding:6px 12px}
+.kn-tabs button.on,.kn-chip.on{outline:2px solid var(--accent);outline-offset:-2px}
+.kn-note{flex:none;margin:8px 0 0;padding:8px 10px;border-radius:var(--ds-r-6);background:var(--panel2);border-left:3px solid var(--accent);font-size:var(--ds-fs-12)}
+.kn-panel{flex:1;min-height:0;margin-top:8px;display:flex;flex-direction:column;overflow:hidden}
+.kn-browse{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:12px;flex:1;min-height:0}
+.kn-tree,.kn-view,.kn-body,.kn-pv{min-height:0;overflow:auto;overscroll-behavior:contain}
+.kn-tree input{width:100%;box-sizing:border-box;margin-bottom:6px}
+.kn-file summary{cursor:pointer;padding:4px 0;font-size:var(--ds-fs-12)}
+.kn-file small,.kn-sec small,.kn-hit small,.kn-edit small{color:var(--muted);margin-left:6px}
+.kn-sec{display:block;width:100%;text-align:left;font-size:var(--ds-fs-12);padding:5px 8px;margin:2px 0}
+.kn-read p{margin:.4em 0;line-height:1.7}
+.kn-read h3,.kn-read h4,.kn-read h5{margin:.9em 0 .3em}
+.kn-li{margin:.15em 0 .15em 1em;line-height:1.7}
+.kn-li::before{content:"· ";color:var(--muted)}
+.kn-actbar{flex:none;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.kn-files{flex:none;display:flex;gap:6px;flex-wrap:wrap;max-height:92px;overflow:auto;margin-bottom:6px}
+.kn-chip{font-size:var(--ds-fs-12);padding:5px 9px}
+.kn-body{flex:1}
+.kn-editor{display:flex;flex-direction:column;gap:8px;height:100%;min-height:0}
+.kn-editor textarea{flex:1;min-height:200px;width:100%;resize:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:var(--ds-fs-13);line-height:1.6;box-sizing:border-box}
+.kn-acts{flex:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.kn-ver{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.kn-diff{margin-top:6px;padding:6px 8px;border-left:3px solid var(--accent);background:var(--panel)}
+.kn-props{flex:none;margin-bottom:8px;display:flex;flex-direction:column;gap:8px;max-height:42%;overflow:auto}
+.kn-prop{border:1px solid var(--line);border-radius:var(--ds-r-6);padding:8px 10px;background:var(--panel2)}
+.kn-prop-h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.kn-edit{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:var(--ds-fs-12)}
+.kn-edit.done{opacity:.55}
+.kn-pv{display:flex;flex-direction:column;gap:8px}
+.kn-pv textarea,.kn-pv input,.kn-pv select{width:100%;box-sizing:border-box}
+.kn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kn-hit{padding:6px 0;border-bottom:1px solid var(--line)}
+.kn-warn{color:var(--ds-warn);margin-top:6px}
+@media (max-width:900px){.kn-root{grid-template-columns:150px minmax(0,1fr)}.kn-browse{grid-template-columns:minmax(0,1fr)}.kn-row{grid-template-columns:1fr}}

@@ -554,9 +554,11 @@ const views = {
       <button class="${LIB.tab === 'mindmaps' ? 'on' : ''}" data-libtab="mindmaps">🌿 知识导图</button>
       <button class="${LIB.tab === 'cards' ? 'on' : ''}" data-libtab="cards">📗 ${esc(W('yj'))} · 知识点</button>
       <button class="${LIB.tab === 'yujian' ? 'on' : ''}" data-libtab="yujian">📖 真题卷轴 · 题库</button>
+      <button class="${LIB.tab === 'knowledge' ? 'on' : ''}" data-libtab="knowledge">📘 典籍索引</button>
       <button class="${LIB.tab === 'jiaocai' ? 'on' : ''}" data-libtab="jiaocai">📚 典籍 · 教材</button></div></div>`;
     if (LIB.tab === 'idioms') LIB.tab = 'cards';     // 成语实词录是行测专用，法师成长记不显示
     if (LIB.tab === 'yujian') return tabs + (window.EXAMS ? await EXAMS.shelfHtml() : '') + await yujianHtml() + importCardHtml();
+    if (LIB.tab === 'knowledge') return tabs + await KNOWLEDGE.render();
     if (LIB.tab === 'jiaocai') return tabs + await jiaocaiHtml();
     if (LIB.tab === 'mindmaps') return tabs + await MINDMAP.hubHtml(null, true);
     return tabs + await cardsLibHtml();
@@ -1399,6 +1401,7 @@ function bindLibrary() {
 }
 function bindSkeleton() {
   bindLibrary();
+  window.KNOWLEDGE?.bind($("#view"));
   window.MINDMAP?.bindHub($("#view"));
   if ($('#importCard')) $('#importCard').ontoggle = (e) => { if (e.target.open) loadImport(); };
   document.querySelectorAll("[data-skel]").forEach((b) => (b.onclick = () =>
