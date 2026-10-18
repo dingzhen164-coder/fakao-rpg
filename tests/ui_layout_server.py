@@ -27,6 +27,15 @@ def main():
         os.environ["FAKAO_VAULT"] = str(v)
         paths.save_settings({"vault": str(v)})
         paths.Paths(v).ensure_train_dir()
+        if '--knowledge-fixture' in sys.argv:
+            # 藏经阁·典籍索引：自编民法笔记（物权、合同）与一条待审建议，不读真实笔记。
+            d = v / '10-科目' / '民法' / '物权'; d.mkdir(parents=True, exist_ok=True)
+            (d / '物权变动.md').write_text('# 物权\n\n## 善意取得\n\n无处分权人转让不动产，受让人善意取得所有权须同时满足三个条件。第三百一十一条是根据。\n\n## 不动产登记\n\n不动产物权变动自登记时生效。第二百零九条。\n', encoding='utf-8')
+            c = v / '10-科目' / '民法' / '合同'; c.mkdir(parents=True, exist_ok=True)
+            (c / '合同总论.md').write_text('# 合同\n\n## 违约责任\n\n违约责任的承担方式：继续履行、采取补救措施、赔偿损失。\n', encoding='utf-8')
+            from rpg import annotations
+            annotations.add_proposal(paths.Paths(v), '民法', '补一条易错点', [{'path': '物权.md', 'action': 'append', 'text': '## 易错点\n善意取得别漏了善意要件', 'reason': '自编原因'},
+                                                                              {'path': '合同.md', 'action': 'new', 'text': '# 合同批注\n自编'}], {'label': '试炼复盘 自编'}, 'ui1')
         if '--journey-fixture' in sys.argv:
             # 第二批交互用自编卡片，不连接AI、不读取真实题库。
             from rpg import cards

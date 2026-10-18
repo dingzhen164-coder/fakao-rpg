@@ -71,7 +71,7 @@ from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appapk, appearance, cards, pdfcards, mindmap, notes, poster, tianji, idioms, importer, exam_catalog, lan, library, marks, mock, report, question_bank, ai, config, engine, paths as paths_mod, store, themes, trainer, tutor, vault
+from . import annotations, knowledge, knowledge_ai, appapk, appearance, cards, pdfcards, mindmap, notes, poster, tianji, idioms, importer, exam_catalog, lan, library, marks, mock, report, question_bank, ai, config, engine, paths as paths_mod, store, themes, trainer, tutor, vault
 from .paths import WEB_DIR, Paths, find_vault, load_settings, looks_like_vault, save_settings
 
 
@@ -533,6 +533,132 @@ def bank_count(body):
     return {"count": n}
 
 
+# ---------------------------------------------------------------- 藏经阁·典籍索引（知识点定位 + 我的批注，见 rpg/knowledge.py、rpg/annotations.py）
+def _law_board(g, board):
+    """(科目, 资料名)；科目必须在科目表里"""
+    board = str(board or "")
+    if board not in g.boards:
+        raise ApiError("没有这个科目")
+    return board, (g.boards[board].get("skill") or "")
+
+
+def _ann_call(fn, *args):
+    try:
+        return fn(*args)
+    except annotations.AnnError as e:
+        raise ApiError(str(e))
+
+
+def knowledge_view(body):
+    with open_game(save=False) as g:
+        if not g.paths.vault:
+            return {"boards": []}
+        rows = []
+        for b in g.boards:
+            name = g.boards[b].get("skill") or ""
+            rows.append({"board": b, "source": name, "notes": knowledge.notes_root(g.paths, name) is not None,
+                         "annotations": len(annotations.files(g.paths, b)), "pending": len(annotations.proposals(g.paths, b)),
+                         "analysis": annotations.ANALYSIS in annotations.files(g.paths, b)})
+        return {"boards": rows, "ai": ai.available(), "budget": knowledge.BUDGET}
+
+
+def knowledge_tree(body):
+    with open_game(save=False) as g:
+        board, name = _law_board(g, body.get("board"))
+        return {"files": _ann_call(knowledge.tree, g.paths, board, name)}
+
+
+def knowledge_section(body):
+    with open_game(save=False) as g:
+        board, name = _law_board(g, body.get("board"))
+        return _ann_call(knowledge.section_text, g.paths, board, name, str(body.get("key") or ""), str(body.get("title") or ""))
+
+
+def _preview_q(board, body):
+    q = {"board": board, "stem": str(body.get("question") or "")[:4000], "topic": "", "chapter": str(body.get("chapter") or "")}
+    if body.get("qid"):
+        q["id"] = str(body["qid"])[:80]
+    return q
+
+
+def _brief(r):
+    return {"found": r["found"], "sections": r["sections"], "skipped": r["skipped"], "total": r["total"], "budget": r["budget"],
+            "sections_total": r["sections_total"]}
+
+
+def knowledge_preview(body):
+    with open_game(save=False) as g:
+        board, name = _law_board(g, body.get("board"))
+        if not knowledge.notes_root(g.paths, name):
+            raise ApiError("这个科目没有笔记文件夹")
+        return _brief(_ann_call(knowledge.locate, g.paths, board, name, _preview_q(board, body)))
+
+
+def knowledge_ai_locate(body):
+    with open_game(save=False) as g:
+        board, name = _law_board(g, body.get("board"))
+        r, why = _ann_call(knowledge_ai.ai_locate, g.paths, board, name, _preview_q(board, body))
+        return dict(_brief(r), message=why)
+
+
+def annotations_view(body):
+    with open_game(save=False) as g:
+        board, _ = _law_board(g, body.get("board"))
+        return {"files": annotations.files(g.paths, board), "proposals": annotations.proposals(g.paths, board)}
+
+
+def _ann_file_call(body, fn, *names):
+    with open_game(save=False) as g:
+        board, _ = _law_board(g, body.get("board"))
+        args = [str(body.get(n) or "") if n != "text" else body.get("text") for n in names]
+        return _ann_call(fn, g.paths, board, *args)
+
+
+def annotations_file(body):
+    return _ann_file_call(body, annotations.read_file, "path")
+
+
+def annotations_save(body):
+    return _ann_file_call(body, annotations.save, "path", "text", "base")
+
+
+def annotations_delete(body):
+    return _ann_file_call(body, annotations.delete, "path", "base")
+
+
+def annotations_rename(body):
+    return _ann_file_call(body, annotations.rename, "path", "new_path", "base")
+
+
+def annotations_history(body):
+    if body.get("id"):
+        return {"text": _ann_file_call(body, annotations.history_text, "path", "id")}
+    return {"versions": _ann_file_call(body, annotations.history, "path")}
+
+
+def annotations_restore(body):
+    return _ann_file_call(body, annotations.restore, "path", "id", "base")
+
+
+def annotations_analysis(body):
+    with open_game(save=False) as g:
+        board, _ = _law_board(g, body.get("board"))
+        return _ann_call(annotations.create_analysis, g.paths, board)
+
+
+def annotations_accept(body):
+    with open_game(save=False) as g:
+        board, _ = _law_board(g, body.get("board"))
+        picks = [x for x in (body.get("picks") or []) if isinstance(x, int)]
+        return _ann_call(annotations.accept, g.paths, board, str(body.get("id") or ""), picks)
+
+
+def annotations_dismiss(body):
+    with open_game(save=False) as g:
+        _law_board(g, body.get("board"))
+        return _ann_call(annotations.dismiss, g.paths, str(body.get("id") or ""))
+
+
 def skeletons(body):
     with open_game(save=False) as g:
         out = []
@@ -892,6 +1018,21 @@ ROUTES = {
     ("POST", "/api/import/split"): import_split,
     ("POST", "/api/import/install_pymupdf"): import_install,
     ("GET", "/api/skeletons"): skeletons,
+    ("GET", "/api/knowledge"): knowledge_view,
+    ("POST", "/api/knowledge/tree"): knowledge_tree,
+    ("POST", "/api/knowledge/section"): knowledge_section,
+    ("POST", "/api/knowledge/preview"): knowledge_preview,
+    ("POST", "/api/knowledge/ai_locate"): knowledge_ai_locate,
+    ("POST", "/api/annotations"): annotations_view,
+    ("POST", "/api/annotations/file"): annotations_file,
+    ("POST", "/api/annotations/save"): annotations_save,
+    ("POST", "/api/annotations/delete"): annotations_delete,
+    ("POST", "/api/annotations/rename"): annotations_rename,
+    ("POST", "/api/annotations/history"): annotations_history,
+    ("POST", "/api/annotations/restore"): annotations_restore,
+    ("POST", "/api/annotations/analysis"): annotations_analysis,
+    ("POST", "/api/annotations/accept"): annotations_accept,
+    ("POST", "/api/annotations/dismiss"): annotations_dismiss,
     ("GET", "/api/wrong"): wrong,
     ("POST", "/api/heartbeat"): heartbeat,
     ("POST", "/api/leave"): leave,
