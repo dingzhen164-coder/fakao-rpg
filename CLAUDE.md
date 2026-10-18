@@ -22,3 +22,7 @@
 同时在 rpg/data/changelog.md 最上面加一节（tests/test_device.py 会检查）。
 日常在 `dev` 分支开发、不改版本号、不打包；用户说“统一验证并发布”后才改版本号和更新记录、合入 main、触发打包（详见 AGENTS.md「开发与统一发布」）。
 界面检查先跑 `node tests/ui_layout_check.cjs`，出问题或改外观时才看截图（详见 AGENTS.md「界面检查」）。开工前先读 交接.md。
+
+## 发布通道精简（用户2026-10-18明确授权）
+
+保留validate分支完整验证与三端原生检查，三端及UI并行；通过后以merge方式合main。main整树必须等于已验证第二亲，自动复用该SHA成功validate构建的三端Actions资源，核对后一次公开Release，不再重复打包。公考独立ui-check也必须同SHA成功；法考UI由构建工作流并行验证。普通开发推送不运行完整发布。

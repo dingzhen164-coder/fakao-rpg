@@ -1,3 +1,11 @@
+## 3.3.10发布流程精简（2026-10-18）
+
+用户明确要求“精简发布通道，最快进行发布”。validate分支完整验证仍保留；三端构建和UI独立并行，不再Windows→Mac/APK或UI→Windows串行。validate每端通过原启动/签名/更新重启检查后上传package-windows/apk/mac资源；main不重新构建。
+
+main仅publish：tools/publish_validated.py要求双亲merge，main整树等于第二亲（已验证开发提交），查找同SHA validate分支build-exe成功记录；公考另外核验同SHA ui-check成功，法考UI在同一构建工作流中。下载原三端资源，草稿上传并验证完整集合/大小/可用SHA256，再统一公开及设latest，附SHA256SUMS。验证失败或树不同拒绝发布；已公开同版本不覆盖。需使用merge提交，禁止squash后复用。日常开发不变。
+
+本次最终版本3.3.10汇总上方/下方开发补丁；未发布中间记录属于历史阶段，实际发布状态见交接。
+
 ## 3.3.9后续补丁：补导入计时（2026-10-18，待发布）
 
 - 修复补导入又加120分钟：已有复盘的/api/import/commit(kind=season)明确credit=False，仅维护题库并补按季标记，不增加学习分钟/经验/事件；PDF/HTML首次导入仍一次120分钟。on_import兼容整数/字符串季号，并以practice.source=粉笔第N季模考兜底识别缺按季标记的旧记录；不自动扣改已存在的历史时长。通用逻辑同步法考，各科评分/规则不混用。
