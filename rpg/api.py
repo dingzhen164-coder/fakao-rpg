@@ -308,11 +308,11 @@ def import_preview(body):
     return _import_call(importer.preview, body)
 
 
-def _mock_imported(rep, season):
+def _mock_imported(rep, season, credit=True):
     """导入了一份模考试卷 → 演武 · 历练记记 120 分钟（每季一次）"""
     if season:
         with open_game() as g:
-            ev = mock.on_import(g, int(season))
+            ev = mock.on_import(g, int(season), credit=credit)
             if ev:
                 rep["events"] = tutor.enrich(g, ev)
                 rep["practice_minutes"] = mock.IMPORT_MINUTES
@@ -322,7 +322,8 @@ def _mock_imported(rep, season):
 def import_commit(body):
     rep = _import_call(importer.commit, body)
     if body.get("kind") == "season" and not rep.get("dry"):
-        _mock_imported(rep, body.get("season"))
+        # 已有复盘的补导入是维护题库，不代表又考了一次。
+        _mock_imported(rep, body.get("season"), credit=False)
     return rep
 
 
