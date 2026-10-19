@@ -891,7 +891,7 @@ def settings_get(body):
     a = ai.settings()
     key = a["api_key"]
     return {"vault": str(find_vault() or ""), "vault_setting": s.get("vault", ""),
-            "base_url": a["base_url"], "model": a["model"],
+            "base_url": a["base_url"], "model": a["model"], "thinking": a["thinking"],
             "has_key": bool(key), "key_tail": key[-4:] if key else "",
             "vision_model": s.get("vision_model", ""), "vision_base_url": s.get("vision_base_url", ""),
             "vision_has_key": bool(s.get("vision_api_key")),
@@ -917,6 +917,8 @@ def settings_set(body):
         if k in body and str(body[k]).strip():
             changed |= s.get(k) != str(body[k]).strip()
             s[k] = str(body[k]).strip()
+    if "thinking" in body:
+        s["thinking"] = bool(body["thinking"])
     if changed:                  # 手改了接口 / 模型 / key：已经不是哪一套方案了（要留着就再“存为一套”，同名会覆盖）
         s["ai_active"] = ""
     for k in ("vision_model", "vision_base_url", "vision_api_key"):     # 识图模型可以清空
@@ -960,7 +962,7 @@ def ai_profile(body):
 
 
 def settings_test(body):
-    r = ai.chat([{"role": "user", "content": "回复“连接成功”四个字"}], max_tokens=20, timeout=30)
+    r = ai.chat([{"role": "user", "content": "回复“连接成功”四个字"}], max_tokens=200, timeout=30)
     return {"ok": True, "reply": r}
 
 
