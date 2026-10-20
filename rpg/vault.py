@@ -410,6 +410,8 @@ _img_index = {}
 def find_image(paths, season_dir, name):
     """Obsidian 式查找：先找本季目录（含 attachments），再在整个模考复盘目录里按文件名找"""
     name = name.strip()
+    direct = safe_vault_file(paths,name)
+    if direct:return direct
     if season_dir:
         sd = Path(season_dir)
         for c in (sd / name, sd / "attachments" / name):
@@ -460,21 +462,27 @@ def render_material(paths, q):
 
 def text_blocks(paths, folder, text):
     """一段 Markdown 文字 → 网页块（![[图]] 按库里的位置找成图片块）"""
-    blocks = []
-    pos = 0
+    blocks,buffer=[],""
+    pos=0
+    def flush():
+        nonlocal buffer
+        if buffer.strip():blocks.append({"t":"text","v":buffer.strip()})
+        buffer=""
     for m in IMG_RE.finditer(text):
-        if text[pos:m.start()].strip():
-            blocks.append({"t": "text", "v": text[pos:m.start()].strip()})
-        name = m.group(1) or m.group(2)
-        p = find_image(paths, folder, name)
+        buffer+=text[pos:m.start()]
+        name=m.group(1) or m.group(2);p=find_image(paths,folder,name)
         if p and paths.vault:
             try:
-                blocks.append({"t": "img", "v": p.resolve().relative_to(paths.vault.resolve()).as_posix()})
-            except ValueError:
-                pass
-        pos = m.end()
-    if text[pos:].strip():
-        blocks.append({"t": "text", "v": text[pos:].strip()})
+                rel=p.resolve().relative_to(paths.vault.resolve()).as_posix()
+                from . import inline_images
+                if '/_净化/符号/' in rel or inline_images.small(paths,rel) is True:
+                    buffer=inline_images.before(buffer)+'![[%s]]'%rel
+                    pos=inline_images.after(text,m.end())
+                else:
+                    flush();blocks.append({"t":"img","v":rel})
+            except ValueError:pass
+        pos=max(pos,m.end())
+    buffer+=text[pos:];flush()
     return blocks
 
 
