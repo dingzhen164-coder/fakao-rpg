@@ -1149,9 +1149,12 @@ def _bank_blocks(g, board, text):
         line = text[line_start:m.start()] + text[m.end():len(text) if line_end < 0 else line_end]
         buf += text[pos:m.start()]
         pos = m.end()
-        # 行内小图（公式）。题目图（图表、表格）总是单独成块；同一行只有来源括号“（2026年云南省等3卷）”的也算单独一行
-        if line.strip() and rel and "题目图/" not in name and not re.fullmatch(r"（[^\n]{0,60}）", line.strip()):
-            buf += "![[%s]]" % rel
+        from . import inline_images
+        size_hint = inline_images.small(g.paths, rel) if rel else None
+        inline = (rel and "/_净化/符号/" in rel) or size_hint is True or (size_hint is None and line.strip() and "题目图/" not in name and not re.fullmatch(r"（[^\n]{0,60}）", line.strip()))
+        if rel and inline:
+            buf = inline_images.before(buf) + "![[%s]]" % rel
+            pos = inline_images.after(text, pos)
             continue
         flush()
         blocks.append({"t": "img", "v": rel} if rel else {"t": "text", "v": "（缺图：%s，请把图片放到 训练/题库/图片/%s/）" % (name, board)})
