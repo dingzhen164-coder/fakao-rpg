@@ -6,3 +6,4 @@ ui-artifacts/
 
 # 发布浏览器检查的临时截图
 ui-screenshots/
+node_modules/
