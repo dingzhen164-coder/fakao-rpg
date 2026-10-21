@@ -175,7 +175,7 @@ function applyTheme() {
 }
 
 function configurePortal() {
-  SCENE_PORTAL.configure({progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',images:{day:'assets/academy/scene/mg-academy-day.webp',night:'assets/academy/scene/mg-academy-night.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+  SCENE_PORTAL.configure({savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',images:{day:'assets/academy/scene/mg-academy-day.webp',night:'assets/academy/scene/mg-academy-night.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
     {id:'dwelling',label:'营地',view:'dwelling',x:8,y:91,nx:14,ny:84},{id:'train',label:'冒险大厅',view:'train',x:40,y:51,nx:27,ny:56},
     {id:'skeleton',label:'咒文书馆',view:'skeleton',x:68,y:46,nx:82,ny:50},{id:'bank',label:'试炼塔',view:'bank',x:92,y:55,nx:86,ny:88},
     {id:'notes',label:'魔法手记',view:'notes',x:49,y:87,nx:47,ny:86},{id:'contest',label:'竞技场',view:'contest',x:16,y:67,nx:14,ny:62},
@@ -601,15 +601,7 @@ const views = {
   async settings() {
     const [s,taskSettings,deviceHtml,calendarHtml]=await Promise.all([api('/api/settings'),TASK_BOARD.settingsHtml(),DEVICE.html(),CONTEST_SCENE.settingsHtml()]);
     const cur = DASH?.theme?.name;
-    const cp = chatPrefs();
-    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + calendarHtml + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
-      <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
-        <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
-      <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
-        <div style="flex:1" class="small muted" id="cfDemo">示例：<span style="font-size:calc(15px * ${cp.fs / 100})">人民是历史的创造者，人民是真正的英雄。</span></div></div>
-      <div class="row"><button class="ghost small" id="cResetR">恢复默认（宽 100%、高 100%、字体 110%）</button></div>
-      <p class="small muted">高度 100% = 从顶栏下面一直到屏幕底；对话框底边总是贴着屏幕底。改了马上生效，下次做功课就是这个大小。</p></div>
-      <div class="card"><h3>本机设置 <small>保存在本机 ~/.fakao-rpg/settings.json，不会同步、不会上传</small></h3>
+    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + calendarHtml + `      <div class="card"><h3>本机设置 <small>保存在本机 ~/.fakao-rpg/settings.json，不会同步、不会上传</small></h3>
       <label class="small muted">法考库路径（Obsidian 法考库的根目录，含 10-科目 或 训练 文件夹；程序放在库里时会自动找到）</label>
       <input id="sVault" value="${esc(s.vault_setting)}" placeholder="${esc(s.vault || "例如 C:\\Users\\你\\Desktop\\法考")}">
       <div class="small faint">当前使用：${esc(s.vault || "未找到")}</div><br>
@@ -1428,14 +1420,6 @@ function bindSettings() {
   window.CONTEST_SCENE?.bindSettings();
   SCENE_PORTAL.mount("settings");
   DEVICE.bind();
-  const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify({...p,schema:2})); } catch {} };
-  const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), fs: Number($("#cfR").value) });
-  if ($("#cwR")) {
-    const upd = () => { const p = readChat(); $("#cwV").textContent = p.w + "%"; $("#chV").textContent = p.h + "%"; $("#cfV").textContent = p.fs + "%";
-      $("#cfDemo span").style.fontSize = `calc(15px * ${p.fs / 100})`; saveChat(p); applyChatLayout(p); };
-    $("#cwR").oninput = upd; $("#chR").oninput = upd; $("#cfR").oninput = upd;
-    $("#cResetR").onclick = () => { $("#cwR").value = CHAT_DEF.w; $("#chR").value = CHAT_DEF.h; $("#cfR").value = CHAT_DEF.fs; upd(); };
-  }
   AMB.bindSettings(showError);
   const prof = $("#sProf");
   if (prof) prof.onchange = async () => {

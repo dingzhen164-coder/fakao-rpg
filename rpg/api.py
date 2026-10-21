@@ -802,6 +802,17 @@ def appearance_get(body):
                                                                              "backgrounds": [], "music": [], "quotes": [], "daily": ""}
 
 
+def scene_layout_save(body):
+    from . import scene_layout
+    with open_game() as g:
+        if not g.paths.vault:
+            raise ApiError('请先指定学习库')
+        try:
+            return {'layout': scene_layout.save(g.state, body)}
+        except ValueError as e:
+            raise ApiError(str(e))
+
+
 def appearance_set(body):
     with open_game() as g:
         if not g.paths.vault:
@@ -993,6 +1004,7 @@ ROUTES = {
     ("POST", "/api/lecture/delete"): lecture_delete,
     ("POST", "/api/lecture/board"): lecture_board,
     ("POST", "/api/appearance"): appearance_set,
+    ("POST", "/api/scene-layout"): scene_layout_save,
     ("POST", "/api/retreat/start"): retreat_start,
     ("POST", "/api/retreat/end"): retreat_end,
     ("POST", "/api/tutor/greet"): tutor_greet,
@@ -1798,13 +1810,4 @@ def art_info(body):
             'exists': bool(p and art.art_dir(p).is_dir())}
 
 
-def art_export(body):
-    vp = find_vault()
-    if not vp:
-        raise ApiError('请先在设置中指定库路径')
-    return art.export(Paths(vp), '法考', WEB_DIR / 'assets')
-
-
 ROUTES[('GET', '/api/art')] = art_info
-ROUTES[('POST', '/api/art/export')] = art_export
-LOCAL_ONLY.add('/api/art/export')
