@@ -334,7 +334,7 @@ function blocksHtml(list, trim = false, question = false) {
 }
 function msgHtml(m) {
   const blocks = blocksHtml(m.blocks, false, !!m.pin);
-  if (m.fold) return `<details class="fold"><summary>${esc(m.fold)}</summary><div>${md(m.text)}</div></details>`;
+  if (m.fold) return `<details class="fold review-fold"><summary>${esc(m.fold)}</summary><div>${md(m.text)}${blocks}</div></details>`;
   if (m.who === "npc") return `<div class="npc">${tutorFace()}<div class="say"><div class="who">${esc(DASH?.persona?.tutor || "导师")}</div>${md(m.text)}</div></div>`;
   if (m.who === "me") return `<div class="msg me">${esc(m.text)}</div>`;
   if (m.pin) return `<div class="q-pin ${PIN_MINI ? "mini" : ""}"><div class="msg sys pin-body"><span class="pin-tools">${m.material?.length

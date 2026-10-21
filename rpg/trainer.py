@@ -1046,7 +1046,7 @@ def _bank_show(g, s, run, events=None):
         msg = '你的答案：%s · %s\n正确答案：%s\n知识点：%s\n\n解析：' % (
             r['answer'], '破关成功（正确）' if r['ok'] else '失手（错误），' + g.T('bank_record'), q['answer'], q['topic'])
         # 解析里可能有图（图形推理的讲解图），和题干一样转成网页块
-        msgs = [_msg('sys', msg, _bank_blocks(g, q['board'], q['analysis'] or '（解析待补，之后可以用 skill 补写）'))]
+        msgs = [_msg('sys',msg.rsplit('\n\n解析：',1)[0]),_msg('sys','',_bank_blocks(g,q['board'],q['analysis'] or '解析待补'),fold='题目解析')]
         if r.get('reasoning'):
             msgs.append(_msg('sys', '你的拆题：\n' + r['reasoning'] + '\n方法审核：' + (
                 '通过' if r.get('method_ok') is True else '未通过' if r.get('method_ok') is False else '未验证（未连接AI）')
@@ -1401,14 +1401,14 @@ def _review_show(g, s, run, events=None, extra=None, head=False, scroll_bottom=F
     qb, mat = _bank_q(g, q)
     msgs.append(_msg('sys', '复盘 第 %s/%s 题 · 编号 %s · %s · 用时 %s' % (i + 1, len(qs), q['id'], '✓ 答对' if r['ok'] else '✗ 答错', _clock(r.get('seconds'))),
                      qb, pin=True, material=mat, qkey='bank:' + q['id']))
-    msgs.append(_msg('sys', '你的答案：%s · 正确答案：%s\n知识点：%s\n\n解析：' % (r['answer'], q['answer'], q['topic']),
-                     _bank_blocks(g, q['board'], q['analysis'] or '（这题没有解析，点「学姐解惑」让学姐讲）')))
+    msgs.append(_msg('sys','你的答案：%s · 正确答案：%s\n知识点：%s' % (r['answer'],q['answer'],q['topic'])))
+    msgs.append(_msg('sys','',_bank_blocks(g,q['board'],q['analysis'] or '解析待补'),fold='题目解析'))
     if not r['ok'] and not head:
         line = _say(g, '试炼·复盘错题', 你的答案=r['answer'], 正确答案=q['answer'])
         if line:
             msgs.append(_msg('npc', line))
     if str(i) in run.get('explain', {}):
-        msgs.append(_msg('npc', run['explain'][str(i)]))
+        msgs.append(_msg('npc',run['explain'][str(i)],fold='🧙 学姐解惑'))
     elif question_bank.TUTOR_HEAD not in (q['analysis'] or '') and q['id'] in question_bank.tutor_notes(g.paths):   # 旧版存在单独文件里的
         msgs.append(_msg('sys', question_bank.tutor_notes(g.paths)[q['id']], fold='🧙 上次的学姐解惑'))
     for h in run.get('chat', {}).get(str(i), []):          # 这道题上追问学姐的对话
@@ -1707,15 +1707,14 @@ def _mreview_show(g, s, events=None, extra=None, head=False, scroll_bottom=False
         vault.render_blocks(g.paths, _fill_body(g, q), material=False), pin=True, material=vault.render_material(g.paths, q),
         qkey="mock:" + q["key"]))
     duration=('\n原答题用时：'+_clock(q['seconds'])) if q.get('seconds') is not None else ''
-    msgs.append(_msg("sys", "你的答案：%s · 正确答案：%s%s\n\n复盘解析：" % (q["mine"] or "没做", q["correct"] or "?",duration),
-                     vault.render_blocks(g.paths, {"body": q["analysis"] or "（这题还没写复盘解析，点「学姐解惑」让学姐讲；讲完自动写进这题的复盘笔记）",
-                                                   "dir": q["dir"]})))
+    msgs.append(_msg("sys","你的答案：%s · 正确答案：%s%s" % (q['mine'] or '没做',q['correct'] or '?',duration)))
+    msgs.append(_msg("sys","",vault.render_blocks(g.paths,{'body':q['analysis'] or '复盘解析待补','dir':q['dir']}),fold='复盘解析'))
     if q["icon"] != "✅" and not head:
         line = _say(g, "试炼·复盘错题", 你的答案=q["mine"] or "没做", 正确答案=q["correct"])
         if line:
             msgs.append(_msg("npc", line))
     if str(i) in s["explain"]:
-        msgs.append(_msg("npc", s["explain"][str(i)]))
+        msgs.append(_msg("npc",s["explain"][str(i)],fold="🧙 学姐解惑"))
     for h in s["chat"].get(str(i), []):
         msgs.append(_msg("me" if h["role"] == "user" else "npc", h["content"]))
     msgs += extra or []
