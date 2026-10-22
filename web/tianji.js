@@ -174,7 +174,7 @@
       window.scrollTo(0, 0);
     } catch (e) { showError(e); }
   }
-  function close() { CUR = null; if (VIEW === "tianji") render(ROOT); }
+  function close() { CUR = null; window.STUDY_LAMP?.reader(null); if (VIEW === "tianji") render(ROOT); }
 
   function answersOf(i) {      // 第 i 条新闻里消化清单要考的字句（按顺序）
     const out = [];
@@ -372,6 +372,7 @@
 
   function renderIssue() {
     if (!ROOT || !CUR) return;
+    if(VIEW==='tianji'&&ROOT.isConnected)window.STUDY_LAMP?.reader({key:'tianji:'+CUR.kind+':'+CUR.id,board:''});
     const body = MODE === "read" ? readHtml() : MODE === "cloze" ? clozeHtml() : MODE === "quiz" ? quizHtml() : sumHtml();
     ROOT.innerHTML = `<div class="tj-issue">${issueHead()}<div class="tj-ibody">${body}</div></div>`;
     bindIssue();
