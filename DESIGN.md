@@ -794,3 +794,9 @@ POST /api/journey动作claim/deliver/place携world/id/revision，领取每日功
 - **接口**：`GET /api/knowledge`；`POST /api/knowledge/tree|section|preview|ai_locate`；`POST /api/annotations`、`/api/annotations/file|save|delete|rename|history|restore|analysis|accept|dismiss`。
 - **测试**：`tests/test_knowledge.py`（索引、增量刷新、法条号规范化、定位各依据、预算/截断/未读入、没找到的提示、批注与分析套路、保存即生效、冲突/历史、待审建议采纳不覆盖、AI 定位校验/固定/不重复、记入批注、旧 skill 行为不变）；`tests/ui_knowledge.cjs`（电脑/平板：看/改/采纳忽略/历史冲突/预览）；`tests/ui_layout_server.py --knowledge-fixture`。
 - 本批没有改成绩、经验、评分；旧存档照常使用。“教学/例题评分”仍按旧资料读取方式（`prompts.teach`/`example_grade`），后续再统一。
+
+## 公考3.6.8美术批次的通用兼容转移（2026-10-22，仅dev）
+
+- 同步art.py、test_builtin_art.py、共享清单及beauty_art/scene_clock/scene_fx六个共用文件；行测黄昏文件槽受科目判断，法考不包含行测图片。
+- 手动场景模式增加dusk，时钟保留{ph:dusk,img:day}二值图片兼容。专用黄昏图可免二次滤镜，法考既有单图继续沿用程序晨昏光照，学院主题/学习存档不变。
+- 法考相关6页布局、电脑/平板昼夜/晨昏/阅读主题独立交互、场景循环/地点逻辑、素材检查与512共享严格一致通过。未发布、未合main、未运行云端构建，正式仍3.5.10。
