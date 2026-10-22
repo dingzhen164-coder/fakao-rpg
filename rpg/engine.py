@@ -281,8 +281,8 @@ class Game:
             return []
         before = self.realm_info()
         carry = self.state.get("xp_carry", 0.0) + sec / 60.0 * rate
-        gain = int(carry)
-        self.state["xp_carry"] = carry - gain
+        gain = int(math.floor(carry + 1e-9))
+        self.state["xp_carry"] = max(0.0, carry - gain)
         if not gain:
             return []
         self.state["xp"] += gain

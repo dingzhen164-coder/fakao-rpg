@@ -115,6 +115,8 @@ def _persona_view(g):
 # ---------------------------------------------------------------- 各接口
 def dashboard(body):
     with open_game() as g:
+        from . import study_clock
+        study_clock.seconds(g.paths)
         ev = g.housekeeping()
         first_today = g.state.get("last_seen") != g.t
         g.state["last_seen"] = g.t
@@ -725,6 +727,8 @@ def heartbeat(body):
     tj = body.get("tianji") if not (studying or noting or carding) and tianji.studying() else None  # 在天机简报里学（5 分钟内翻过、填过、答过）
     with open_game() as g:
         mapping = mindmap.reading(g.paths, body.get("mindmap")) if not (studying or noting or carding) and g.paths.vault else None
+        from . import study_clock
+        sec = study_clock.seconds(g.paths, sec)
         sid = body.get("session")
         if studying and sec:
             ev = tutor.enrich(g, g.add_seconds(sec, trainer.study_kind(sid), trainer.study_board(g, sid)))
