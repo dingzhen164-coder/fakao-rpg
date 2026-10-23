@@ -34,7 +34,10 @@ jobs:
           echo "HOME=$RUNNER_TEMP/fakao-isolated-home" >> "$GITHUB_ENV"
           echo "USERPROFILE=$RUNNER_TEMP/fakao-isolated-home" >> "$GITHUB_ENV"
       - name: Install browser test tools
+        timeout-minutes: 10
         run: |
+          # Azure镜像曾将字体/浏览器依赖下载限速到44KB/s；使用官方HTTPS源，保留APT签名校验。
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
           pip install playwright pymupdf pillow
           npm install --no-save playwright jsdom
           npx playwright install --with-deps chromium
@@ -62,6 +65,8 @@ jobs:
           node tests/ui_fixes359.cjs
           node tests/ui_zoom359.cjs
           node tests/ui_tablet_shell.cjs
+          node tests/test_pen_guard.cjs
+          node tests/ui_pen_draw.cjs
           node tests/ui_knowledge.cjs
       - name: Complete layout and narrative checks
         run: |

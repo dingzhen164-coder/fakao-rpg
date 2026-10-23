@@ -3,6 +3,19 @@
 # 开发顺序：先在 shenlun-rpg 开发验证，一个功能批次完成后用 --pull 转到 fakao-rpg。
 
 # ---- shared ----
+shared web/audio_bus.js
+shared rpg/study_clock.py
+shared tests/study_clock_fixture.py
+shared tests/test_study_clock.py
+diverged tests/test_repairs368.py
+diverged tests/ui_repairs368.cjs
+diverged tests/test_art368.cjs
+diverged tests/test_art368.py
+diverged tests/ui_art368.cjs
+diverged tools/art368_pack.cjs
+shared rpg/scene_layout.py
+diverged tests/test_updates363.py
+diverged tests/ui_updates363.cjs
 shared web/tablet_shell.js
 shared tests/ui_tablet_shell.cjs
 shared tests/fixture_tablet.py
@@ -615,3 +628,29 @@ shared tests/test_builtin_art.py
 shared tests/ui_art338.cjs
 diverged web/assets/beauty/builtin-art.json
 diverged tests/test_ai_thinking.py
+
+# 3.6.1 专题导航元数据；资料与考试地图只在公考仓库。
+shared rpg/political_outline.py
+
+# 3.6.2 通用答题字号控件；各科解惑数据边界按各自模块实现。
+shared web/reading_tools.js
+shared web/reading_tools.css
+
+# 3.6.4 四季轮换共享，独立夜景/御剑素材属于各自主题。
+shared tests/test_scene_fx.cjs
+diverged tests/ui_scene364.cjs
+diverged web/assets/beauty/fx/*
+diverged web/assets/beauty/NIGHT364.md
+
+# 3.6.5 行测高峰奖惩与季节美术；通用渲染保持可选参数。
+diverged tests/test_updates365.py
+diverged tests/ui_updates365.cjs
+diverged web/assets/beauty/SEASONS365.md
+
+# 3.6.6 公考高清全景专项；美术与法考独立
+diverged tests/ui_panorama366.cjs
+diverged web/assets/beauty/SEASONS366.md
+shared rpg/study_lamp.py
+shared web/study_lamp.js
+shared tests/test_study_lamp.py
+diverged tests/ui_study_lamp366.cjs

@@ -15,14 +15,14 @@
   const regionName = () => { try { return window.STUDY_REGIONS ? STUDY_REGIONS.title() : ''; } catch (e) { return ''; } };
   const tabLabel = () => { const t = document.querySelector('.fx-tab[aria-selected="true"]'); return t ? t.textContent.trim() : ''; };
   let view = '', applied='';
-  function findHit(page, dn=document.documentElement.dataset.sceneTime || 'day') {
-    const other=dn==='night'?'day':'night', want = [], fallback=[];
+  function findHit(page, dn=document.documentElement.dataset.scenePhase==='dusk'?'dusk':document.documentElement.dataset.sceneTime || 'day') {
+    const others=dn==='dusk'?['day','night']:[dn==='night'?'day':'night'], want = [], fallback=[];
     if (page && page !== 'home') {
       const tk = page === 'dwelling' ? TAB_KEY[tabLabel()] : '';              // 洞府每个页签可单独配背景，没有就回退洞府整体背景
-      if (tk) {want.push(`beauty/page/dwelling-${tk}-${dn}.webp`, `beauty/page/dwelling-${tk}.webp`);fallback.push(`beauty/page/dwelling-${tk}-${other}.webp`);}
+      if (tk) {want.push(`beauty/page/dwelling-${tk}-${dn}.webp`, `beauty/page/dwelling-${tk}.webp`);fallback.push(...others.map(t=>`beauty/page/dwelling-${tk}-${t}.webp`));}
       const rk = page === 'train' ? REGION_KEY[regionName()] : '';          // 修炼页选中某个分区（五峰等）时可单独配背景
-      if (rk) {want.push(`beauty/page/train-${rk}-${dn}.webp`, `beauty/page/train-${rk}.webp`);fallback.push(`beauty/page/train-${rk}-${other}.webp`);}
-      want.push(`beauty/page/${page}-${dn}.webp`, `beauty/page/${page}.webp`);fallback.push(`beauty/page/${page}-${other}.webp`);
+      if (rk) {want.push(`beauty/page/train-${rk}-${dn}.webp`, `beauty/page/train-${rk}.webp`);fallback.push(...others.map(t=>`beauty/page/train-${rk}-${t}.webp`));}
+      want.push(`beauty/page/${page}-${dn}.webp`, `beauty/page/${page}.webp`);fallback.push(...others.map(t=>`beauty/page/${page}-${t}.webp`));
       want.push(...fallback);
     }
     // 用户给的整页背景也应优先于随包的分区/页签背景。
@@ -33,15 +33,23 @@
   function prepare(page){const hit=findHit(page),urls=hit?[url(hit)]:[];
     const opposite=findHit(page,document.documentElement.dataset.sceneTime==='night'?'day':'night');if(opposite&&opposite!==hit)urls.push(url(opposite));
     const examScene=!(typeof isSL==='function'&&isSL());
-    if(page==='bank'&&examScene)urls.push('assets/beauty/trial/tower.png','assets/beauty/trial/gate.png','assets/beauty/trial/landscape.png');
+    if(page==='bank'&&examScene)urls.push(...['tower','gate','landscape'].map(k=>has(`beauty/trial/${k}-night.webp`)&&document.documentElement.dataset.sceneTime==='night'?url(`beauty/trial/${k}-night.webp`):`assets/beauty/trial/${k}.png`));
     if(page==='contest'&&examScene)urls.push('assets/beauty/contest/arena.png');
     return Promise.all(urls.map(decode));
   }
   function apply(){const b=document.body;if(!b)return;let hit=findHit(view);
     if(hit&&!custom.has(hit)&&b.classList.contains('has-bg'))hit='';
-    // 专用夜景不重复压暗；单张图与用户全局图使用程序光照。
-    b.dataset.sceneRelight=(hit?hit.endsWith('-night.webp'):!b.classList.contains('has-bg')&&document.documentElement.dataset.sceneTime==='night')?'native':'synthetic';
+    // 专用夜景/黄昏不重复调色；单张图与用户全局图使用程序光照。
+    b.dataset.sceneRelight=(hit?/(?:-night|-dusk)\.webp$/.test(hit):!b.classList.contains('has-bg')&&document.documentElement.dataset.sceneTime==='night')?'native':'synthetic';
     b.dataset.sceneRoom=['dwelling','skeleton','notes','settings'].includes(view)||b.classList.contains('guantu')?'indoor':'outdoor';
+    // 原建筑节点原位换图，不重建练习卷宗；缺夜图或旧用户建筑覆盖仍沿兼容光照。
+    const trialNight=document.documentElement.dataset.sceneTime==='night'&&['tower','gate','landscape'].every(k=>has(`beauty/trial/${k}-night.webp`)&&!custom.has(`beauty/trial/${k}.png`));
+    b.dataset.trialNight=String(trialNight);
+    if(trialNight)b.style.setProperty('--trial-night-art',`url("${url('beauty/trial/landscape-night.webp')}")`);
+    document.querySelectorAll?.('[data-night-art]').forEach(img=>{
+      const next=trialNight?url(img.dataset.nightArt):img.dataset.dayArt;
+      if(img.getAttribute('src')!==next)img.setAttribute('src',next);
+    });
     if(applied===(hit||''))return;applied=hit||'';
     if(hit){b.style.setProperty('--ds-page-art',`url("${url(hit)}")`);b.classList.add('has-page-art');}
     else{b.style.removeProperty('--ds-page-art');b.classList.remove('has-page-art');}

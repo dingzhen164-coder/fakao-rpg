@@ -281,8 +281,8 @@ class Game:
             return []
         before = self.realm_info()
         carry = self.state.get("xp_carry", 0.0) + sec / 60.0 * rate
-        gain = int(carry)
-        self.state["xp_carry"] = carry - gain
+        gain = int(math.floor(carry + 1e-9))
+        self.state["xp_carry"] = max(0.0, carry - gain)
         if not gain:
             return []
         self.state["xp"] += gain
@@ -1659,6 +1659,7 @@ class Game:
                                        "levels": self.level_names(), "face": self.th["tutor_face"]},
             "realm": info, "xp": self.state["xp"], "study_status": study_status.view(self),
             "mock_rewards": mock_rewards.view(self),
+            "scene_layouts": self.state.get("scene_layouts", {}),
             "streak": {"days": run, "bonus": bonus}, "dao": {"value": dao, "label": self.dao_label(dao)},
             "ideal": self.ideal(), "lap": self.state["lap"],
             "batch": {"index": (cur + 1) if cur is not None else None,

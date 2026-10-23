@@ -28,7 +28,8 @@ class BuiltinArtTest(unittest.TestCase):
             for _name, cid in art.PEERS.get(subject, []):
                 self.assertEqual(set(art.character_portraits(None, subject, cid)), {'calm'})
             self.assertIsNone(art.builtin_asset(subject, '../../etc/passwd'))
-        self.assertLess(sum(p.stat().st_size for p in unique), 10 * 1024 * 1024)
+        # 高清全景/五峰独立夜景不按350KiB压缩；其余旧图保留原预算。
+        self.assertLess(sum(p.stat().st_size for p in unique), (128 if '行测' in expected else 10) * 1024 * 1024)
         if '申论' in expected:
             people = {k: v for k, v in raw['申论'].items() if k.startswith('beauty/portrait/')}
             self.assertEqual(len(people), 9)
@@ -57,6 +58,45 @@ class BuiltinArtTest(unittest.TestCase):
             self.assertEqual(own.read_bytes(), before)
             for key, label in art.REGIONS[subject]:
                 self.assertTrue((d/(label+'.webp')).is_file())
+
+    def test_dedicated_night_coverage(self):
+        from PIL import Image
+        if not art.builtin_map('行测'):
+            self.skipTest('本科美术独立，法考不包含公考夜景')
+        assets = paths.WEB_DIR / 'assets'
+        unique = set()
+        for subject in ('行测', '申论'):
+            manifest = art.builtin_map(subject)
+            for view in art.VIEWS:
+                unique.add(assets / manifest['beauty/page/%s-night.webp' % view])
+            for key, dest in manifest.items():
+                if key.startswith('beauty/page/') and not key.endswith(('-night.webp', '-day.webp', '-dusk.webp')):
+                    night = manifest[key[:-5] + '-night.webp']
+                    self.assertNotEqual(night, dest)
+                    unique.add(assets / night)
+        for kind in ('tower', 'gate', 'landscape'):
+            p = art.builtin_asset('行测', 'beauty/trial/%s-night.webp' % kind)
+            self.assertIsNotNone(p)
+            unique.add(p)
+            if kind != 'landscape':
+                with Image.open(p) as im:
+                    self.assertEqual(im.getchannel('A').getextrema(), (0, 255))
+        self.assertEqual(len(unique), 29)  # 天机台仍沿原观星图，五峰新版为独立资源。
+        for p in unique:
+            with Image.open(p) as im:
+                self.assertGreaterEqual(max(im.size), 1152)
+            self.assertLessEqual(p.stat().st_size, (12 * 1024 * 1024) if '/hd/368/train-' in p.as_posix() else 350 * 1024)
+        for color in ('jade', 'vermilion', 'indigo'):
+            with Image.open(assets / ('beauty/fx/sword-chibi-%s.webp' % color)) as im:
+                self.assertEqual(im.getchannel('A').getextrema(), (0, 255))
+        panoramas = [art.builtin_asset('行测', 'beauty/home/xingce-%s-%s.webp' % (season, time))
+                     for season in ('spring', 'summer', 'autumn', 'winter') for time in ('day', 'night')]
+        self.assertEqual(len(set(p.read_bytes() for p in panoramas)), 8)
+        for p in panoramas:
+            with Image.open(p) as im:
+                self.assertEqual(im.size, (3840, 2880))
+            self.assertIn('/hd/', p.as_posix())
+            self.assertLessEqual(p.stat().st_size, 12 * 1024 * 1024)
 
 
 if __name__ == '__main__':

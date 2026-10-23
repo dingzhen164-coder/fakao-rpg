@@ -17,7 +17,9 @@
     let scopeInfo=null;
     try { OV = await api("/api/cards"); } catch (e) { return `<div class="card"><p class="muted">${esc(e.message)}</p></div>`; }
     if (region) {
-      const scope=OV.decks.filter(d=>STUDY_REGIONS.belongs(d.name,region.id)).map(d=>d.name);
+      const common=/^chang-(geo|history|economy|science|other)$/.exec(region.id);
+      const decks=OV.decks.filter(d=>common?STUDY_REGIONS.belongs(d.name,'chang')&&!STUDY_REGIONS.belongs(d.name,'chang-politics'):STUDY_REGIONS.belongs(d.name,region.id)).map(d=>d.name);
+      const scope=common?{decks,category:common[1]}:decks;
       try { OV=await api("/api/cards",{scope}); } catch(e) { return `<div class="card"><p class="muted">${esc(e.message)}</p></div>`; }
       scopeInfo={scope,label:region.label,deck:region.deck};
     }
@@ -160,7 +162,7 @@
     const s = document.getElementById("yjStage");
     if (s) s.remove();
     document.documentElement.classList.remove("yj-on");
-    MODE = ""; R = null; FL = null; updateStudyDot();
+    MODE = ""; R = null; FL = null; window.STUDY_LAMP?.reader(null); updateStudyDot();
     if (typeof VIEW !== "undefined" && VIEW === "train") renderTrain();
     else if (typeof VIEW !== "undefined" && VIEW === "skeleton") window.render();      // 咒文书：刻了 / 导入了，数字跟着变
   }
@@ -204,7 +206,7 @@
   // ---------------------------------------------------------------- 温简
   async function review(deck, selection) {
     MODE = "review";
-    R = { deck, ask: [], scope: selection?.scope, label: deck || selection?.label, addDeck: deck || selection?.deck };
+    R = { deck, ask: [], scope: selection?.scope, label: selection?.scope?.category ? [selection.label,deck].filter(Boolean).join(' · ') : deck || selection?.label, addDeck: deck || selection?.deck };
     stage().innerHTML = head(`🌙 ${esc(T("yj_review"))} · ${esc(R.label || "全部" + T("yj_deck"))}`) + `<div class="yj-wait">取简中…</div>`;
     bindBack();
     try { show(await api("/api/cards/next", { deck, scope: R.scope })); } catch (e) { showError(e); closeStage(); }
@@ -214,6 +216,8 @@
     if (r.events && window.handleEvents) handleEvents(r.events);
     Object.assign(R, { card: r.card, intervals: r.intervals, counts: r.counts, shown: false, t0: Date.now(), ask: [], asking: false });
     lastActive = Date.now();
+    window.STUDY_LAMP?.reader(R.card?{key:'cards-review:'+String(R.deck||''),board:R.deck||''}:null);
+    updateStudyDot();
     const s = stage();
     const cnt = (c) => `<span class="yj-cnt"><i class="new">${c.new}</i> + <i class="learn">${c.learn}</i> + <i class="due">${c.review}</i></span>`;
     if (window.DRAW && DRAW.state.on) DRAW.close();          // 换卡前把这张卡上的草稿存好收起
@@ -362,7 +366,7 @@
     FL.i = Math.max(0, Math.min(FL.i, FL.keys.length - 1));
     let c;
     try { c = await api("/api/cards/info", { key: FL.keys[FL.i] }); } catch (e) { showError(e); return; }
-    FL.card = c; FL.shown = false; lastActive = Date.now(); updateStudyDot();
+    FL.card = c; FL.shown = false; lastActive = Date.now(); window.STUDY_LAMP?.reader({key:'cards-flip:'+String(FL.deck||''),board:FL.deck||''}); updateStudyDot();
     const f = faces(c);
     const kind = ["new", "learn", "due", "learn"][c.state] || "new";
     s.innerHTML = head(title, `<span class="yj-cnt">${FL.i + 1} / ${FL.keys.length}</span>` + go) + `

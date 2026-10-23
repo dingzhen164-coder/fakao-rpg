@@ -129,6 +129,7 @@ async function go(view) {
   if (window.MINDMAP && MINDMAP.isOpen() && (await MINDMAP.close()) === false) return;
   if(ticket!==navigationTicket)return;
   VIEW = view;
+  window.STUDY_LAMP?.context(view);
   if (view === "train" || view === "bank") HALL = view === "bank" ? "shizhan" : "xiulian";
   if (window.DRAW) setTimeout(() => DRAW.refresh(), 0);
   return render();
@@ -175,7 +176,7 @@ function applyTheme() {
 }
 
 function configurePortal() {
-  SCENE_PORTAL.configure({progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',images:{day:'assets/academy/scene/mg-academy-day.webp',night:'assets/academy/scene/mg-academy-night.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+  SCENE_PORTAL.configure({savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',images:{day:'assets/academy/scene/mg-academy-day.webp',night:'assets/academy/scene/mg-academy-night.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
     {id:'dwelling',label:'营地',view:'dwelling',x:8,y:91,nx:14,ny:84},{id:'train',label:'冒险大厅',view:'train',x:40,y:51,nx:27,ny:56},
     {id:'skeleton',label:'咒文书馆',view:'skeleton',x:68,y:46,nx:82,ny:50},{id:'bank',label:'试炼塔',view:'bank',x:92,y:55,nx:86,ny:88},
     {id:'notes',label:'魔法手记',view:'notes',x:49,y:87,nx:47,ny:86},{id:'contest',label:'竞技场',view:'contest',x:16,y:67,nx:14,ny:62},
@@ -334,7 +335,7 @@ function blocksHtml(list, trim = false, question = false) {
 }
 function msgHtml(m) {
   const blocks = blocksHtml(m.blocks, false, !!m.pin);
-  if (m.fold) return `<details class="fold"><summary>${esc(m.fold)}</summary><div>${md(m.text)}</div></details>`;
+  if (m.fold) return `<details class="fold review-fold"><summary>${esc(m.fold)}</summary><div>${md(m.text)}${blocks}</div></details>`;
   if (m.who === "npc") return `<div class="npc">${tutorFace()}<div class="say"><div class="who">${esc(DASH?.persona?.tutor || "导师")}</div>${md(m.text)}</div></div>`;
   if (m.who === "me") return `<div class="msg me">${esc(m.text)}</div>`;
   if (m.pin) return `<div class="q-pin ${PIN_MINI ? "mini" : ""}"><div class="msg sys pin-body"><span class="pin-tools">${m.material?.length
@@ -601,15 +602,7 @@ const views = {
   async settings() {
     const [s,taskSettings,deviceHtml,calendarHtml]=await Promise.all([api('/api/settings'),TASK_BOARD.settingsHtml(),DEVICE.html(),CONTEST_SCENE.settingsHtml()]);
     const cur = DASH?.theme?.name;
-    const cp = chatPrefs();
-    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + calendarHtml + `<div class="card"><h3>🪟 对话框大小与字体 <small>做功课时的对话框；只存在这台设备里（电脑、平板各调各的）</small></h3>
-      <div class="row"><label style="flex:1">宽度 <b id="cwV">${cp.w}%</b><input type="range" id="cwR" min="40" max="100" step="5" value="${cp.w}" style="width:100%"></label>
-        <label style="flex:1">高度 <b id="chV">${cp.h}%</b><input type="range" id="chR" min="40" max="100" step="5" value="${cp.h}" style="width:100%"></label></div>
-      <div class="row"><label style="flex:1">对话框字体 <b id="cfV">${cp.fs}%</b><input type="range" id="cfR" min="80" max="160" step="5" value="${cp.fs}" style="width:100%"></label>
-        <div style="flex:1" class="small muted" id="cfDemo">示例：<span style="font-size:calc(15px * ${cp.fs / 100})">人民是历史的创造者，人民是真正的英雄。</span></div></div>
-      <div class="row"><button class="ghost small" id="cResetR">恢复默认（宽 100%、高 100%、字体 110%）</button></div>
-      <p class="small muted">高度 100% = 从顶栏下面一直到屏幕底；对话框底边总是贴着屏幕底。改了马上生效，下次做功课就是这个大小。</p></div>
-      <div class="card"><h3>本机设置 <small>保存在本机 ~/.fakao-rpg/settings.json，不会同步、不会上传</small></h3>
+    return MAP_NAVIGATION.settingsHtml() + SCENE_PORTAL.settingsHtml() + deviceHtml + AMB.settingsHtml() + taskSettings + calendarHtml + `      <div class="card"><h3>本机设置 <small>保存在本机 ~/.fakao-rpg/settings.json，不会同步、不会上传</small></h3>
       <label class="small muted">法考库路径（Obsidian 法考库的根目录，含 10-科目 或 训练 文件夹；程序放在库里时会自动找到）</label>
       <input id="sVault" value="${esc(s.vault_setting)}" placeholder="${esc(s.vault || "例如 C:\\Users\\你\\Desktop\\法考")}">
       <div class="small faint">当前使用：${esc(s.vault || "未找到")}</div><br>
@@ -1428,14 +1421,6 @@ function bindSettings() {
   window.CONTEST_SCENE?.bindSettings();
   SCENE_PORTAL.mount("settings");
   DEVICE.bind();
-  const saveChat = (p) => { try { localStorage.setItem("chatLayout", JSON.stringify({...p,schema:2})); } catch {} };
-  const readChat = () => ({ w: Number($("#cwR").value), h: Number($("#chR").value), fs: Number($("#cfR").value) });
-  if ($("#cwR")) {
-    const upd = () => { const p = readChat(); $("#cwV").textContent = p.w + "%"; $("#chV").textContent = p.h + "%"; $("#cfV").textContent = p.fs + "%";
-      $("#cfDemo span").style.fontSize = `calc(15px * ${p.fs / 100})`; saveChat(p); applyChatLayout(p); };
-    $("#cwR").oninput = upd; $("#chR").oninput = upd; $("#cfR").oninput = upd;
-    $("#cResetR").onclick = () => { $("#cwR").value = CHAT_DEF.w; $("#chR").value = CHAT_DEF.h; $("#cfR").value = CHAT_DEF.fs; upd(); };
-  }
   AMB.bindSettings(showError);
   const prof = $("#sProf");
   if (prof) prof.onchange = async () => {
@@ -1487,43 +1472,58 @@ let lastActive = Date.now();
 let T_TYPE = "";
 ["mousemove", "keydown", "click", "scroll", "input"].forEach((ev) => addEventListener(ev, () => (lastActive = Date.now()), { passive: true }));
 function studyingNow() {
-  return !window.MINDMAP?.isOpen() && !window.CARDS?.isOpen() && VIEW === TRAIN_ROUTE && !!T.session && STUDY.includes(T_TYPE) && document.visibilityState === "visible"
+  return window.STUDY_LAMP?.allows()!==false && !window.MINDMAP?.isOpen() && !window.CARDS?.isOpen() && VIEW === TRAIN_ROUTE && !!T.session && STUDY.includes(T_TYPE) && document.visibilityState === "visible"
     && (T.busy || Date.now() - lastActive < 120000);
 }
 // 在 🪶 手札里写字也算复习：按秒累计“1 分钟内写过字”的时间，心跳时连同本子编号一起报（服务器核对这本最近真的存过笔迹）
+let studySec=0,studySid=null,lampSec=0,lampToken="";
 let noteSec = 0;
 let cardSec = 0;   // 温简也算复习：按秒累计正在温简的时间（web/cards.js 的 active：在温、看得见、2 分钟内有操作）
 let mapSec=0, mapToken="", cardBoard="";
 let tjSec = 0;     // 🔮 天机简报：开着一期、2 分钟内动过（web/tianji.js 的 active）
 let tjMode = "";
 setInterval(() => {
+  if(window.STUDY_LAMP?.allows()===false)return;
+  if(studyingNow()){studySec+=1;studySid=T.session;}
+  if(window.STUDY_LAMP?.active()&&!automaticStudyOn()){lampSec+=1;lampToken=STUDY_LAMP.token();}
   if (window.NOTES && NOTES.writingId()) noteSec += 1;
   if (window.CARDS && CARDS.active()) {cardSec += 1;cardBoard=CARDS.board();}
   if (window.MINDMAP && MINDMAP.active()) {mapSec+=1;mapToken=MINDMAP.token();}
   const tj = window.TIANJI ? TIANJI.active() : "";
   if (tj) { tjSec += 1; tjMode = tj; }
 }, 1000);
+function automaticStudyOn(){return !!window.MINDMAP?.active() || studyingNow() || !!(window.NOTES && NOTES.writingId()) || !!(window.CARDS && CARDS.active()) || !!(window.TIANJI && TIANJI.active());
+}
 function updateStudyDot() {
-  const on = !!window.MINDMAP?.active() || studyingNow() || !!(window.NOTES && NOTES.writingId()) || !!(window.CARDS && CARDS.active()) || !!(window.TIANJI && TIANJI.active());
+  const on=window.STUDY_LAMP?.allows()!==false&&(automaticStudyOn()||!!window.STUDY_LAMP?.wanted());
   const lamp=$("#todayPill");if(!lamp){window.STUDY_HUD?.ensure();return;}
   if(lamp.classList.contains("on")!==on)lamp.classList.toggle("on",on);
-  lamp.title = on ? "正在计时：修炼中" : "未计时：只有做功课时才算修炼时间";
+  lamp.title=on?'正在计时 · 点击关闭':'未计时 · 点击点亮';
+  lamp.setAttribute('aria-pressed',String(on));
+  lamp.setAttribute('aria-label',on?'关闭学习蜡烛，暂停学习计时':'点亮学习蜡烛，开始学习计时');
 }
+window.STUDY_LAMP?.configure({autoOn:automaticStudyOn,update:updateStudyDot,board:()=>VIEW==='tianji'?'政治理论':''});
+window.finishLampReading=async token=>{
+  const sec=token===lampToken?Math.min(90,lampSec):0;if(token===lampToken){lampSec=0;lampToken='';}if(!sec)return;
+  try{const r=await api('/api/heartbeat',{seconds:sec,lamp:token});if(DASH){Object.assign(DASH,{xp:r.xp,realm:r.realm,study_status:r.study_status});DASH.minutes.today=r.minutes;updatePill();}handleEvents(r.events);}catch(_){}
+};
 let beatCount = 0;
 setInterval(async () => {
   updateStudyDot();
-  const on = studyingNow();
+  const on = studySec>0;
   beatCount += 1;
-  if (!on && !noteSec && !cardSec && !mapSec && !tjSec && beatCount % 2) return;          // 不修炼时每分钟只刷新一次状态（多设备提醒、调息、闭关）
+  if (!on && !noteSec && !cardSec && !mapSec && !tjSec && !lampSec && beatCount % 2) return;          // 不修炼时每分钟只刷新一次状态（多设备提醒、调息、闭关）
   try {
     const nid = !on && window.NOTES ? NOTES.writingId() || (noteSec ? NOTES.lastId() : "") : "";
     const carding = !on && !nid && cardSec > 0;
     const mapping = !on && !nid && !carding && mapSec>0;
     const tj = !on && !nid && !carding && !mapping && tjSec > 0 ? tjMode : "";
-    const sec = on ? BEAT : Math.min(BEAT, nid ? noteSec : carding ? cardSec : mapping ? mapSec : tjSec);
+    const lamp=!on&&!nid&&!carding&&!mapping&&!tj&&lampSec>0?lampToken:'';
+    const sec = Math.min(BEAT,on?studySec:nid?noteSec:carding?cardSec:mapping?mapSec:tj?tjSec:lampSec);
+    const sid=studySid;studySec=0;studySid=null;lampSec=0;lampToken='';
     noteSec = 0; cardSec = 0; mapSec = 0; tjSec = 0;
     if (nid && sec) await NOTES.save();          // 先把刚写的存上，服务器才认得“最近写过”
-    const r = await api("/api/heartbeat", { seconds: sec, session: on ? T.session : null, notes: nid || null,
+    const r = await api("/api/heartbeat", { seconds: sec, session: on ? sid : null, lamp:lamp||null, notes: nid || null,
       cards: carding || null, cards_board: carding ? cardBoard : null, mindmap: mapping ? mapToken : null, tianji: tj || null });
     if (DASH) { Object.assign(DASH, {xp:r.xp, realm:r.realm, study_status:r.study_status, today:r.today}); DASH.minutes.today = r.minutes; DASH.other_device = r.other_device; DASH.rest = r.rest; updatePill(); banner(); }
     handleEvents(r.events);

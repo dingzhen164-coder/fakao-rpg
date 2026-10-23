@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from rpg import api, cards, config, engine, paths, store
+import study_clock_fixture
 
 
 class CardsTest(unittest.TestCase):
@@ -241,6 +242,7 @@ class CardsApiTest(unittest.TestCase):
         paths.SETTINGS_FILE, paths.SETTINGS_DIR = self._settings
         self.tmp.cleanup()
 
+    @study_clock_fixture.elapsed_heartbeats
     def test_review_flow_and_heartbeat(self):
         api.cards_add({"deck": "言语", "type": "问答", "front": "“不刊之论”的刊？", "back": "删改"})
         r = api.cards_next({"deck": "言语"})

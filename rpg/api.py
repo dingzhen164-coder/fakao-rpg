@@ -115,6 +115,8 @@ def _persona_view(g):
 # ---------------------------------------------------------------- 各接口
 def dashboard(body):
     with open_game() as g:
+        from . import study_clock
+        study_clock.seconds(g.paths)
         ev = g.housekeeping()
         first_today = g.state.get("last_seen") != g.t
         g.state["last_seen"] = g.t
@@ -692,6 +694,29 @@ def wrong(body):
         return {"boards": out, "redo": sorted(redo, key=lambda x: x.get("due") or "")}
 
 
+def study_lamp_start(body):
+    from . import study_lamp
+    with open_game() as g:
+        board = body.get('board') if body.get('board') in g.boards else ''
+        try:
+            return {'token': study_lamp.start(g.paths, board)}
+        except ValueError as e:
+            raise ApiError(str(e))
+
+
+def study_lamp_touch(body):
+    from . import study_lamp
+    with open_game() as g:
+        return {'active': study_lamp.touch(g.paths, body.get('token'))}
+
+
+def study_lamp_stop(body):
+    from . import study_lamp
+    with open_game() as g:
+        study_lamp.stop(g.paths, body.get('token'))
+    return {'ok': True}
+
+
 def heartbeat(body):
     """网页定时上报。只有带着“正在修炼”的会话（见 trainer.is_studying）才计时；
     玉简翻阅/温简和已签发阅读凭据的导图也按复习计时；面板和闲聊不计时。"""
@@ -702,6 +727,8 @@ def heartbeat(body):
     tj = body.get("tianji") if not (studying or noting or carding) and tianji.studying() else None  # 在天机简报里学（5 分钟内翻过、填过、答过）
     with open_game() as g:
         mapping = mindmap.reading(g.paths, body.get("mindmap")) if not (studying or noting or carding) and g.paths.vault else None
+        from . import study_clock
+        sec = study_clock.seconds(g.paths, sec)
         sid = body.get("session")
         if studying and sec:
             ev = tutor.enrich(g, g.add_seconds(sec, trainer.study_kind(sid), trainer.study_board(g, sid)))
@@ -712,7 +739,10 @@ def heartbeat(body):
         elif tj and sec:      # 精卷算做题，研读 / 消化算复习，都记在政治理论
             ev = tutor.enrich(g, g.add_seconds(sec, "practice" if tj == "quiz" else "review", "政治理论" if "政治理论" in g.boards else ""))
         else:
-            ev = []
+            from . import study_lamp
+            lamp = study_lamp.seconds(g.paths, body.get('lamp'), sec) if body.get('lamp') else None
+            ev = tutor.enrich(g, g.add_seconds(lamp[0], 'review', lamp[1] if lamp[1] in g.boards else '')) if lamp and lamp[0] else []
+            studying = bool(lamp) or studying
         studying = studying or noting or carding or mapping is not None or bool(tj)
         from . import study_status
         return {"events": ev, "xp": g.state["xp"], "realm": g.realm_info(), "study_status": study_status.view(g),
@@ -800,6 +830,17 @@ def appearance_get(body):
     with open_game(save=False) as g:
         return appearance.view(g.paths, g.state) if g.paths.vault else {"current": appearance.current({}),
                                                                              "backgrounds": [], "music": [], "quotes": [], "daily": ""}
+
+
+def scene_layout_save(body):
+    from . import scene_layout
+    with open_game() as g:
+        if not g.paths.vault:
+            raise ApiError('请先指定学习库')
+        try:
+            return {'layout': scene_layout.save(g.state, body)}
+        except ValueError as e:
+            raise ApiError(str(e))
 
 
 def appearance_set(body):
@@ -993,6 +1034,7 @@ ROUTES = {
     ("POST", "/api/lecture/delete"): lecture_delete,
     ("POST", "/api/lecture/board"): lecture_board,
     ("POST", "/api/appearance"): appearance_set,
+    ("POST", "/api/scene-layout"): scene_layout_save,
     ("POST", "/api/retreat/start"): retreat_start,
     ("POST", "/api/retreat/end"): retreat_end,
     ("POST", "/api/tutor/greet"): tutor_greet,
@@ -1037,6 +1079,9 @@ ROUTES = {
     ("POST", "/api/annotations/dismiss"): annotations_dismiss,
     ("GET", "/api/wrong"): wrong,
     ("POST", "/api/heartbeat"): heartbeat,
+    ("POST", "/api/study-lamp/start"): study_lamp_start,
+    ("POST", "/api/study-lamp/touch"): study_lamp_touch,
+    ("POST", "/api/study-lamp/stop"): study_lamp_stop,
     ("POST", "/api/leave"): leave,
     ("POST", "/api/boss"): boss,
     ("POST", "/api/mock/rewards/claim"): mock_reward_claim,
@@ -1213,7 +1258,7 @@ def cards_answer(body):
         scope = cards.scope_names(body.get("scope"))
         if scope is not None:
             current = cards.card_view(g, body.get("key"))
-            if not cards.in_scope(current["deck"], scope) or not cards._in(current["deck"], body.get("deck") or ""):
+            if not cards.note_in_scope(current, scope) or not cards._in(current["deck"], body.get("deck") or ""):
                 raise cards.CardError("这张玉简不属于当前分区")
         ev = tutor.enrich(g, cards.answer(g, body.get("key"), int(body.get("rating") or 0), body.get("secs") or 0))
         r = cards.next_card(g, body.get("deck") or "", body.get("scope"))
@@ -1798,13 +1843,4 @@ def art_info(body):
             'exists': bool(p and art.art_dir(p).is_dir())}
 
 
-def art_export(body):
-    vp = find_vault()
-    if not vp:
-        raise ApiError('请先在设置中指定库路径')
-    return art.export(Paths(vp), '法考', WEB_DIR / 'assets')
-
-
 ROUTES[('GET', '/api/art')] = art_info
-ROUTES[('POST', '/api/art/export')] = art_export
-LOCAL_ONLY.add('/api/art/export')

@@ -21,11 +21,27 @@
   const signHtml=n=>{const cs=[...n];return cs.length>5||/[\x00-\x7f]/.test(n)?`<b class="ds-sign">${esc(n)}</b>`:`<b class="ds-sign portal-sign-v">${cs.map(c=>`<i>${esc(c)}</i>`).join('')}</b>`;};
   const PLACE_ICON = {train:'🗻','peak-chang':'🌿','peak-yan':'📖','peak-li':'🧠','peak-shu':'🎲','peak-zi':'🌙',skeleton:'📚',bank:'🗼',contest:'⚔',dwelling:'🏠',notes:'📝',tianji:'🔮',journal:'📜',log:'📊'};   // 地点牌上的小图标（emoji会被beauty_icons换成统一线条图标）
   const placeName = (p, layout=load()) => layout.names[p.id] || p.label;
+  const PEAK_GLYPH = {'peak-chang':'政','peak-yan':'言','peak-li':'邏','peak-shu':'數','peak-zi':'資'};
+  function placeIcon(p){
+    const glyph=config.id==='xingce'&&PEAK_GLYPH[p.id];
+    return glyph?`<span class="portal-calligraphy no-ic">${glyph}</span>`:(PLACE_ICON[p.id]||'◆');
+  }
   function title(view) {return view==='home'?config?.title:config?.viewTitles?.[view]||config?.places.find(p=>p.view===view)&&placeName(config.places.find(p=>p.view===view));}
-  const layoutKey = () => 'scene-layout:' + (config.layoutId || config.id);   // 换全景图时用layoutId让旧排布失效（旧位置对新图无意义）
-  function load() {let d;try{const raw=localStorage.getItem(layoutKey());if(raw&&raw.length<20000)d=JSON.parse(raw);}catch(e){}return normalize(d,config.places);}
+  const layoutKey = () => 'scene-layout:' + config.id + ':saved'; // 稳定键不随版本/美术文件名变动
+  function localLayout(){
+    for(const key of [...new Set([layoutKey(),'scene-layout:'+(config.layoutId||config.id),'scene-layout:'+config.id])]){
+      try{const raw=localStorage.getItem(key);if(raw&&raw.length<20000){const value=JSON.parse(raw);if(value&&typeof value==='object'&&(value.desktop||value.narrow)){if(key!==layoutKey())localStorage.setItem(layoutKey(),raw);return value;}}}catch(_){}
+    }
+    return null;
+  }
+  function load() {return normalize(localLayout()||config.savedLayout,config.places);}
+  async function backup(layout,seed=false){
+    if(typeof fetch!=='function')return false;
+    const map=config.id,c=config;
+    try{const r=await fetch('/api/scene-layout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({map,layout,seed})}).then(r=>r.json());if(r.error)throw Error(r.error);if(config===c)config.savedLayout=r.layout;return true;}catch(_){return false;}
+  }
   const profile = () => window.innerWidth/window.innerHeight>=1.15?'desktop':'narrow';
-  function configure(c, go) {if(config?.id!==c.id){edit=null;cancelDrag();}config=c;navigate=go;}
+  function configure(c, go) {if(config?.id!==c.id){edit=null;cancelDrag();}config=c;navigate=go;const local=localLayout();if(local&&!c.savedLayout)backup(normalize(local,c.places),true);}
   function motionOff() {
     let saved;try{saved=localStorage.getItem('xrpg-motion');}catch(e){}
     return saved==='reduced'||!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||!!window.navigator?.connection?.saveData;
@@ -34,10 +50,27 @@
     if(document.documentElement.dataset)document.documentElement.dataset.motion=motionOff()?'reduced':document.hidden?'paused':'full';
   }
   // 3.4白天/夜晚两张全景：亮色主题显示白天、暗色主题显示夜晚（纯CSS切换，不显示的那张懒加载）；单图场景保持原样。
+  function sceneImages() {
+    const se=document.documentElement.dataset?.sceneSeason;
+    return config?.seasons?.[se]||config?.seasons?.[window.SCENE_FX?.season()]||config?.images;
+  }
+  function refreshArt() {
+    if(!config)return;
+    const images=sceneImages();if(!images)return;
+    document.querySelectorAll('.portal-stage').forEach(stage=>{
+      for(const time of ['day','night']){
+        const img=stage.querySelector('.portal-'+time),src=images[time];
+        if(img&&img.getAttribute('src')!==src)img.setAttribute('src',src);
+        stage.querySelector('.portal-landscape-fill')?.style.setProperty('--portal-fill-'+time,`url("${src}")`);
+      }
+    });
+  }
   function landscapeHtml() {
     const alt = esc(config.title) + '全景';
-    if (!config.images) return `<img class="portal-landscape" src="${esc(config.image)}" alt="${alt}">`;
-    return `<img class="portal-landscape portal-day" src="${esc(config.images.day)}" alt="${alt}"><img class="portal-landscape portal-night" src="${esc(config.images.night)}" alt="" aria-hidden="true" loading="lazy">`;
+    const images=sceneImages();
+    const fill=`<div class="portal-landscape-fill" aria-hidden="true" style="--portal-fill-day:url(&quot;${esc(images?.day||config.image)}&quot;);--portal-fill-night:url(&quot;${esc(images?.night||config.image)}&quot;)"></div>`;
+    if (!images) return fill+`<img class="portal-landscape" src="${esc(config.image)}" alt="${alt}">`;
+    return fill+`<img class="portal-landscape portal-day" src="${esc(images.day)}" alt="${alt}"><img class="portal-landscape portal-night" src="${esc(images.night)}" alt="" aria-hidden="true" loading="lazy">`;
   }
   function geometry(device) {
     const current=device===profile(),width=current?window.innerWidth:device==='desktop'?1280:800,height=current?window.innerHeight:device==='desktop'?860:1280;
@@ -46,8 +79,8 @@
   }
   function stageHtml(layout, device, editing=false) {
     const geo=geometry(device);
-    const stage=`<div class="portal-stage ${editing?'portal-stage-editor':''}" data-profile="${device}" data-portal-stage="${editing?'edit':'home'}" data-map-height="${geo.height}" data-map-top="${geo.top}" data-map-span="${geo.span}" data-world-stage="${editing?0:config.progress?.stage||0}">${editing?'':'<div class="portal-atmosphere" aria-hidden="true"><i class="portal-cloud"></i><i class="portal-glow"></i></div>'}${landscapeHtml()}${config.places.map(p=>{
-      const pos=layout[device][p.id];return `<button class="portal-place" style="--px:${pos.x}%;--py:${pos.y}%;--portal-y:${pos.y/100}" ${editing?`data-portal-point="${esc(p.id)}" aria-pressed="${p.id===edit.selected}"`:`data-portal-go="${esc(p.id)}"`}><span class="portal-ic" aria-hidden="true">${PLACE_ICON[p.id]||'◆'}</span>${signHtml(placeName(p,layout))}</button>`;
+    const stage=`<div class="portal-stage ${editing?'portal-stage-editor':''}" data-profile="${device}" data-portal-stage="${editing?'edit':'home'}"${config.framing==='extended'?' data-framing="extended"':''} data-map-height="${geo.height}" data-map-top="${geo.top}" data-map-span="${geo.span}" data-world-stage="${editing?0:config.progress?.stage||0}">${editing?'':'<div class="portal-atmosphere" aria-hidden="true"><i class="portal-cloud"></i><i class="portal-glow"></i></div>'}${landscapeHtml()}${config.places.map(p=>{
+      const pos=layout[device][p.id];return `<button class="portal-place" style="--px:${pos.x}%;--py:${pos.y}%;--portal-y:${pos.y/100}" ${editing?`data-portal-point="${esc(p.id)}" aria-pressed="${p.id===edit.selected}"`:`data-portal-go="${esc(p.id)}"`}><span class="portal-ic" aria-hidden="true">${placeIcon(p)}</span>${signHtml(placeName(p,layout))}</button>`;
     }).join('')}</div>`;
     return editing?`<div class="portal-preview-frame" style="aspect-ratio:${geo.width}/${geo.height};--preview-width:${geo.width}px;--preview-height:${geo.height}px">${stage}</div>`:stage;
   }
@@ -89,7 +122,7 @@
     const place=e.target.closest('[data-portal-go]');if(place&&config){const p=config.places.find(p=>p.id===place.dataset.portalGo);if(p)navigate(p);return;}
     if(!edit||!document.querySelector('[data-portal-preview]'))return;
     const point=e.target.closest('[data-portal-point]');if(point){edit.selected=point.dataset.portalPoint;syncEditor();return;}
-    if(e.target.closest('[data-portal-save]')){try{localStorage.setItem(layoutKey(),JSON.stringify(edit.layout));status('排布与名称已保存');window.STUDY_HUD?.refresh();}catch(err){status('保存失败，请检查浏览器存储权限；调整仍保留在当前页面。');}}
+    if(e.target.closest('[data-portal-save]')){try{const snapshot=JSON.parse(JSON.stringify(edit.layout));localStorage.setItem(layoutKey(),JSON.stringify(snapshot));status('排布与名称已保存');backup(snapshot).then(ok=>{if(document.querySelector('[data-portal-status]'))status(ok?'排布已保存，并作为更新后的默认位置':'本机排布已保存；存档备份暂未完成，可稍后再保存');});window.STUDY_HUD?.refresh();}catch(err){status('保存失败，请检查浏览器存储权限；调整仍保留在当前页面。');}}
     if(e.target.closest('[data-portal-reset]')){cancelDrag();edit.layout[edit.device]=normalize(null,config.places)[edit.device];redrawEditor();status('已恢复默认位置，点击保存生效');}
     if(e.target.closest('[data-portal-name-reset]')){delete edit.layout.names[edit.selected];syncEditor();status('默认名已恢复，点击保存生效');}
     if(e.target.closest('[data-portal-reload]')){cancelDrag();edit.layout=load();redrawEditor();status('已撤销未保存调整');}
@@ -134,5 +167,6 @@
     }else if(edit&&document.querySelector('[data-portal-preview]'))redrawEditor();
   });
   document.addEventListener('visibilitychange',syncMotion);
-  window.SCENE_PORTAL={configure,homeHtml,settingsHtml,mount,normalize,profile,title};
+  window.SCENE_PORTAL={configure,homeHtml,settingsHtml,mount,normalize,profile,title,refreshArt};
+  if(typeof MutationObserver!=='undefined')new MutationObserver(refreshArt).observe(document.documentElement,{attributes:true,attributeFilter:['data-scene-season','data-scene-time']});
 })();
