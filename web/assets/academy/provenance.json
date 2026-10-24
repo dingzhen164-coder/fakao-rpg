@@ -1,0 +1,1319 @@
+{
+  "method": "native tiled painting + overlap composite",
+  "source": "/workspace/generated_images/fakao-4k-source",
+  "records": {
+    "academy": {
+      "key": "academy",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-3511f378-1067-437e-b817-1cb3456c5d2a.png",
+        "sha256": "8444f74c145dc6e34650973398376bdfc2927618ce4f668caade4071a4bf8947",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9ae8bf78f7d108dc7afbd13bf7ace85764ba3b60cf24908b60710c2bc94f9334"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e3a8430a06b433a1fced57591bc2012587f24b5233fae48b6379e696f24574bf"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1033,
+            1523
+          ],
+          "sha256": "5a05e776bd86bfe7bd9699c1b0ad56e73ecd7142f374134f51ccad8a2b92d6c0"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d5ca73886ad4d9ed03fe20f26bd1be79d4e9f8f8a8756b5ecfd9a063e35091e5"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c0a0d6c908913b276cd15700d5744a78c6c1fee64a1c7b8bf017e989f3284084"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a5f6337dd5ff98518d6e06943e208a1c315059f3c9d2b50cb3575bcfb0c80cb5"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1731b34f2ea6b32065c6db926d768fec2851fa7d9aa624cf865cb3c9a5f12e9e"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3514ada777859b0afe6365a2adaf4458d7d241d0df03815bbc54ca50d6b3b638"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-day-4k.webp",
+      "bytes": 3761780,
+      "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650"
+    },
+    "academy-portrait": {
+      "key": "academy-portrait",
+      "target": [
+        2880,
+        3840
+      ],
+      "grid": [
+        3,
+        3
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-feb2e1a7-b286-4825-aedd-82f515c7d362.png",
+        "sha256": "6831ff78ee51943eeac7e61698aa3a87a74c8cc9aea56217f1935508ff474b62",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1086,
+            1448
+          ],
+          "sha256": "307e1a7e71df1f836c0f36b1a15877eb8c8d3e3a822a82d8e006f46c4f4c3656"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4a9e7f14c83f35916f2b37f46f23c8ac4467e2ba6ec59fce2ae7d0c859522026"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1089,
+            1444
+          ],
+          "sha256": "548921d74b53d07beb52ad42a8dd15907f084d8b9c1d3bc6cbf18fb5c4ce4034"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d1533c38f4b39e9f5b333c1b95c0c7c3e56729a209ba4337f7783e2209ab866b"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1264,
+          "w": 992,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "30dc297cd7cadb2901d5b6dd2bebf32d47363561f5e64e5e19367b189894f616"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ba1ed0340029559b3115be88746cd189cae82f878a2a4860cca1ab29ae18c879"
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "x": 0,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9e781242bb56d4d3066f81d1f4f7d555fe6ea2cb99275f66ae67d4d94387830f"
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "x": 944,
+          "y": 2544,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "0d85578225a2819bb95a9a908d3083f897ee1501d5921e9437666fe55cf76f95"
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "x": 1904,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9ee2dedfffd23759488bd9be9531b881268312f4945b83d58a786f1eb456dcf7"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-portrait-4k.webp",
+      "bytes": 4522720,
+      "sha256": "3587c2d23c16fcfbdfafc7c50adc7aa71c8ed0d2c2d1fa6fdb7fd41350ae5141"
+    },
+    "minfa": {
+      "key": "minfa",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-99df4574-564d-4de2-81f3-67bb32aa3020.png",
+        "sha256": "9e6cd3291c7c024bc1e42c420bb902ebe55a080ba1c9c92121660636da23c564",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "7799b8fa36494bdfc03796375de698a06d5aa6910192730c2dd38a21f3a93fa1"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "34778793d2c3cddadaf7f4b4c95f1c9ca5bb36f15f8d9fcad04113c2e6ff5edb"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c5a37107d489189f6b2175d7cc849407391ed82936b66eabd33c657646b87db4"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "371778265953e1fd3d9e3cad2f8d53bcea3f1091a74dc5e23fdd573e74422b65"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1a3ee7ed00bf4e86455fae3312a80b3441fb34569792aaee051ccc33b9e57acb"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "8d3db92980e310d853839a4cf1fd0c894460d8abaa780d18abd44a1c2ac2f285"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d94f57eaa5d192539a56eb6dbc7f9e1542ac63ad0e33d4fb8b441ec4c14ee575"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e6cb653e1685eb2de0e3f780d1e91a0163602fa36f4c4a3dbad6cd33f1a35b2c"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-minfa.webp",
+      "bytes": 2992014,
+      "sha256": "c810ff2ea99ebbb015de31323d9d3f71438670f1dacb59fc0b05587892cabcb5"
+    },
+    "xingfa": {
+      "key": "xingfa",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-688809f8-9f3a-4685-9d87-f5ab33d65732.png",
+        "sha256": "0635c9f2dfa85d36d248fb5676e75c04948ff1426ada3c21c520a329c4ed9bc4",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a86a6bb127b8004ac50edaa521854bbae63e361e960f9342563621b3b82db068"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3258d781fa1142d63ea4bf938c98eb78c06727e33550ae88b19683914d941076"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e4f6520c53ba139547a1f9158eb86ae801c1159e6de85a55a790fc394f729c0e"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "afb9a5692499676b1128192f7f5cae3ac1fb515b618ac5d888e393a60caaa0b1"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "602fbde2fecccdf2bba33c525aca8ce5093054154ae1997488a6abf45c24aa43"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "28fbed92de68fbb0c4666f3b8664926eeb9aa412840db07d146afebc05b949b2"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "83944926dd34af1a0e36ef249aed9e333e23e3a06164ace0314a665dc7d53a14"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "0879cac07c73f435e15a38b601ffe48880e6be9fae433cbd48a98a66a9a5450f"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-xingfa.webp",
+      "bytes": 2841340,
+      "sha256": "f6392c90b81beedbcc763e93b6361b867f52ae7bbe6eeb7a7b38b9331bcbc248"
+    },
+    "minsu": {
+      "key": "minsu",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-21d6f665-95a2-4050-aaeb-8c1a4ea9af42.png",
+        "sha256": "47e08f0f81fb4b9c663d3b002eb92b6afbb0dc0624b177716055b496c0f2db92",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2722e50f966b5bd88a8f7cf5ffeb60089d995127c4df79d446fbcd0d34a19a86"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "318a6f7be7196d57d7934b5e7ee6400e698083bc8edbf389e53876f13ee97336"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "fdd05d4c1987aa2a82a549d55fb117cc5b52f08683368444c79c10a3b90e838e"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1b469ab24b9f37009ecce472b2bc5ae8cc84c0b62d1116504841805ffdd51159"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "cbee1f1231e6e781234ec98af1507d31cab08b71255cb3b43ae2c60e6ddeb728"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3feebfce896ecf3aeea7b537cf0a9ad62b857c65e34f39ef2ab9f7e41d041276"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "b955717f983de1cd6dd5c580d75dc07a3132b20e832272d89bbd1369d9aa5ad4"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2304e07b1b8d44a9c68273ab24fe2810709279a2f0d83118fec5ed4951607bbd"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-minsu.webp",
+      "bytes": 2762906,
+      "sha256": "b819331c642b6e080c79f1c7c25aa93422288b2bed9c99140362a2f73e8e776e"
+    },
+    "xingsu": {
+      "key": "xingsu",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-7b8bf997-1d87-465c-89b5-262f6918aa60.png",
+        "sha256": "a8dc7add729e1ba8ac42ce979b6acff188e6ad9751ffe3084839306b674dc453",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "47438514c01753b9cb7317617a1c850604f65145fe84b0d955a68c742bb55c27"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4af9fe83f6c718773b7b322149fb3dc711be5a246c619970b8e1135d07b7c31d"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "fd8f9fd7bcb965eb2d10e628bfbaba813f8c1f61ff60258ea42f00ba667e1bb8"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "677898b603878cdac1138938d24e4f85179035dd051badbf88faabfa0bfc12a5"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "853416551233ca88cfe491c875057bd151b8f6e5a532109ea8753536bb6a21df"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "01a8adf9c0524959abdd615ed1b9018a820a274c563c7b274195abcf381d0293"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "0cf8a65bd04343f09beb0b0463c1c08842f007904a58301348ebbf0af63bdb2b"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "8077e538d613ba37b88ef109207975883b87b8f796f1d314187753cf7ed8b9d0"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-xingsu.webp",
+      "bytes": 3272306,
+      "sha256": "720700122b2381e1274a4f2993a83e16ff8c223edc7576eaa48e71dd7ccf242a"
+    },
+    "xingzheng": {
+      "key": "xingzheng",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-02df6e84-5a6b-4ae5-b863-38f8a484cc3d.png",
+        "sha256": "8589a156d2d3953936ff8bd97087a1eddc88dc40b8158f34f128bae6da43b2a4",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c46a4d3671b8e12669be9166395af6357d8fbff4f91ef47edc55dd6a3613ef3f"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "73e40d9914b27dcb905282167847a49e07d41f7bd599d4877998edbed6890ebc"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "38282b0b5b859a0cff0c5a6de880b8f0ece8ec5cee36de7506d7e09f8283f040"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "cf49ed73880974cd4b71f17452c8c33414ad2acef7a9b811ed257d2cf7c3a268"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e1b2340363baaf90df94eb04b88117c1af88424d0b5503a554b1910c545eb271"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c6e2236da5181572a34e36e30d752470b2cd0db5cf284aab836a81deadc384bc"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1202286f4ca702b26449ca03a6b563076eccf13df09eb585b593f037bc3d1eb8"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ac984cbd5f39155dd9d34e30bfa4daa86a0ce9e491954ca53171ec91fb60f1c1"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-xingzheng.webp",
+      "bytes": 2512120,
+      "sha256": "fb2b984c9d2e75f4eb5312d4212335ebf85761d4f9e7a5e3489c277839addcba"
+    },
+    "shangjing": {
+      "key": "shangjing",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-7b848842-8815-4019-bdfe-ed12aa2e24f3.png",
+        "sha256": "361709956a840294a541b08610f3244c4224b53fd9139e197acfccc87f6810f1",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "767f506d2a3c12fb2b3ded22ab9b02d17368144599c82f09c9177627319b0c15"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "bd1e6218041c51c9eff6664b1134aea2842b943d5ca51b7f6ef4b63562b1e953"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2a599283561b4c08ee8d739f48ed50fd1bb5f6113d41a9fba732025b262b3bd5"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d65ae70353806b2ca49b05d076576a530dbdcd63ac7a4baf27c6ff0ed33bde8e"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f1c6e1cfac8d0e94ff6c71f39e615bdb73f5b5371e7a7164cdf6aa94753077c8"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1b1d53f0359759f6698f8b3cccd37df28de47fd1c3be40f3b91bb9c0d3fdd1ba"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "eae682786aca2ae7f985bcf813f428e69c3c137ee4ddba4ee896fae6c8e77eac"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "b49b935d0f7d58a2a5aa4d0848a56c24ca9509504ae681c2f867753ee36943e5"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-shangjing.webp",
+      "bytes": 2383242,
+      "sha256": "693346f2bb158a66c597317db78b5f6a492c42222d977ae0a836d030c9570de3"
+    },
+    "sanguo": {
+      "key": "sanguo",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-a28c4996-3101-40ed-8909-166366ef391e.png",
+        "sha256": "d9710086e2346fcc41a40eb5f3d4ab857c47b28b6153f7025bdb29cd45466948",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1e98f72e8234d06c67cbb76e4bdd286b0c4b4deaa1c50879a39a5b40f6b2f399"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ab63006fea50896bc4c4d8ab424aaf39d9271c7f65b7fe0e3da38fd85b5de0f8"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "502b159e4d2b17cae174c7a30b9d6da3b241613694b508755259fe67ac5ddc6a"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a5bcdcf0d673b102c0acdbba1faa2bac96fa830517e5e9e42ff1f2ffeb90d12c"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "115aa1b393ecf495c1342416ad79a420d6b221777e64640fdbe721d482500ca2"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2cf7d8a44993de7def87e3f9aad99c4ebc321c3b453897410b56e4bde528cffd"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f1a833b62a2d49911c0e72e04b9d8fdabdad1eb7940e5b5af0483787197e22d4"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "74282d9f314784c15d7a748a85f71c199cc206ce87785edb9c1a5bc4bfd74e09"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-sanguo.webp",
+      "bytes": 2923348,
+      "sha256": "e956263c94237a916cf9d200dc7002cef36fc3eaa3d72f9e70f96d464dd7de2f"
+    },
+    "lilun": {
+      "key": "lilun",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-61d2bd2b-d86f-4af9-850e-f0de3bf2967c.png",
+        "sha256": "55baedab9f02b8299aad10b15e6f0c9e263306f212ce4cde5131a35f04c0cde9",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f58d2f6c6a4738b33ed431a03ca5ef2fedc525a44cf38935fcc24360f8af0419"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d329fb24ff6fde90984bfd36d31112f0a41dee0c23f7a4b915af471199bebb56"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "7085a82c137d56b2492d0aaa84ea6439936894ff3b613b41c5cec61d4a52c397"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e275e196c37b4dee17caa227ef697ac3c82e232e520dab91f7f4488137624eae"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "65311db37e3a20739f9e74c30b6e0ea3388815283fe19f8a1efc5bb502878808"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c9aaad21ebd5eb8389ac44090bd16f49fe21e4c77abc4b30bc939a36bd17e5d3"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "6c69c5c33433011608fbb835ebba17231a4007cb0ba5befe005222f46855eebe"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "862f50393d4485986195353a4d63eaf61415b04c50964bd8ec3c216765537112"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-lilun.webp",
+      "bytes": 3168644,
+      "sha256": "0f0c0d32611a4f136fd4454002ae5934c94ddf65e3b8ece14bd2642456b41e90"
+    }
+  }
+}

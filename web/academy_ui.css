@@ -1,0 +1,93 @@
+/* 法师成长记的绘本学院视觉层：只在本仓加载，覆盖共用布局而不改变训练流程。
+ * 色彩集中在本文件的主题变量；地图名牌、学科卡、阅读面板使用同一套柔和圆角与清晰字色。 */
+:root {
+  --ac-cream:color-mix(in srgb,var(--panel2) 60%,var(--panel));
+  --ac-paper:var(--panel);--ac-peach:color-mix(in srgb,var(--orange) 25%,var(--panel));
+  --ac-line:var(--line);--ac-ink:var(--text);--ac-muted:var(--muted);
+  --ac-sky:color-mix(in srgb,var(--accent2) 38%,var(--panel));--ac-gold:var(--gold);
+  --ac-lavender:color-mix(in srgb,var(--purple) 30%,var(--bg));
+  --ac-shadow:color-mix(in srgb,var(--text) 12%,transparent);
+  --ac-room-veil:color-mix(in srgb,var(--panel) 93%,transparent);
+}
+html[data-theme="light"] {background:linear-gradient(145deg,var(--ac-cream),var(--ac-sky)) fixed}
+html[data-theme="dark"] {background:linear-gradient(145deg,var(--bg),var(--ac-lavender)) fixed}
+body.xuanhuan::before{display:none}
+body.xuanhuan {font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif}
+body.xuanhuan button,body.xuanhuan input,body.xuanhuan select{min-height:var(--ds-touch)}
+body.xuanhuan #banner .warn{background:var(--ac-paper);color:var(--text);border-color:var(--red);box-shadow:0 2px 9px var(--ac-shadow);font-weight:600}
+body.xuanhuan button.primary {background:linear-gradient(130deg,var(--btn-from),var(--btn-to));color:var(--btn-text);box-shadow:0 4px 12px var(--ac-shadow)}
+body.xuanhuan button:not(.portal-place):hover {filter:brightness(1.04)}
+body.xuanhuan .card,body.xuanhuan .scene-panel{border-radius:var(--radius);border-color:var(--ac-line);box-shadow:0 6px 24px var(--ac-shadow)}
+body.xuanhuan .card{outline:none;background:var(--panel)}
+body.xuanhuan .fx-frame{background:var(--ac-room-veil)}
+body.xuanhuan .fx-actions{background:var(--panel);border-color:var(--ac-line)}
+body.xuanhuan .ln-document,body.xuanhuan .nt-main,body.xuanhuan .mindmap-panel{color:var(--text);line-height:1.7}
+body.xuanhuan .ln-document{background:var(--panel);max-width:80ch;margin-inline:auto}
+
+/* 总览：保留完整横屏场景，竖屏换独立取景；入口与画面始终为分开的真实控件。 */
+.portal-mage{--ds-scene-bg:var(--ac-sky);--ds-sign-bg:var(--ac-paper);--ds-sign-line:var(--ac-gold);
+  --ds-sign-ink:var(--ac-ink);--ds-sign-hover:var(--ac-peach);--ds-sign-focus:var(--accent2);
+  --ds-sign-symbol:var(--ac-gold);--ds-sign-symbol-shadow:var(--ac-paper);
+  --ds-scene-cloud:transparent;--ds-scene-glow:transparent;background:var(--ac-sky)}
+.portal-mage .portal-landscape-fill{display:block;position:absolute;inset:-24px;background-image:var(--portal-fill-day);background-size:cover;background-position:center;filter:blur(20px);opacity:.6}
+.portal-mage .portal-landscape{object-fit:contain;object-position:center center}
+.portal-mage .portal-place{min-width:74px;max-width:126px;z-index:4;padding:0;filter:drop-shadow(0 2px 5px var(--ac-shadow))}
+.portal-mage .portal-place .portal-ic{display:block;line-height:1.15;font-size:var(--ds-fs-18)}
+.portal-mage .portal-place>b{display:block;width:max-content;max-width:126px;padding:6px 10px;
+  border-radius:var(--ds-r-12);border:2px solid var(--ac-gold);background:var(--ac-paper);
+  color:var(--ac-ink);font-family:var(--display);font-size:var(--ds-fs-13);font-weight:800;
+  line-height:1.25;letter-spacing:.03em;text-align:center;box-shadow:0 3px 10px var(--ac-shadow)}
+.portal-mage .portal-place[data-portal-go^="subject-"]>b{background:var(--ac-cream)}
+.portal-mage .portal-place:hover>b,.portal-mage .portal-place:focus-visible>b{background:var(--ac-peach);border-color:var(--accent2);outline:2px solid var(--accent2);outline-offset:2px}
+.portal-mage .portal-place:focus-visible{outline:3px solid var(--accent2);outline-offset:3px;border-radius:var(--ds-r-12)}
+.portal-mage .portal-stage-editor .portal-place>b{font-size:var(--ds-fs-13)}
+html[data-theme="dark"] .portal-mage .portal-stage:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--ac-lavender),var(--bg));opacity:.38;pointer-events:none;z-index:1}
+
+/* 八科卡片与楼内阅读：背景留景，卡片提供足够的不透明度与滚动空间。 */
+body.xuanhuan .study-towers{background:var(--ac-room-veil);border-color:var(--ac-line)}
+body.xuanhuan .study-towers .study-region-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--ds-sp-12)}
+body.xuanhuan .study-towers .study-region{justify-content:flex-start;min-height:0;text-align:left;
+  background:var(--ac-paper);border:2px solid var(--ac-line);border-radius:var(--ds-r-12);overflow:hidden}
+body.xuanhuan .study-towers .study-region:hover,body.xuanhuan .study-towers .study-region:focus-visible{border-color:var(--accent2);transform:translateY(-2px)}
+body.xuanhuan .study-towers .study-region-image{display:block;width:100%;height:58%;min-height:80px;object-fit:cover;flex:1}
+body.xuanhuan .study-towers .study-region-copy{padding:var(--ds-sp-8) var(--ds-sp-12);gap:2px}
+body.xuanhuan .study-towers .study-region-copy b{font-size:var(--ds-fs-20);color:var(--text);line-height:1.2;font-weight:800}
+body.xuanhuan .study-towers .study-region-copy span{display:block;color:var(--accent2);font-size:var(--ds-fs-13);font-weight:700}
+body.xuanhuan .study-towers .study-region-copy small{color:var(--muted);font-size:var(--ds-fs-11);line-height:1.25}
+body.xuanhuan .study-region-heading{align-items:center;gap:var(--ds-sp-12);background:var(--ac-room-veil);border:1px solid var(--ac-line);border-radius:var(--ds-r-12);padding:var(--ds-sp-8) var(--ds-sp-12)}
+html.fixed-app body.xuanhuan .scene-panel.fx-region-detail{
+  width:min(82%,920px);height:min(88%,760px);max-height:calc(100% - 16px);
+  padding:var(--ds-sp-12);gap:var(--ds-sp-8);border:1px solid var(--ac-line);
+  border-radius:var(--ds-r-12);background:color-mix(in srgb,var(--panel) 16%,transparent);
+  box-shadow:0 10px 30px var(--ac-shadow)}
+html.fixed-app body.xuanhuan .fx-region-detail>.study-region-heading{display:flex}
+body.xuanhuan .study-region-heading h2{font-family:var(--display);color:var(--text);font-size:var(--ds-fs-22);font-weight:800;line-height:1.2}
+body.xuanhuan .study-region-heading .academy-room-title{font-family:var(--display);font-size:var(--ds-fs-22);color:var(--text)}
+body.xuanhuan .study-region-heading .academy-room-title+h2{font-size:var(--ds-fs-13);font-weight:700;color:var(--accent2)}
+body.xuanhuan .study-region-heading small{color:var(--muted);font-size:var(--ds-fs-12)}
+body.xuanhuan .study-region-heading .academy-room-back{order:-1;white-space:nowrap;background:var(--panel);border-color:var(--ac-line)}
+body.xuanhuan.has-page-art:not(.portal-home) #bgLayer::after{opacity:.08}
+html[data-theme="dark"] body.xuanhuan.has-page-art:not(.portal-home) #bgLayer::after{opacity:.48}
+html:not([data-theme="dark"]) body.xuanhuan.academy-room[data-scene-relight="synthetic"] #bgLayer{filter:none}
+html:not([data-theme="dark"]) body.xuanhuan.academy-room[data-scene-relight="synthetic"] #bgLayer::before{display:none}
+body.xuanhuan.has-page-art .fx-region-work>.card,body.xuanhuan.has-page-art .scene-panel.fx-region-detail .fx-frame{background:var(--ac-room-veil);backdrop-filter:blur(5px)}
+body.xuanhuan .fx-region-work{gap:var(--ds-sp-12)}
+
+@media(max-width:900px){
+  body.xuanhuan .study-towers .study-region-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .portal-mage .portal-place>b{font-size:var(--ds-fs-12);padding:5px 7px;max-width:106px}
+  html.fixed-app body.xuanhuan .scene-panel.fx-region-detail{width:calc(100% - 24px);height:calc(100% - 12px)}
+}
+@media(orientation:portrait){
+  .portal-mage .portal-stage{background:var(--ac-sky)}
+  .portal-mage .portal-stage .portal-landscape,.portal-mage .portal-landscape-fill{display:none!important}
+  .portal-mage .portal-stage:before{content:"";position:absolute;inset:0;background:url("assets/academy/scene/academy-portrait-4k.webp") center/cover no-repeat;pointer-events:none}
+  .portal-mage .portal-place{max-width:42%}
+  .portal-mage .portal-place>b{max-width:116px}
+  body.xuanhuan .fx-region-work{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-height:820px) and (orientation:landscape){
+  .portal-mage .portal-place .portal-ic{display:none}
+  .portal-mage .portal-place>b{padding:4px 7px}
+}
+@media(prefers-reduced-motion:reduce){.portal-mage .portal-place:hover{transform:translate(-50%,-50%)}}

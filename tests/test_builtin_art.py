@@ -29,7 +29,10 @@ class BuiltinArtTest(unittest.TestCase):
                 self.assertEqual(set(art.character_portraits(None, subject, cid)), {'calm'})
             self.assertIsNone(art.builtin_asset(subject, '../../etc/passwd'))
         # 高清全景/五峰独立夜景不按350KiB压缩；其余旧图保留原预算。
-        self.assertLess(sum(p.stat().st_size for p in unique), (128 if '行测' in expected else 10) * 1024 * 1024)
+        # 法考八科正式4K楼内图计入随包清单；旧 10MiB 预算仅适用于小幅旧图。
+        native_academy=(assets/'academy/provenance.json').is_file()
+        limit=128 if '行测' in expected else 40 if native_academy else 10
+        self.assertLess(sum(p.stat().st_size for p in unique), limit * 1024 * 1024)
         if '申论' in expected:
             people = {k: v for k, v in raw['申论'].items() if k.startswith('beauty/portrait/')}
             self.assertEqual(len(people), 9)
