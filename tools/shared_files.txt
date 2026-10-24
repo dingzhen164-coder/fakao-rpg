@@ -3,6 +3,11 @@
 # 开发顺序：先在 shenlun-rpg 开发验证，一个功能批次完成后用 --pull 转到 fakao-rpg。
 
 # ---- shared ----
+diverged rpg/politics_reading.py
+diverged web/wanxiang_text.js
+diverged tests/test_wanxiang373.py
+diverged tests/test_wanxiang_text.cjs
+diverged tests/ui_wanxiang373.cjs
 diverged rpg/wanxiang_journal.py
 diverged web/wanxiang_journal.js
 diverged web/wanxiang_journal.css
