@@ -176,13 +176,25 @@ function applyTheme() {
 }
 
 function configurePortal() {
-  SCENE_PORTAL.configure({savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院全景',images:{day:'assets/academy/scene/mg-academy-day.webp',night:'assets/academy/scene/mg-academy-night.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
-    {id:'dwelling',label:'营地',view:'dwelling',x:8,y:91,nx:14,ny:84},{id:'train',label:'冒险大厅',view:'train',x:40,y:51,nx:27,ny:56},
-    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:68,y:46,nx:82,ny:50},{id:'bank',label:'试炼塔',view:'bank',x:92,y:55,nx:86,ny:88},
-    {id:'notes',label:'魔法手记',view:'notes',x:49,y:87,nx:47,ny:86},{id:'contest',label:'竞技场',view:'contest',x:16,y:67,nx:14,ny:62},
-    {id:'log',label:'成长档案',view:'log',x:76,y:76,nx:84,ny:70},{id:'journal',label:'学院纪事与委托',view:'journal',x:87,y:44,nx:80,ny:28},
-    {id:'tianji',label:'天机台',view:'tianji',x:59,y:0,nx:72,ny:2},
-  ]},p=>p.view==='journal'?NARRATIVE.open():go(p.view));
+  // 地点ID和旧坐标保持稳定，用户已保存的横竖屏排布及旧存档继续使用。
+  // 八科建筑只选择现有研习分区，不建立新的训练、计分或资料路径。
+  const sceneConfig={savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院总览',images:ACADEMY_SCENE.images(),layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+    {id:'dwelling',label:'营地',view:'dwelling',x:9,y:88,nx:20,ny:91},{id:'train',label:'学院大厅',view:'train',x:50,y:35,nx:50,ny:14},
+    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:48,y:79,nx:50,ny:83},{id:'bank',label:'试炼塔',view:'bank',x:93,y:30,nx:80,ny:18},
+    {id:'notes',label:'魔法手记',view:'notes',x:49,y:91,nx:47,ny:93},{id:'contest',label:'竞技场',view:'contest',x:31,y:77,nx:20,ny:76},
+    {id:'log',label:'成长档案',view:'log',x:76,y:77,nx:80,ny:91},{id:'journal',label:'学院纪事与委托',view:'journal',x:87,y:92,nx:50,ny:70},
+    {id:'tianji',label:'天机台',view:'tianji',x:7,y:9,nx:50,ny:3},
+    {id:'subject-minfa',label:'契约馆 · 民法',view:'train',region:'民法',x:18,y:53,nx:20,ny:27},
+    {id:'subject-xingfa',label:'审判堡 · 刑法',view:'train',region:'刑法',x:29,y:38,nx:80,ny:29},
+    {id:'subject-minsu',label:'衡序厅 · 民诉',view:'train',region:'民诉',x:68,y:42,nx:20,ny:43},
+    {id:'subject-xingsu',label:'真相塔 · 刑诉',view:'train',region:'刑诉',x:88,y:48,nx:65,ny:38},
+    {id:'subject-xingzheng',label:'律令宫 · 行政法',view:'train',region:'行政法',x:76,y:64,nx:20,ny:61},
+    {id:'subject-shangjing',label:'创艺坊 · 商经知',view:'train',region:'商经知',x:11,y:65,nx:80,ny:63},
+    {id:'subject-sanguo',label:'万国馆 · 三国法',view:'train',region:'三国法',x:89,y:58,nx:80,ny:47},
+    {id:'subject-lilun',label:'星穹馆 · 理论法',view:'train',region:'理论法',x:83,y:83,nx:80,ny:79},
+  ]};
+  SCENE_PORTAL.configure(sceneConfig,p=>{if(p.region){STUDY_REGIONS.select(p.region);return go('train');}return p.view==='journal'?NARRATIVE.open():go(p.view);});
+  ACADEMY_SCENE.bind(sceneConfig);
 }
 
 async function refresh() {
@@ -226,6 +238,7 @@ async function render() {
     committed=true;
     window.STUDY_HUD?.suspend(true);window.STUDY_HUD?.beforeRender();window.MAP_NAVIGATION?.beforeRender();
     document.body.classList.toggle('portal-home',page==='home');
+    document.body.classList.toggle('academy-room',page==='train'&&!!window.STUDY_REGIONS?.title());
     document.documentElement.classList.remove('in-chat');document.documentElement.classList.toggle('in-notes',page==='notes');
     document.querySelectorAll('#nav a').forEach(a=>{const on=a.dataset.view===page;if(a.classList.contains('active')!==on)a.classList.toggle('active',on);});
     window.BeautyArt?.mount(page);

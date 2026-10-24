@@ -173,12 +173,26 @@ def known(subject):
     return {s[2] for s in slots(subject)}
 
 
+# 行测五峰（万象/辨言/明理/演数/观星）的昼、昏、夜背景一律用程序内置的新图：
+# 美术文件夹里即使有同名文件（比如以前“导出自带美术”留下的旧图、被改过或重新编码的旧图）也不再顶替，
+# 否则旧图会带着旧的灰蒙蒙效果盖掉新版。文件不删除、不改动，只是这五峰不读它们。
+_PEAK_KEYS = ('chang', 'yan', 'li', 'shu', 'zi')
+_PEAK_RELS = frozenset('beauty/page/train-%s%s.webp' % (k, t) for k in _PEAK_KEYS for t in ('', '-day', '-night', '-dusk'))
+
+
+def _override(paths, subject, slot):
+    folder, stem, rel, _b, kind, aliases = slot
+    if subject == '行测' and rel in _PEAK_RELS:
+        return None
+    return _find(paths, folder, stem, kind, aliases)
+
+
 def lookup(paths, subject, asset_rel):
     if not paths or not paths.vault or not paths.train:
         return None
-    for folder, stem, rel, _b, kind, al in slots(subject):
-        if rel == asset_rel:
-            return _find(paths, folder, stem, kind, al)
+    for slot in slots(subject):
+        if slot[2] == asset_rel:
+            return _override(paths, subject, slot)
     return None
 
 
@@ -187,8 +201,9 @@ def files(paths, subject):
     if not paths or not paths.vault or not paths.train:
         return []
     out = []
-    for folder, stem, rel, _b, kind, al in slots(subject):
-        p = _find(paths, folder, stem, kind, al)
+    for slot in slots(subject):
+        rel = slot[2]
+        p = _override(paths, subject, slot)
         if p:
             out.append([rel, p.stat().st_mtime_ns])
     return out
@@ -200,7 +215,7 @@ README = """美术文件夹说明
 
 首页全景/      白天、夜晚                         （地图首页的全景图）
 子地图背景/    <地点名>、<地点名>-白天、<地点名>-夜晚   （每个子页面背后的背景；不放就用程序默认的淡透全景）
-               行测五峰另认<峰名>-黄昏，如万象峰-黄昏.webp；黄昏使用独立美术，不重复套滤镜。
+               行测五峰（万象峰、辨言峰、明理峰、演数峰、观星峰）的白天/黄昏/夜晚背景固定使用程序自带的新图，这里放同名文件不会生效（不会删除）。
                洞府还可以每个页签单独一张：洞府-<页签名>、洞府-<页签名>-白天、洞府-<页签名>-夜晚（行测页签：修为与突破、十二经、修行记录、储物袋、修行日志）
 人物立绘/      平静、鼓励、讲解、关切、欣慰、眨眼     （引导人物半身立绘；行测、法考的眨眼图只含眼部，位置由程序固定）
                申论每个人单独一套：<姓名>-<表情>，例如 周静宜-平静.png（九位人物见 rpg/art.py）。纯色底（洋红/绿）的图会自动去底。

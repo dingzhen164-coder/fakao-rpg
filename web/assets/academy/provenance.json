@@ -1,0 +1,3078 @@
+{
+  "method": "native-tiled-day-masters-with-native-4k-time-light-composites",
+  "source": "/workspace/generated_images/fakao-4k-source",
+  "records": {
+    "academy": {
+      "key": "academy",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-3511f378-1067-437e-b817-1cb3456c5d2a.png",
+        "sha256": "8444f74c145dc6e34650973398376bdfc2927618ce4f668caade4071a4bf8947",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9ae8bf78f7d108dc7afbd13bf7ace85764ba3b60cf24908b60710c2bc94f9334"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e3a8430a06b433a1fced57591bc2012587f24b5233fae48b6379e696f24574bf"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1033,
+            1523
+          ],
+          "sha256": "5a05e776bd86bfe7bd9699c1b0ad56e73ecd7142f374134f51ccad8a2b92d6c0"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d5ca73886ad4d9ed03fe20f26bd1be79d4e9f8f8a8756b5ecfd9a063e35091e5"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c0a0d6c908913b276cd15700d5744a78c6c1fee64a1c7b8bf017e989f3284084"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a5f6337dd5ff98518d6e06943e208a1c315059f3c9d2b50cb3575bcfb0c80cb5"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1731b34f2ea6b32065c6db926d768fec2851fa7d9aa624cf865cb3c9a5f12e9e"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3514ada777859b0afe6365a2adaf4458d7d241d0df03815bbc54ca50d6b3b638"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-day-4k.webp",
+      "bytes": 3761780,
+      "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650"
+    },
+    "academy-portrait": {
+      "key": "academy-portrait",
+      "target": [
+        2880,
+        3840
+      ],
+      "grid": [
+        3,
+        3
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-feb2e1a7-b286-4825-aedd-82f515c7d362.png",
+        "sha256": "6831ff78ee51943eeac7e61698aa3a87a74c8cc9aea56217f1935508ff474b62",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1086,
+            1448
+          ],
+          "sha256": "307e1a7e71df1f836c0f36b1a15877eb8c8d3e3a822a82d8e006f46c4f4c3656"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4a9e7f14c83f35916f2b37f46f23c8ac4467e2ba6ec59fce2ae7d0c859522026"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1089,
+            1444
+          ],
+          "sha256": "548921d74b53d07beb52ad42a8dd15907f084d8b9c1d3bc6cbf18fb5c4ce4034"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d1533c38f4b39e9f5b333c1b95c0c7c3e56729a209ba4337f7783e2209ab866b"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1264,
+          "w": 992,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "30dc297cd7cadb2901d5b6dd2bebf32d47363561f5e64e5e19367b189894f616"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ba1ed0340029559b3115be88746cd189cae82f878a2a4860cca1ab29ae18c879"
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "x": 0,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9e781242bb56d4d3066f81d1f4f7d555fe6ea2cb99275f66ae67d4d94387830f"
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "x": 944,
+          "y": 2544,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "0d85578225a2819bb95a9a908d3083f897ee1501d5921e9437666fe55cf76f95"
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "x": 1904,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9ee2dedfffd23759488bd9be9531b881268312f4945b83d58a786f1eb456dcf7"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-portrait-4k.webp",
+      "bytes": 4522720,
+      "sha256": "3587c2d23c16fcfbdfafc7c50adc7aa71c8ed0d2c2d1fa6fdb7fd41350ae5141"
+    },
+    "minfa": {
+      "key": "minfa",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-99df4574-564d-4de2-81f3-67bb32aa3020.png",
+        "sha256": "9e6cd3291c7c024bc1e42c420bb902ebe55a080ba1c9c92121660636da23c564",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "7799b8fa36494bdfc03796375de698a06d5aa6910192730c2dd38a21f3a93fa1"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "34778793d2c3cddadaf7f4b4c95f1c9ca5bb36f15f8d9fcad04113c2e6ff5edb"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c5a37107d489189f6b2175d7cc849407391ed82936b66eabd33c657646b87db4"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "371778265953e1fd3d9e3cad2f8d53bcea3f1091a74dc5e23fdd573e74422b65"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1a3ee7ed00bf4e86455fae3312a80b3441fb34569792aaee051ccc33b9e57acb"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "8d3db92980e310d853839a4cf1fd0c894460d8abaa780d18abd44a1c2ac2f285"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d94f57eaa5d192539a56eb6dbc7f9e1542ac63ad0e33d4fb8b441ec4c14ee575"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e6cb653e1685eb2de0e3f780d1e91a0163602fa36f4c4a3dbad6cd33f1a35b2c"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-minfa.webp",
+      "bytes": 2992014,
+      "sha256": "c810ff2ea99ebbb015de31323d9d3f71438670f1dacb59fc0b05587892cabcb5"
+    },
+    "xingfa": {
+      "key": "xingfa",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-688809f8-9f3a-4685-9d87-f5ab33d65732.png",
+        "sha256": "0635c9f2dfa85d36d248fb5676e75c04948ff1426ada3c21c520a329c4ed9bc4",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a86a6bb127b8004ac50edaa521854bbae63e361e960f9342563621b3b82db068"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3258d781fa1142d63ea4bf938c98eb78c06727e33550ae88b19683914d941076"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e4f6520c53ba139547a1f9158eb86ae801c1159e6de85a55a790fc394f729c0e"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "afb9a5692499676b1128192f7f5cae3ac1fb515b618ac5d888e393a60caaa0b1"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "602fbde2fecccdf2bba33c525aca8ce5093054154ae1997488a6abf45c24aa43"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "28fbed92de68fbb0c4666f3b8664926eeb9aa412840db07d146afebc05b949b2"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "83944926dd34af1a0e36ef249aed9e333e23e3a06164ace0314a665dc7d53a14"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "0879cac07c73f435e15a38b601ffe48880e6be9fae433cbd48a98a66a9a5450f"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-xingfa.webp",
+      "bytes": 2841340,
+      "sha256": "f6392c90b81beedbcc763e93b6361b867f52ae7bbe6eeb7a7b38b9331bcbc248"
+    },
+    "minsu": {
+      "key": "minsu",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-21d6f665-95a2-4050-aaeb-8c1a4ea9af42.png",
+        "sha256": "47e08f0f81fb4b9c663d3b002eb92b6afbb0dc0624b177716055b496c0f2db92",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2722e50f966b5bd88a8f7cf5ffeb60089d995127c4df79d446fbcd0d34a19a86"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "318a6f7be7196d57d7934b5e7ee6400e698083bc8edbf389e53876f13ee97336"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "fdd05d4c1987aa2a82a549d55fb117cc5b52f08683368444c79c10a3b90e838e"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1b469ab24b9f37009ecce472b2bc5ae8cc84c0b62d1116504841805ffdd51159"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "cbee1f1231e6e781234ec98af1507d31cab08b71255cb3b43ae2c60e6ddeb728"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3feebfce896ecf3aeea7b537cf0a9ad62b857c65e34f39ef2ab9f7e41d041276"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "b955717f983de1cd6dd5c580d75dc07a3132b20e832272d89bbd1369d9aa5ad4"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2304e07b1b8d44a9c68273ab24fe2810709279a2f0d83118fec5ed4951607bbd"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-minsu.webp",
+      "bytes": 2762906,
+      "sha256": "b819331c642b6e080c79f1c7c25aa93422288b2bed9c99140362a2f73e8e776e"
+    },
+    "xingsu": {
+      "key": "xingsu",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-7b8bf997-1d87-465c-89b5-262f6918aa60.png",
+        "sha256": "a8dc7add729e1ba8ac42ce979b6acff188e6ad9751ffe3084839306b674dc453",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "47438514c01753b9cb7317617a1c850604f65145fe84b0d955a68c742bb55c27"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4af9fe83f6c718773b7b322149fb3dc711be5a246c619970b8e1135d07b7c31d"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "fd8f9fd7bcb965eb2d10e628bfbaba813f8c1f61ff60258ea42f00ba667e1bb8"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "677898b603878cdac1138938d24e4f85179035dd051badbf88faabfa0bfc12a5"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "853416551233ca88cfe491c875057bd151b8f6e5a532109ea8753536bb6a21df"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "01a8adf9c0524959abdd615ed1b9018a820a274c563c7b274195abcf381d0293"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "0cf8a65bd04343f09beb0b0463c1c08842f007904a58301348ebbf0af63bdb2b"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "8077e538d613ba37b88ef109207975883b87b8f796f1d314187753cf7ed8b9d0"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-xingsu.webp",
+      "bytes": 3272306,
+      "sha256": "720700122b2381e1274a4f2993a83e16ff8c223edc7576eaa48e71dd7ccf242a"
+    },
+    "xingzheng": {
+      "key": "xingzheng",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-02df6e84-5a6b-4ae5-b863-38f8a484cc3d.png",
+        "sha256": "8589a156d2d3953936ff8bd97087a1eddc88dc40b8158f34f128bae6da43b2a4",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c46a4d3671b8e12669be9166395af6357d8fbff4f91ef47edc55dd6a3613ef3f"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "73e40d9914b27dcb905282167847a49e07d41f7bd599d4877998edbed6890ebc"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "38282b0b5b859a0cff0c5a6de880b8f0ece8ec5cee36de7506d7e09f8283f040"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "cf49ed73880974cd4b71f17452c8c33414ad2acef7a9b811ed257d2cf7c3a268"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e1b2340363baaf90df94eb04b88117c1af88424d0b5503a554b1910c545eb271"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c6e2236da5181572a34e36e30d752470b2cd0db5cf284aab836a81deadc384bc"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1202286f4ca702b26449ca03a6b563076eccf13df09eb585b593f037bc3d1eb8"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ac984cbd5f39155dd9d34e30bfa4daa86a0ce9e491954ca53171ec91fb60f1c1"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-xingzheng.webp",
+      "bytes": 2512120,
+      "sha256": "fb2b984c9d2e75f4eb5312d4212335ebf85761d4f9e7a5e3489c277839addcba"
+    },
+    "shangjing": {
+      "key": "shangjing",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-7b848842-8815-4019-bdfe-ed12aa2e24f3.png",
+        "sha256": "361709956a840294a541b08610f3244c4224b53fd9139e197acfccc87f6810f1",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "767f506d2a3c12fb2b3ded22ab9b02d17368144599c82f09c9177627319b0c15"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "bd1e6218041c51c9eff6664b1134aea2842b943d5ca51b7f6ef4b63562b1e953"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2a599283561b4c08ee8d739f48ed50fd1bb5f6113d41a9fba732025b262b3bd5"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d65ae70353806b2ca49b05d076576a530dbdcd63ac7a4baf27c6ff0ed33bde8e"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f1c6e1cfac8d0e94ff6c71f39e615bdb73f5b5371e7a7164cdf6aa94753077c8"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1b1d53f0359759f6698f8b3cccd37df28de47fd1c3be40f3b91bb9c0d3fdd1ba"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "eae682786aca2ae7f985bcf813f428e69c3c137ee4ddba4ee896fae6c8e77eac"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "b49b935d0f7d58a2a5aa4d0848a56c24ca9509504ae681c2f867753ee36943e5"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-shangjing.webp",
+      "bytes": 2383242,
+      "sha256": "693346f2bb158a66c597317db78b5f6a492c42222d977ae0a836d030c9570de3"
+    },
+    "sanguo": {
+      "key": "sanguo",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-a28c4996-3101-40ed-8909-166366ef391e.png",
+        "sha256": "d9710086e2346fcc41a40eb5f3d4ab857c47b28b6153f7025bdb29cd45466948",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1e98f72e8234d06c67cbb76e4bdd286b0c4b4deaa1c50879a39a5b40f6b2f399"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ab63006fea50896bc4c4d8ab424aaf39d9271c7f65b7fe0e3da38fd85b5de0f8"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "502b159e4d2b17cae174c7a30b9d6da3b241613694b508755259fe67ac5ddc6a"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a5bcdcf0d673b102c0acdbba1faa2bac96fa830517e5e9e42ff1f2ffeb90d12c"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "115aa1b393ecf495c1342416ad79a420d6b221777e64640fdbe721d482500ca2"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "2cf7d8a44993de7def87e3f9aad99c4ebc321c3b453897410b56e4bde528cffd"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f1a833b62a2d49911c0e72e04b9d8fdabdad1eb7940e5b5af0483787197e22d4"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "74282d9f314784c15d7a748a85f71c199cc206ce87785edb9c1a5bc4bfd74e09"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-sanguo.webp",
+      "bytes": 2923348,
+      "sha256": "e956263c94237a916cf9d200dc7002cef36fc3eaa3d72f9e70f96d464dd7de2f"
+    },
+    "lilun": {
+      "key": "lilun",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-61d2bd2b-d86f-4af9-850e-f0de3bf2967c.png",
+        "sha256": "55baedab9f02b8299aad10b15e6f0c9e263306f212ce4cde5131a35f04c0cde9",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f58d2f6c6a4738b33ed431a03ca5ef2fedc525a44cf38935fcc24360f8af0419"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d329fb24ff6fde90984bfd36d31112f0a41dee0c23f7a4b915af471199bebb56"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "7085a82c137d56b2492d0aaa84ea6439936894ff3b613b41c5cec61d4a52c397"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e275e196c37b4dee17caa227ef697ac3c82e232e520dab91f7f4488137624eae"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "65311db37e3a20739f9e74c30b6e0ea3388815283fe19f8a1efc5bb502878808"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c9aaad21ebd5eb8389ac44090bd16f49fe21e4c77abc4b30bc939a36bd17e5d3"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "6c69c5c33433011608fbb835ebba17231a4007cb0ba5befe005222f46855eebe"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "862f50393d4485986195353a4d63eaf61415b04c50964bd8ec3c216765537112"
+        }
+      ],
+      "output": "web/assets/beauty/page/train-lilun.webp",
+      "bytes": 3168644,
+      "sha256": "0f0c0d32611a4f136fd4454002ae5934c94ddf65e3b8ece14bd2642456b41e90"
+    },
+    "academy-summer": {
+      "key": "academy-summer",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-e4e3c482-c08f-4d45-a3bb-3f962a4923fa.png",
+        "sha256": "f8856517157c35a4771fb86edc36452e8b9da2f75ea6b15982781b2f4e191a4c",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c55d32fa47cc6d930230d7fad71e7b78b05236317d814be6e21eab3d0fb9b578"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "dd5ca3bef770e131db6459147f60beaeb01b007eb457e6b2689cb738d8c94a36"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1033,
+            1522
+          ],
+          "sha256": "5b40cb8862c816bf1d2291a8cd2c009505735109dd9fcbe8923410ca42e42610"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e6cb1b912a9dedf7c0b2f7330aa30a08ea4be510871aab5f0dde3029445c5301"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9dbdc52cf0d53965e7d14397d07628b4fe8b015abf5f1559545ecf06a0a72778"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1092e96d5d0e011bc2d5c8b98f5450ba1cb5a58d4aba163b57a1c0a6ddacff8a"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "357f42e9fa18cfe73129700c619ec497567956f67144ec5d0654cf1f97719da7"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "ebfb37bcc0573719546f5052f4b7ce409264814b55a0d490704da683d11b0d19"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-summer-day-4k.webp",
+      "bytes": 4419870,
+      "sha256": "126ae29800ddd2c9db7f75cb6eb1e890a90638fa82f5a453b1cae6ed6224b9d0"
+    },
+    "academy-summer-portrait": {
+      "key": "academy-summer-portrait",
+      "target": [
+        2880,
+        3840
+      ],
+      "grid": [
+        3,
+        3
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-a79fec3c-e975-4e3a-bb8d-c00596afb8a3.png",
+        "sha256": "ff90d87ce8f570d93f3845cbd4de82adba71da656d8b1f248214e05cfd7992e4",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1086,
+            1448
+          ],
+          "sha256": "142a43a7ef824c459b564608df61f029359e34e1d6c04f40ff49daed0982f29d"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d99918d68bf27e2f4193589ce1cd3c703646c62dc89b9365d32bab2b4e1963c1"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1089,
+            1445
+          ],
+          "sha256": "e7e594aeecda0d03d87e3c7e68e8de2d58334f203c678ac780f4ea7aa8aeb613"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4c2225f36b4c4dd78008b47d91b8104a80589aeac237d60c9ca81b0a3a2d377c"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1264,
+          "w": 992,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e1192deb6b95298c33c0db7acf0012ac9a6bb864541064672f2fc8c52f486e8a"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "bd922719a1c6095cd3b778e59cfd5affd166dde1f3beb67ef0865ece9062cb65"
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "x": 0,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4932c8420aadf8396c03bd435049ce98198e0e0bc70f4195c8055136e14af287"
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "x": 944,
+          "y": 2544,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "31e71c5420cb3a47e89c4c1090833cc1e6ab7bcb8b5c658368c27cbb36d0ab09"
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "x": 1904,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "262a64bb23af075d47a777fac86040060a38dc9283c5286122b3bffc3f5552f5"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-summer-day-portrait-4k.webp",
+      "bytes": 4849810,
+      "sha256": "1ccb938f1c1aae12a94a1ef6b2d3ea4b3e2e99eb7bd1d107ffe6b167131e1746"
+    },
+    "academy-autumn": {
+      "key": "academy-autumn",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-64a7429d-fbe2-46e4-b9a5-67e17bdb11b5.png",
+        "sha256": "2932092e979673e593124bc34ce90c8780a75286b79d996c1473713a6db79e35",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "aabc301b99ff59061e8387dbb863cbf85f5d9ce8f70e448faada6b5b87db4db2"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "5115842723d40f354d369f661a980cc2868cf417d97c39c0ee74d388f52c9107"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1033,
+            1523
+          ],
+          "sha256": "cec156f425730a33044b2da7fbb3a2ac15fad902777714273b8ffa4f5da35c96"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "242b94f3f74c6b0b720c28e6bfe80b9ce7910a60bc95686f228442e210a69fc7"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4c96b921e0f31aa01735da16e509c3363120607dfa8cb879df9dbaa00ad4f415"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f572ea78e5f0abf193ba457191c916d762fddeb7b40b75fd4b055178804122bb"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "05f9d86ed55c5e204a5ba7935ac23b6cfe9fee6f04f40a02e333dc943c29ab93"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d447e805ca3f168e7fc9cd9286ea98a999e167db36a6612dc1eb5897dca3d735"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-autumn-day-4k.webp",
+      "bytes": 4540530,
+      "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43"
+    },
+    "academy-autumn-portrait": {
+      "key": "academy-autumn-portrait",
+      "target": [
+        2880,
+        3840
+      ],
+      "grid": [
+        3,
+        3
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-163f656f-6b41-451a-9ad6-49f83484230b.png",
+        "sha256": "27e8a60a6521174788a5ee10dce2cd1e12841edf7e61a0e022383f535de2b7c2",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1086,
+            1448
+          ],
+          "sha256": "c764c338c332db9a92c7a329484438326877cf8cca7e894300344b6ea2e1ac5e"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "7a1b31b3f80be6ab33230f46bdb94cb2676fd5bf0d57450b36f2bb4c3ac1dffe"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1089,
+            1445
+          ],
+          "sha256": "ea7611c28e781c1a39e058dd249056b6e994ae29b14d79ce803f0520e3d26591"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f8e364231a94ddf68b3bc06710fcf758540a4615dbda605b0be6d6a2d725ead9"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1264,
+          "w": 992,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "dd87a7b2cea2879725b8cc827a404409296eca24d865caedf346da4381eec54a"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "df74d5008f696048b7552cd2215e568fa0ce4d3a7bf464327844e423995bef79"
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "x": 0,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "b92484222724c4e90f487e34e9f436342bddeafdcb3da5ba220e377c90237789"
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "x": 944,
+          "y": 2544,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a59ae5d081c6e5b8374c403a8fa2122afa52724a52de88bf5c95539af8e9432f"
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "x": 1904,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f141d7ea94d5961d6fd3006a75163fa9314c20bccdae1233d6c894081f01af3b"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+      "bytes": 4912004,
+      "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b"
+    },
+    "academy-winter": {
+      "key": "academy-winter",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-00706e3f-7030-4e43-ad63-87e3ffacf9f9.png",
+        "sha256": "56bfd424030461c00841790b01c04eeb5dd38a997117fbfb876dbb5f6db29350",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c99c559d4e49188a083773a8a54075f112cd64763e3b038e81c8357c14a077d7"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e93a35bdc3549af773c66d0e3f91f15a199e8075d5ea8241c4da194e5539e37c"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "12527814c0a1c2cb286edf11a542e14abc41183e59f897f8b53711538935c41d"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "6ef1c47b50a5fe1208b62c4581d62243073917791d8dd39b2e98fbf000c9afa9"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "168e155907169cc0e9cba805f520054f5e64d30c94f4b21fd94096a32beaec71"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "cee2d88e9c39703b1fd4280fd5a769c4b3535691099b44d489047e5d8b0303a5"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "394e33f910ef9c80360bcb1ab7bd6a4dbf2ca6c12d668ff0d71f45f2e4a97a67"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4713c2c22343dc7e47c9890f70963812eb97c6e76d8dbb625b42a41c49751655"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-winter-day-4k.webp",
+      "bytes": 4557394,
+      "sha256": "8529dca47ea5e4349a50eb677172476bd055bca4cb4be07e6b711d89e1e5c79e"
+    },
+    "academy-winter-portrait": {
+      "key": "academy-winter-portrait",
+      "target": [
+        2880,
+        3840
+      ],
+      "grid": [
+        3,
+        3
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-64f12170-a443-40bf-a807-6af9467e9813.png",
+        "sha256": "a60c97a59b49a4f82af11870e87e6ba0d6939b14db444815383ea274e31a05f3",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1086,
+            1448
+          ],
+          "sha256": "560b476e5312aca0aaefe01f0dbf50cdf0d138b4a378d3092551bdce40b70ad2"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "650b408cf0e972a02e2d76052ab20e759c02c3ef8c835bede865e02c0b1dacbe"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1089,
+            1445
+          ],
+          "sha256": "b5732aef2adf5b0eff7494882b3ea3a53fefcb2acd8d242de67f183d364921f8"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "849a1dd529701fd2e24e3db27d637a5472ee39a9eaa75cec0d1a29c23f5af3a3"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1264,
+          "w": 992,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "4d49b706e914133de3a116307b436fe98ab0e3bfbb799d1fae7833812095bb5a"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1264,
+          "w": 976,
+          "h": 1312,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "16670d4eb16fe10b80c99f5c482226dc1c4eb3f4c39606936f8fc99ef36e19cd"
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "x": 0,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "56f0da77ca94f348ef55a48a32e44cae17afd3612420c668da5d706c0ed1efb2"
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "x": 944,
+          "y": 2544,
+          "w": 992,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "36bb528feb5f46ba25ef5bf7554936156a339a5d41ff8431732c4241611046e2"
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "x": 1904,
+          "y": 2544,
+          "w": 976,
+          "h": 1296,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "f1d29905630944bf0d35a63fdf5729174df3dd3a14b8b971b06b56677fd63588"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-winter-day-portrait-4k.webp",
+      "bytes": 4865542,
+      "sha256": "6b963c8229004842c7c2ed02290c72f2f32776ccbd33cc0b3aca5ce038282563"
+    }
+  },
+  "sceneMatrix": {
+    "spring-day-landscape": {
+      "file": "web/assets/academy/scene/academy-day-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3761780,
+      "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650"
+    },
+    "spring-day-portrait": {
+      "file": "web/assets/academy/scene/academy-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 4522720,
+      "sha256": "3587c2d23c16fcfbdfafc7c50adc7aa71c8ed0d2c2d1fa6fdb7fd41350ae5141"
+    },
+    "spring-dusk-landscape": {
+      "file": "web/assets/academy/scene/academy-spring-dusk-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3206986,
+      "sha256": "02cb2599df33bc10510eef7dce03eab0bc4666139e76455b859a8d30a0edb7ec"
+    },
+    "spring-dusk-portrait": {
+      "file": "web/assets/academy/scene/academy-spring-dusk-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3740086,
+      "sha256": "2745dc1a92eb1f5294e6c3bee005f4f21effd49270394882f5d4374f3025c62a"
+    },
+    "spring-night-landscape": {
+      "file": "web/assets/academy/scene/academy-spring-night-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 2863616,
+      "sha256": "94be741699b07c904778f7cea94aa78d614c3f1b7c47fb2c2cefbdbda946e10b"
+    },
+    "spring-night-portrait": {
+      "file": "web/assets/academy/scene/academy-spring-night-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3343358,
+      "sha256": "3a9c18e07f5cc103e1bb73d9d64a4b03ba893a6e729defb0eaafffed136d9c47"
+    },
+    "summer-day-landscape": {
+      "file": "web/assets/academy/scene/academy-summer-day-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 4419870,
+      "sha256": "126ae29800ddd2c9db7f75cb6eb1e890a90638fa82f5a453b1cae6ed6224b9d0"
+    },
+    "summer-day-portrait": {
+      "file": "web/assets/academy/scene/academy-summer-day-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 4849810,
+      "sha256": "1ccb938f1c1aae12a94a1ef6b2d3ea4b3e2e99eb7bd1d107ffe6b167131e1746"
+    },
+    "summer-dusk-landscape": {
+      "file": "web/assets/academy/scene/academy-summer-dusk-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3633040,
+      "sha256": "9f2f0e3077f31883157e4bd475da975ed7c1a2fbc525924d59a04fe8a334754e"
+    },
+    "summer-dusk-portrait": {
+      "file": "web/assets/academy/scene/academy-summer-dusk-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3958612,
+      "sha256": "7b26f647012aea810607988f99a377bb9872b4b39fff96d749a2a984f97e96dc"
+    },
+    "summer-night-landscape": {
+      "file": "web/assets/academy/scene/academy-summer-night-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3257264,
+      "sha256": "4d0338f7347b5a71f35f117f9f3b1700791d3e8e6de81cdc687c2c565165e0ad"
+    },
+    "summer-night-portrait": {
+      "file": "web/assets/academy/scene/academy-summer-night-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3576482,
+      "sha256": "4f8e8c2902f6c2b190543f259bccc3749ec29469e4138bc66ddfcb4faf14acea"
+    },
+    "autumn-day-landscape": {
+      "file": "web/assets/academy/scene/academy-autumn-day-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 4540530,
+      "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43"
+    },
+    "autumn-day-portrait": {
+      "file": "web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 4912004,
+      "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b"
+    },
+    "autumn-dusk-landscape": {
+      "file": "web/assets/academy/scene/academy-autumn-dusk-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3664044,
+      "sha256": "3f744032d9c661372e8e53e5a78c6d6966a9ea84149719a727b4eb38e2bd7068"
+    },
+    "autumn-dusk-portrait": {
+      "file": "web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3953586,
+      "sha256": "40f57494689faa7b6f93a4aad9a4befac442fd6b3119d66b63c56ed146b18de3"
+    },
+    "autumn-night-landscape": {
+      "file": "web/assets/academy/scene/academy-autumn-night-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3246062,
+      "sha256": "1f5d1e0d27cadc507acc2502fe9c04c7a094c5b43701ab5f22126ee9bf383e20"
+    },
+    "autumn-night-portrait": {
+      "file": "web/assets/academy/scene/academy-autumn-night-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3516076,
+      "sha256": "1cd08fb85273d11c31e0dee549c2a6b6f5c443c891ff672f9edaeda0e9d21a1d"
+    },
+    "winter-day-landscape": {
+      "file": "web/assets/academy/scene/academy-winter-day-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 4557394,
+      "sha256": "8529dca47ea5e4349a50eb677172476bd055bca4cb4be07e6b711d89e1e5c79e"
+    },
+    "winter-day-portrait": {
+      "file": "web/assets/academy/scene/academy-winter-day-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 4865542,
+      "sha256": "6b963c8229004842c7c2ed02290c72f2f32776ccbd33cc0b3aca5ce038282563"
+    },
+    "winter-dusk-landscape": {
+      "file": "web/assets/academy/scene/academy-winter-dusk-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3861896,
+      "sha256": "488b714fafb735eeb0b74c57858d2d9965c5aada0baaf3305474b0d93cda3eba"
+    },
+    "winter-dusk-portrait": {
+      "file": "web/assets/academy/scene/academy-winter-dusk-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 4099988,
+      "sha256": "110d4de000801a17bf5864f1bb722f1890cfed58f63f2e2e3fa89ec110041ec5"
+    },
+    "winter-night-landscape": {
+      "file": "web/assets/academy/scene/academy-winter-night-4k.webp",
+      "size": [
+        3840,
+        2880
+      ],
+      "bytes": 3527126,
+      "sha256": "552da62349a382e5b2566b24488d4b17cfc63cb2e11ab59536c32c45cc1a8a55"
+    },
+    "winter-night-portrait": {
+      "file": "web/assets/academy/scene/academy-winter-night-portrait-4k.webp",
+      "size": [
+        2880,
+        3840
+      ],
+      "bytes": 3721172,
+      "sha256": "54d38f84fba5521a27c4bcacfb6da3a23632642b2d88f70ffb1351d898449097"
+    }
+  },
+  "lighting": {
+    "web/assets/academy/scene/academy-spring-dusk-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "web/assets/academy/scene/academy-day-4k.webp",
+        "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/spring-dusk-landscape.png",
+        "sha256": "8d2dbf8c5a559f439933f60cc3a409c45ee893a6b7584ceff0bf695ca2af8dab",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/academy/scene/academy-spring-dusk-4k.webp",
+        "sha256": "02cb2599df33bc10510eef7dce03eab0bc4666139e76455b859a8d30a0edb7ec",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3206986
+      }
+    },
+    "web/assets/academy/scene/academy-spring-dusk-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "web/assets/academy/scene/academy-portrait-4k.webp",
+        "sha256": "3587c2d23c16fcfbdfafc7c50adc7aa71c8ed0d2c2d1fa6fdb7fd41350ae5141",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/spring-dusk-portrait.png",
+        "sha256": "3ad4e6a5543693397475e42a81c3c8f06ce449f3f6763b5cfbbc911cf44ec9e0",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/academy/scene/academy-spring-dusk-portrait-4k.webp",
+        "sha256": "2745dc1a92eb1f5294e6c3bee005f4f21effd49270394882f5d4374f3025c62a",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3740086
+      }
+    },
+    "web/assets/academy/scene/academy-spring-night-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/academy/scene/academy-day-4k.webp",
+        "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/spring-night-landscape.png",
+        "sha256": "978fc17e65fa342625e6c2938074cbd8026dfe6d268cc3765c2e80085ec67ce6",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/academy/scene/academy-spring-night-4k.webp",
+        "sha256": "94be741699b07c904778f7cea94aa78d614c3f1b7c47fb2c2cefbdbda946e10b",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 2863616
+      }
+    },
+    "web/assets/academy/scene/academy-spring-night-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/academy/scene/academy-portrait-4k.webp",
+        "sha256": "3587c2d23c16fcfbdfafc7c50adc7aa71c8ed0d2c2d1fa6fdb7fd41350ae5141",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/spring-night-portrait.png",
+        "sha256": "b0265baf2a4f431cd0094ff0c90383992af5781cbc30ffb089de8da3c074a19a",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/academy/scene/academy-spring-night-portrait-4k.webp",
+        "sha256": "3a9c18e07f5cc103e1bb73d9d64a4b03ba893a6e729defb0eaafffed136d9c47",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3343358
+      }
+    },
+    "web/assets/academy/scene/academy-summer-dusk-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-day-4k.webp",
+        "sha256": "126ae29800ddd2c9db7f75cb6eb1e890a90638fa82f5a453b1cae6ed6224b9d0",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/summer-dusk-landscape.png",
+        "sha256": "1a067ee6ed3a6f8894fd4f9cccf838303e7eb8b4a17bcfb9b9991705daf4b48d",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-dusk-4k.webp",
+        "sha256": "9f2f0e3077f31883157e4bd475da975ed7c1a2fbc525924d59a04fe8a334754e",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3633040
+      }
+    },
+    "web/assets/academy/scene/academy-summer-dusk-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-day-portrait-4k.webp",
+        "sha256": "1ccb938f1c1aae12a94a1ef6b2d3ea4b3e2e99eb7bd1d107ffe6b167131e1746",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/summer-dusk-portrait.png",
+        "sha256": "08250ccb2d40c5f042d7ba19240dd6a34138a271c1ab198df767a1a21e5b2f54",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-dusk-portrait-4k.webp",
+        "sha256": "7b26f647012aea810607988f99a377bb9872b4b39fff96d749a2a984f97e96dc",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3958612
+      }
+    },
+    "web/assets/academy/scene/academy-summer-night-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-day-4k.webp",
+        "sha256": "126ae29800ddd2c9db7f75cb6eb1e890a90638fa82f5a453b1cae6ed6224b9d0",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/summer-night-landscape.png",
+        "sha256": "3e51cebc0eb41efb3b4b62ea73659cf7b7bc8dac5ce9aac69c7df218c290abb3",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-night-4k.webp",
+        "sha256": "4d0338f7347b5a71f35f117f9f3b1700791d3e8e6de81cdc687c2c565165e0ad",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3257264
+      }
+    },
+    "web/assets/academy/scene/academy-summer-night-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-day-portrait-4k.webp",
+        "sha256": "1ccb938f1c1aae12a94a1ef6b2d3ea4b3e2e99eb7bd1d107ffe6b167131e1746",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/summer-night-portrait.png",
+        "sha256": "57f41eff535166f797a83f79ae183dc3cf117214ac4333df029506d00bd79b49",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-summer-night-portrait-4k.webp",
+        "sha256": "4f8e8c2902f6c2b190543f259bccc3749ec29469e4138bc66ddfcb4faf14acea",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3576482
+      }
+    },
+    "web/assets/academy/scene/academy-autumn-dusk-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-4k.webp",
+        "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-dusk-landscape.png",
+        "sha256": "a655e7ed956158227621cd44c5cde430a5793fb266c32367c77860e424fd44fa",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-dusk-4k.webp",
+        "sha256": "3f744032d9c661372e8e53e5a78c6d6966a9ea84149719a727b4eb38e2bd7068",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3664044
+      }
+    },
+    "web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+        "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-dusk-portrait.png",
+        "sha256": "ad3967b23e7c0992fe250a6b4b90521cd08eca8b6413e12706f4497b2aedf9d4",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp",
+        "sha256": "40f57494689faa7b6f93a4aad9a4befac442fd6b3119d66b63c56ed146b18de3",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3953586
+      }
+    },
+    "web/assets/academy/scene/academy-autumn-night-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-4k.webp",
+        "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-night-landscape.png",
+        "sha256": "9232be8645a1462022f917e085b71c83db256fa86462aae104e4b7d8addf046f",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-night-4k.webp",
+        "sha256": "1f5d1e0d27cadc507acc2502fe9c04c7a094c5b43701ab5f22126ee9bf383e20",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3246062
+      }
+    },
+    "web/assets/academy/scene/academy-autumn-night-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+        "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-night-portrait.png",
+        "sha256": "b82e3a8d2f89ea6ce1b850d5485c1d24ddc9a6d32e4042ec7024f7151c022c8c",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-night-portrait-4k.webp",
+        "sha256": "1cd08fb85273d11c31e0dee549c2a6b6f5c443c891ff672f9edaeda0e9d21a1d",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3516076
+      }
+    },
+    "web/assets/academy/scene/academy-winter-dusk-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-day-4k.webp",
+        "sha256": "8529dca47ea5e4349a50eb677172476bd055bca4cb4be07e6b711d89e1e5c79e",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/winter-dusk-landscape.png",
+        "sha256": "568582fbe94b2366bf2140a51c560504ade5d0cb76008d6cd5a69d9c33f85864",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-dusk-4k.webp",
+        "sha256": "488b714fafb735eeb0b74c57858d2d9965c5aada0baaf3305474b0d93cda3eba",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3861896
+      }
+    },
+    "web/assets/academy/scene/academy-winter-dusk-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.88,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-day-portrait-4k.webp",
+        "sha256": "6b963c8229004842c7c2ed02290c72f2f32776ccbd33cc0b3aca5ce038282563",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/winter-dusk-portrait.png",
+        "sha256": "118485508bd684e2ce9c9d51378bd3065106736c5c83a040bf1ee3240c387e43",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-dusk-portrait-4k.webp",
+        "sha256": "110d4de000801a17bf5864f1bb722f1890cfed58f63f2e2e3fa89ec110041ec5",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 4099988
+      }
+    },
+    "web/assets/academy/scene/academy-winter-night-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-day-4k.webp",
+        "sha256": "8529dca47ea5e4349a50eb677172476bd055bca4cb4be07e6b711d89e1e5c79e",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/winter-night-landscape.png",
+        "sha256": "354b153b0a57acc173d20560b55762d6f97a37a105524eaa26b7bd6780d55042",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-night-4k.webp",
+        "sha256": "552da62349a382e5b2566b24488d4b17cfc63cb2e11ab59536c32c45cc1a8a55",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 3527126
+      }
+    },
+    "web/assets/academy/scene/academy-winter-night-portrait-4k.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-day-portrait-4k.webp",
+        "sha256": "6b963c8229004842c7c2ed02290c72f2f32776ccbd33cc0b3aca5ce038282563",
+        "size": [
+          2880,
+          3840
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/winter-night-portrait.png",
+        "sha256": "8cbba313dec7850339fc30403b94471c20ed1de94f749bd2c13b3912c88dcf1c",
+        "size": [
+          1086,
+          1448
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-winter-night-portrait-4k.webp",
+        "sha256": "54d38f84fba5521a27c4bcacfb6da3a23632642b2d88f70ffb1351d898449097",
+        "size": [
+          2880,
+          3840
+        ],
+        "bytes": 3721172
+      }
+    },
+    "web/assets/beauty/page/train-minfa-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-minfa.webp",
+        "sha256": "c810ff2ea99ebbb015de31323d9d3f71438670f1dacb59fc0b05587892cabcb5",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/minfa-night.png",
+        "sha256": "e344cb87823828864b5dc8bcce43dbf0c292e9ee2b867a6c061b4eb3e3491f49",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-minfa-night.webp",
+        "sha256": "bc2a8281556ede76248f1095d592ea2a82cf3f6cc8d6a8f0152fd8f75053772f",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 2110144
+      }
+    },
+    "web/assets/beauty/page/train-xingfa-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-xingfa.webp",
+        "sha256": "f6392c90b81beedbcc763e93b6361b867f52ae7bbe6eeb7a7b38b9331bcbc248",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/xingfa-night.png",
+        "sha256": "308a0520a1b37990d134e2f51d03a83a7f64272affbd2c77225d376242bbc5d8",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-xingfa-night.webp",
+        "sha256": "5c35024dfa0e6881a5bf37f5c5441271205547396a3a11d75639f60e700afce9",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 1906178
+      }
+    },
+    "web/assets/beauty/page/train-minsu-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-minsu.webp",
+        "sha256": "b819331c642b6e080c79f1c7c25aa93422288b2bed9c99140362a2f73e8e776e",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/minsu-night.png",
+        "sha256": "6b4af99bde353bb86778d362867fe8c30dd41e2a803a21b83c5a3488ec14bbfe",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-minsu-night.webp",
+        "sha256": "2df0072a04de457e7ff4cd8ae1bf3bbbdcb77cb2d1ff06170d9face4b6a9af50",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 1832686
+      }
+    },
+    "web/assets/beauty/page/train-xingsu-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-xingsu.webp",
+        "sha256": "720700122b2381e1274a4f2993a83e16ff8c223edc7576eaa48e71dd7ccf242a",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/xingsu-night.png",
+        "sha256": "c8877bd255e3e749be462e67387cee63abe9bcd4e1a709e5d8589bd45d78f936",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-xingsu-night.webp",
+        "sha256": "9825860f0c7cdaa5e83fcdf7681e9d9570e6787f2cd9a7dd19a072613302a744",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 2301288
+      }
+    },
+    "web/assets/beauty/page/train-xingzheng-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-xingzheng.webp",
+        "sha256": "fb2b984c9d2e75f4eb5312d4212335ebf85761d4f9e7a5e3489c277839addcba",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/xingzheng-night.png",
+        "sha256": "f490bf62283db2dbc543c85bb02ba2d110a266a30d2e07a77692794c4468d3ba",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-xingzheng-night.webp",
+        "sha256": "417b585f2ef25dcb52bd4bb1525cde652e2241bb0936ad5eedc6b7a4a980add3",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 1678080
+      }
+    },
+    "web/assets/beauty/page/train-shangjing-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-shangjing.webp",
+        "sha256": "693346f2bb158a66c597317db78b5f6a492c42222d977ae0a836d030c9570de3",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/shangjing-night.png",
+        "sha256": "04d02077baf5051d09ee2896bbb4d6ab2f0985f8a2f3192b5aaf962287360045",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-shangjing-night.webp",
+        "sha256": "3ad2491b84e7d9c63f52e0813f37ec401b6b2b32c1af6f0ff81b75f0343c4bbd",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 1637756
+      }
+    },
+    "web/assets/beauty/page/train-sanguo-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-sanguo.webp",
+        "sha256": "e956263c94237a916cf9d200dc7002cef36fc3eaa3d72f9e70f96d464dd7de2f",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/sanguo-night.png",
+        "sha256": "5f6531e58cb68b2adf4e23dcfbd46828345dafae51781112d8ed0f52e5986b35",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-sanguo-night.webp",
+        "sha256": "86b86ba78ba1ed7cb404955ad1daaed4054e3dfc9947f533e20335735e3ab3b3",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 2097524
+      }
+    },
+    "web/assets/beauty/page/train-lilun-night.webp": {
+      "method": "native-4k-base-with-low-frequency-generated-light-guide",
+      "nativeDetailWeight": 0.72,
+      "base": {
+        "file": "web/assets/beauty/page/train-lilun.webp",
+        "sha256": "0f0c0d32611a4f136fd4454002ae5934c94ddf65e3b8ece14bd2642456b41e90",
+        "size": [
+          3840,
+          2880
+        ]
+      },
+      "reference": {
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/rooms/lilun-night.png",
+        "sha256": "6e514d8aba4e59fa6ae47f3e51da228350efdc633ceb1db7705b6409e691daa6",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "low-frequency-light-and-color-only"
+      },
+      "output": {
+        "file": "web/assets/beauty/page/train-lilun-night.webp",
+        "sha256": "33ea9b2ec86777464b1001fa1495cef3a374906a2e17ebbf419803a0fa9b6154",
+        "size": [
+          3840,
+          2880
+        ],
+        "bytes": 2191452
+      }
+    }
+  }
+}

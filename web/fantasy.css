@@ -1,41 +1,40 @@
 /*
-  法师成长记 · 西方玄幻皮肤（2.1.0）。在 style.css 之后加载，只覆盖“长相”，不改布局和类名。
-  - 暗色：月夜下的魔法学院（深夜蓝紫底、星点、金色符文、紫色奥术光）；
-    亮色：羊皮纸与墨水（做旧的纸色、暗金描边、酒红标题）。两种都由 <html data-theme> 切换，变量在下面两段。
+  法师成长记 · 绘本魔法学院皮肤。在 style.css 之后加载，只覆盖“长相”，不改游戏数据。
+  - 暗色：温暖的暮色学院；亮色：奶油色纸笺、蜜桃色建筑与青蓝色点缀。
   - 背景法阵：web/art/circle-*.svg（tools/make_circle.py 生成，边上一圈写着 FIAT IUSTITIA RUAT CAELUM），钉在页面右侧缓慢转动。
   - 面板：一圈描边 + 向内 5px 的第二道细金线（outline-offset 负值），像书页的双线边框；不用 ::before / ::after，免得和各组件自己的装饰打架。
   - 尽量用变量里写死的 rgba，少用 color-mix：老平板内核不认 color-mix（见 style.css 末尾 html.no-cmix 兜底）。
 */
 :root {
-  --bg: #0c0a16; --panel: #17131f; --panel2: #211b2c; --line: #4b3d28;
-  --text: #efe6d2; --muted: #b4a68a; --faint: #7d7062;
-  --accent: #8b5cf6; --accent2: #4f8fd9; --gold: #e0b354; --green: #62c48b;
-  --red: #e05a52; --orange: #e8964a; --purple: #b48cff;
-  --title: #f0cf7a;
-  --frame: rgba(224, 179, 84, .42); --frame-in: rgba(224, 179, 84, .16);
-  --glow-gold: rgba(224, 179, 84, .35); --glow-arcane: rgba(139, 92, 246, .35);
-  --btn-from: #6d3fc4; --btn-to: #33206f; --btn-text: #fff4d6;
-  --top-from: #1c1528; --top-to: #120e1b;
-  --c-lecture: #5b8def; --c-practice: #d4475a; --c-review: #e0b354;
-  --shadow: 0 10px 30px rgba(0, 0, 0, .5);
-  --radius: 10px;
+  --bg: #242331; --panel: #302d3a; --panel2: #3e3948; --line: #766b76;
+  --text: #fcf0de; --muted: #dfcdbc; --faint: #b19fa0;
+  --accent: #efbe9d; --accent2: #a6d4db; --gold: #f2c78d; --green: #a9d5b7;
+  --red: #ed9697; --orange: #edbe94; --purple: #d9bfed;
+  --title: #ffe0bd;
+  --frame: rgba(143, 121, 132, .8); --frame-in: rgba(109, 92, 102, .7);
+  --glow-gold: rgba(242, 199, 141, .35); --glow-arcane: rgba(217, 191, 237, .35);
+  --btn-from: #a97482; --btn-to: #805f78; --btn-text: #fff7ea;
+  --top-from: #4d3948; --top-to: #332c3c;
+  --c-lecture: #a6d4db; --c-practice: #ed9697; --c-review: #f2c78d;
+  --shadow: 0 10px 30px rgba(16, 14, 24, .35);
+  --radius: 18px;
   --display: "Cinzel", "Trajan Pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
              "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
   --serif: Georgia, "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
   --circle: url("art/circle-dark.svg");
 }
 :root[data-theme="light"] {
-  --bg: #e9dbb8; --panel: #f7eed6; --panel2: #eddfbd; --line: #bf9e63;
-  --text: #2b1c0e; --muted: #5e4a30; --faint: #8a7558;
-  --accent: #5a2d91; --accent2: #1f5a96; --gold: #94650f; --green: #2e7d4f;
-  --red: #9c2a26; --orange: #b05617; --purple: #5a2d91;
-  --title: #6b1f1f;
-  --frame: rgba(120, 82, 24, .5); --frame-in: rgba(148, 101, 15, .3);
-  --glow-gold: rgba(148, 101, 15, .25); --glow-arcane: rgba(90, 45, 145, .22);
-  --btn-from: #5a2d91; --btn-to: #2e1859; --btn-text: #fff1d0;
-  --top-from: #3a2717; --top-to: #2a1b0f;
-  --c-lecture: #2c5aa8; --c-practice: #9c2a3a; --c-review: #a8790f;
-  --shadow: 0 6px 20px rgba(70, 45, 10, .2);
+  --bg: #fff6e9; --panel: #fffaf0; --panel2: #f6eadb; --line: #d9c4ac;
+  --text: #49392f; --muted: #776555; --faint: #917b68;
+  --accent: #94634c; --accent2: #507c8c; --gold: #9b683c; --green: #477c64;
+  --red: #b65458; --orange: #af7546; --purple: #87709f;
+  --title: #664838;
+  --frame: rgba(215, 188, 160, .9); --frame-in: rgba(239, 221, 200, .9);
+  --glow-gold: rgba(174, 116, 70, .25); --glow-arcane: rgba(80, 124, 140, .22);
+  --btn-from: #c17f67; --btn-to: #9a664f; --btn-text: #fffdf6;
+  --top-from: #f5ddbf; --top-to: #efcfaa;
+  --c-lecture: #507c8c; --c-practice: #b65458; --c-review: #9b683c;
+  --shadow: 0 6px 20px rgba(101, 69, 42, .15);
   --circle: url("art/circle-light.svg");
 }
 
