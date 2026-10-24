@@ -1,6 +1,6 @@
 # 法考魔法学院正式场景
 
-`scene/academy-day-4k.webp` 是 3840×2880 横屏学院总览；`scene/academy-portrait-4k.webp` 是 2880×3840 竖屏独立构图。八科楼内背景位于 `../beauty/page/train-<key>.webp`，均为 3840×2880；`rooms/thumb-<key>.webp` 是从正式图导出的 UI 预览。
+学院总览有四季 × 白天/黄昏/黑夜 12 种状态，横屏 3840×2880、竖屏独立构图 2880×3840，各一套共 24 张。春季白天沿用 `scene/academy-day-4k.webp` 与 `scene/academy-portrait-4k.webp`；其余按 `scene/academy-<季节>-<时段>[-portrait]-4k.webp` 命名。八科楼内昼夜背景位于 `../beauty/page/train-<key>[-night].webp`，均为 3840×2880；`rooms/thumb-<key>.webp` 是白天正式图导出的 UI 预览。
 
 | key | 科目 | 楼名 | 场景线索 |
 | --- | --- | --- | --- |
@@ -13,7 +13,7 @@
 | sanguo | 三国法 | 万国馆 | 地球仪、条约及国际交流，非历史三国 |
 | lilun | 理论法 | 星穹馆 | 法理、宪法、法律思想与职业伦理 |
 
-所有正式场景先分别绘制原生 1024×1536 分块，再用 `tools/academy_art_pack.cjs` 缩至成品块、校准低频色调并在 16 像素重叠区合成；低分辨率构图参考只用于大尺度颜色引导，未放大充当成品。`provenance.json` 列出每块原始尺寸和 SHA-256、参考图用途及每张成品的尺寸与 SHA-256。原始块保存在本轮工作区 `/workspace/generated_images/fakao-4k-source`，约 871 MB，运行与分发只需本仓内的正式 WebP。
+每个季节的横竖屏白天母版先分别绘制原生 1024×1536 分块，再用 `tools/academy_art_pack.cjs` 校准低频色调并在 16 像素重叠区合成；低分辨率构图参考未放大充当成品。黄昏、夜晚由 `tools/academy_relight.cjs` 从相应原生 4K 母版合成，生成参考只影响大尺度光色，建筑和笔触的细节来自原生母版。八科夜景同样从各自原生 4K 楼内母版合成。`provenance.json` 列出每块原始尺寸和 SHA-256、光照参考用途及各成品的尺寸与 SHA-256。原始块与参考保存在本轮工作区 `/workspace/generated_images/fakao-4k-source`；运行与分发只需本仓内正式 WebP。
 
 画面本身不含建筑名或点击热区。横屏和竖屏入口都由 `scene_portal.js` 的真实按钮及 `app.js` 坐标绘制；用户原有地点坐标和自定义名称继续有效。楼内文字由阅读卡片承载，保留原卡片、导图与试炼数据。八科正式图已登记在 `beauty/builtin-art.json`，网页加载和「导出程序自带美术」使用同一版本；用户自己的同名美术仍优先。
 

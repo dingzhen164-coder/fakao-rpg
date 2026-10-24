@@ -178,7 +178,7 @@ function applyTheme() {
 function configurePortal() {
   // 地点ID和旧坐标保持稳定，用户已保存的横竖屏排布及旧存档继续使用。
   // 八科建筑只选择现有研习分区，不建立新的训练、计分或资料路径。
-  SCENE_PORTAL.configure({savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院总览',images:{day:'assets/academy/scene/academy-day-4k.webp',night:'assets/academy/scene/academy-day-4k.webp'},layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+  const sceneConfig={savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院总览',images:ACADEMY_SCENE.images(),layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
     {id:'dwelling',label:'营地',view:'dwelling',x:9,y:88,nx:20,ny:91},{id:'train',label:'学院大厅',view:'train',x:50,y:35,nx:50,ny:14},
     {id:'skeleton',label:'咒文书馆',view:'skeleton',x:48,y:79,nx:50,ny:83},{id:'bank',label:'试炼塔',view:'bank',x:93,y:30,nx:80,ny:18},
     {id:'notes',label:'魔法手记',view:'notes',x:49,y:91,nx:47,ny:93},{id:'contest',label:'竞技场',view:'contest',x:31,y:77,nx:20,ny:76},
@@ -192,7 +192,9 @@ function configurePortal() {
     {id:'subject-shangjing',label:'创艺坊 · 商经知',view:'train',region:'商经知',x:11,y:65,nx:80,ny:63},
     {id:'subject-sanguo',label:'万国馆 · 三国法',view:'train',region:'三国法',x:89,y:58,nx:80,ny:47},
     {id:'subject-lilun',label:'星穹馆 · 理论法',view:'train',region:'理论法',x:83,y:83,nx:80,ny:79},
-  ]},p=>{if(p.region){STUDY_REGIONS.select(p.region);return go('train');}return p.view==='journal'?NARRATIVE.open():go(p.view);});
+  ]};
+  SCENE_PORTAL.configure(sceneConfig,p=>{if(p.region){STUDY_REGIONS.select(p.region);return go('train');}return p.view==='journal'?NARRATIVE.open():go(p.view);});
+  ACADEMY_SCENE.bind(sceneConfig);
 }
 
 async function refresh() {

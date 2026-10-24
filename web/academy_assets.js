@@ -7,5 +7,7 @@
   for(const key of ['minfa','xingfa','minsu','xingsu','xingzheng','shangjing','sanguo','lilun']){
     const path=`beauty/page/train-${key}.webp`;
     if(!files.some(item=>item[0]===path))files.push([path,'academy4k']);
+    const night=`beauty/page/train-${key}-night.webp`;
+    if(!files.some(item=>item[0]===night))files.push([night,'academy4k-night']);
   }
 })();
