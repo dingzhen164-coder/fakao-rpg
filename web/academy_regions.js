@@ -4,14 +4,14 @@
 (() => {
   'use strict';
   const rooms={
-    '民法':{hall:'契约馆',key:'minfa',hint:'契约、平等与日常生活'},
-    '刑法':{hall:'审判堡',key:'xingfa',hint:'责任、公平与保护'},
-    '民诉':{hall:'衡序厅',key:'minsu',hint:'平等、调解与程序'},
-    '刑诉':{hall:'真相塔',key:'xingsu',hint:'证据、调查与程序保障'},
-    '行政法':{hall:'律令宫',key:'xingzheng',hint:'公共服务与权力约束'},
-    '商经知':{hall:'创艺坊',key:'shangjing',hint:'商贸、市场与知识创造'},
-    '三国法':{hall:'万国馆',key:'sanguo',hint:'国际条约与交流'},
-    '理论法':{hall:'星穹馆',key:'lilun',hint:'法理、宪法与职业伦理'}
+    '民法':{hall:'契约馆',key:'minfa',glyph:'民',hint:'契约、平等与日常生活'},
+    '刑法':{hall:'审判堡',key:'xingfa',glyph:'刑',hint:'责任、公平与保护'},
+    '民诉':{hall:'衡序厅',key:'minsu',glyph:'民訴',hint:'平等、调解与程序'},
+    '刑诉':{hall:'真相塔',key:'xingsu',glyph:'刑訴',hint:'证据、调查与程序保障'},
+    '行政法':{hall:'律令宫',key:'xingzheng',glyph:'行',hint:'公共服务与权力约束'},
+    '商经知':{hall:'创艺坊',key:'shangjing',glyph:'商',hint:'商贸、市场与知识创造'},
+    '三国法':{hall:'万国馆',key:'sanguo',glyph:'國',hint:'国际条约与交流'},
+    '理论法':{hall:'星穹馆',key:'lilun',glyph:'理',hint:'法理、宪法与职业伦理'}
   };
   const base=window.STUDY_REGIONS;
   if(!base)return;
@@ -38,13 +38,12 @@
         const copy=button.querySelector('.study-region-copy');
         if(copy){const title=copy.querySelector('b'),subtitle=copy.querySelector('span'),hint=copy.querySelector('small');
           if(title)title.textContent=room.hall;if(subtitle)subtitle.textContent=name;if(hint)hint.textContent=room.hint;}
-        // 训练/外观/五脉里用户放过的分区图优先于随包缩略图。
+        // 字标是真实文字，高清屏仍清楚；用户放在训练/外观/五脉的图片继续优先。
         const symbol=button.querySelector('.study-region-symbol');
         if(symbol){
-          const img=document.createElement('img');
-          img.className='study-region-image';img.src='assets/academy/rooms/thumb-'+room.key+'.webp';
-          img.alt='';img.loading='lazy';img.dataset.regionImage=String(index);
-          symbol.replaceWith(img);
+          const mark=document.createElement('span');mark.className='academy-subject-mark no-ic';
+          mark.textContent=room.glyph;mark.setAttribute('aria-hidden','true');
+          symbol.replaceWith(mark);
         }
       });
     }

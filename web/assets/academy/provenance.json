@@ -1715,8 +1715,38 @@
         }
       ],
       "output": "web/assets/academy/scene/academy-autumn-day-4k.webp",
-      "bytes": 4540530,
-      "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43"
+      "bytes": 3005360,
+      "sha256": "9b83bd3a6d72af4b25a193b13baa37544c80cd08aa053b123f01615b2c7cec2c",
+      "finish": {
+        "method": "native-4k-base-with-low-frequency-generated-light-guide",
+        "nativeDetailWeight": 0.62,
+        "base": {
+          "file": "/workspace/generated_images/fakao-4k-source/autumn-original-day-landscape.webp",
+          "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43",
+          "size": [
+            3840,
+            2880
+          ]
+        },
+        "reference": {
+          "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-v2-day-landscape.png",
+          "sha256": "d72697952e1ce0019342713f5319108cdddec7d9171840deeb193062ba7eb603",
+          "size": [
+            1448,
+            1086
+          ],
+          "role": "low-frequency-light-and-color-only"
+        },
+        "output": {
+          "file": "web/assets/academy/scene/academy-autumn-day-4k.webp",
+          "sha256": "9b83bd3a6d72af4b25a193b13baa37544c80cd08aa053b123f01615b2c7cec2c",
+          "size": [
+            3840,
+            2880
+          ],
+          "bytes": 3005360
+        }
+      }
     },
     "academy-autumn-portrait": {
       "key": "academy-autumn-portrait",
@@ -1858,8 +1888,38 @@
         }
       ],
       "output": "web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
-      "bytes": 4912004,
-      "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b"
+      "bytes": 3306916,
+      "sha256": "053118e7bd4325fbbdb100d50b5a82652bbfcb6771115d42b353132bf5a36ab7",
+      "finish": {
+        "method": "native-4k-base-with-low-frequency-generated-light-guide",
+        "nativeDetailWeight": 0.62,
+        "base": {
+          "file": "/workspace/generated_images/fakao-4k-source/autumn-original-day-portrait.webp",
+          "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b",
+          "size": [
+            2880,
+            3840
+          ]
+        },
+        "reference": {
+          "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-v2-day-portrait.png",
+          "sha256": "4c696971164fffe69acaef0cf239a3923c550edf3efe98fd8d6118bb47f900ae",
+          "size": [
+            1086,
+            1448
+          ],
+          "role": "low-frequency-light-and-color-only"
+        },
+        "output": {
+          "file": "web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+          "sha256": "053118e7bd4325fbbdb100d50b5a82652bbfcb6771115d42b353132bf5a36ab7",
+          "size": [
+            2880,
+            3840
+          ],
+          "bytes": 3306916
+        }
+      }
     },
     "academy-winter": {
       "key": "academy-winter",
@@ -2250,8 +2310,8 @@
         3840,
         2880
       ],
-      "bytes": 4540530,
-      "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43"
+      "bytes": 3005360,
+      "sha256": "9b83bd3a6d72af4b25a193b13baa37544c80cd08aa053b123f01615b2c7cec2c"
     },
     "autumn-day-portrait": {
       "file": "web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
@@ -2259,8 +2319,8 @@
         2880,
         3840
       ],
-      "bytes": 4912004,
-      "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b"
+      "bytes": 3306916,
+      "sha256": "053118e7bd4325fbbdb100d50b5a82652bbfcb6771115d42b353132bf5a36ab7"
     },
     "autumn-dusk-landscape": {
       "file": "web/assets/academy/scene/academy-autumn-dusk-4k.webp",
@@ -2268,8 +2328,8 @@
         3840,
         2880
       ],
-      "bytes": 3664044,
-      "sha256": "3f744032d9c661372e8e53e5a78c6d6966a9ea84149719a727b4eb38e2bd7068"
+      "bytes": 3059452,
+      "sha256": "862116df04f8da214db54ab9e571d21ab8247388dcfb4f75f0832d6956980c5e"
     },
     "autumn-dusk-portrait": {
       "file": "web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp",
@@ -2277,8 +2337,8 @@
         2880,
         3840
       ],
-      "bytes": 3953586,
-      "sha256": "40f57494689faa7b6f93a4aad9a4befac442fd6b3119d66b63c56ed146b18de3"
+      "bytes": 3312376,
+      "sha256": "85d63d414217788c7d034e0c53a5f6b2f74bac9a920a0b13abbdf43395c8ca68"
     },
     "autumn-night-landscape": {
       "file": "web/assets/academy/scene/academy-autumn-night-4k.webp",
@@ -2286,8 +2346,8 @@
         3840,
         2880
       ],
-      "bytes": 3246062,
-      "sha256": "1f5d1e0d27cadc507acc2502fe9c04c7a094c5b43701ab5f22126ee9bf383e20"
+      "bytes": 3006064,
+      "sha256": "b0b2376801f5da9bf931af6612cc36e849e3ac0e5d5a7c980ebfe52018d289c5"
     },
     "autumn-night-portrait": {
       "file": "web/assets/academy/scene/academy-autumn-night-portrait-4k.webp",
@@ -2295,8 +2355,8 @@
         2880,
         3840
       ],
-      "bytes": 3516076,
-      "sha256": "1cd08fb85273d11c31e0dee549c2a6b6f5c443c891ff672f9edaeda0e9d21a1d"
+      "bytes": 3306348,
+      "sha256": "6433019fd1948630b6373a9f0b27321edc70d45a25a1220621497554fa31bd17"
     },
     "winter-day-landscape": {
       "file": "web/assets/academy/scene/academy-winter-day-4k.webp",
@@ -2596,9 +2656,9 @@
     },
     "web/assets/academy/scene/academy-autumn-dusk-4k.webp": {
       "method": "native-4k-base-with-low-frequency-generated-light-guide",
-      "nativeDetailWeight": 0.88,
+      "nativeDetailWeight": 0.62,
       "base": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-4k.webp",
+        "file": "/workspace/generated_images/fakao-4k-source/autumn-original-day-landscape.webp",
         "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43",
         "size": [
           3840,
@@ -2606,8 +2666,8 @@
         ]
       },
       "reference": {
-        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-dusk-landscape.png",
-        "sha256": "a655e7ed956158227621cd44c5cde430a5793fb266c32367c77860e424fd44fa",
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-v2-dusk-landscape.png",
+        "sha256": "f6bed3d237750ee20ab74dbc392e52fad9f161f0cf4d8a7f82d8b4a7a5fb9c8c",
         "size": [
           1448,
           1086
@@ -2615,20 +2675,20 @@
         "role": "low-frequency-light-and-color-only"
       },
       "output": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-dusk-4k.webp",
-        "sha256": "3f744032d9c661372e8e53e5a78c6d6966a9ea84149719a727b4eb38e2bd7068",
+        "file": "web/assets/academy/scene/academy-autumn-dusk-4k.webp",
+        "sha256": "862116df04f8da214db54ab9e571d21ab8247388dcfb4f75f0832d6956980c5e",
         "size": [
           3840,
           2880
         ],
-        "bytes": 3664044
+        "bytes": 3059452
       }
     },
     "web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp": {
       "method": "native-4k-base-with-low-frequency-generated-light-guide",
-      "nativeDetailWeight": 0.88,
+      "nativeDetailWeight": 0.62,
       "base": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+        "file": "/workspace/generated_images/fakao-4k-source/autumn-original-day-portrait.webp",
         "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b",
         "size": [
           2880,
@@ -2636,8 +2696,8 @@
         ]
       },
       "reference": {
-        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-dusk-portrait.png",
-        "sha256": "ad3967b23e7c0992fe250a6b4b90521cd08eca8b6413e12706f4497b2aedf9d4",
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-v2-dusk-portrait.png",
+        "sha256": "8fb04a9b93f00690edd8f42acafdfc83f12149d9ba6143250ecb1e250ec3f32c",
         "size": [
           1086,
           1448
@@ -2645,20 +2705,20 @@
         "role": "low-frequency-light-and-color-only"
       },
       "output": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp",
-        "sha256": "40f57494689faa7b6f93a4aad9a4befac442fd6b3119d66b63c56ed146b18de3",
+        "file": "web/assets/academy/scene/academy-autumn-dusk-portrait-4k.webp",
+        "sha256": "85d63d414217788c7d034e0c53a5f6b2f74bac9a920a0b13abbdf43395c8ca68",
         "size": [
           2880,
           3840
         ],
-        "bytes": 3953586
+        "bytes": 3312376
       }
     },
     "web/assets/academy/scene/academy-autumn-night-4k.webp": {
       "method": "native-4k-base-with-low-frequency-generated-light-guide",
-      "nativeDetailWeight": 0.72,
+      "nativeDetailWeight": 0.62,
       "base": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-4k.webp",
+        "file": "/workspace/generated_images/fakao-4k-source/autumn-original-day-landscape.webp",
         "sha256": "9956ddae26bc04a40d8328a6c02637af3ce906861442f4cc62f169a8ef00bf43",
         "size": [
           3840,
@@ -2666,8 +2726,8 @@
         ]
       },
       "reference": {
-        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-night-landscape.png",
-        "sha256": "9232be8645a1462022f917e085b71c83db256fa86462aae104e4b7d8addf046f",
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-v2-night-landscape.png",
+        "sha256": "a6082c1419bcf4c61806c61373293b6aa8e36b6bc4967761ef0c91568e153800",
         "size": [
           1448,
           1086
@@ -2675,20 +2735,20 @@
         "role": "low-frequency-light-and-color-only"
       },
       "output": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-night-4k.webp",
-        "sha256": "1f5d1e0d27cadc507acc2502fe9c04c7a094c5b43701ab5f22126ee9bf383e20",
+        "file": "web/assets/academy/scene/academy-autumn-night-4k.webp",
+        "sha256": "b0b2376801f5da9bf931af6612cc36e849e3ac0e5d5a7c980ebfe52018d289c5",
         "size": [
           3840,
           2880
         ],
-        "bytes": 3246062
+        "bytes": 3006064
       }
     },
     "web/assets/academy/scene/academy-autumn-night-portrait-4k.webp": {
       "method": "native-4k-base-with-low-frequency-generated-light-guide",
-      "nativeDetailWeight": 0.72,
+      "nativeDetailWeight": 0.62,
       "base": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-day-portrait-4k.webp",
+        "file": "/workspace/generated_images/fakao-4k-source/autumn-original-day-portrait.webp",
         "sha256": "ce0bac1604aa4faf3aeb259101e6ce27c14ef53f62e38930e2e47dffa930853b",
         "size": [
           2880,
@@ -2696,8 +2756,8 @@
         ]
       },
       "reference": {
-        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-night-portrait.png",
-        "sha256": "b82e3a8d2f89ea6ce1b850d5485c1d24ddc9a6d32e4042ec7024f7151c022c8c",
+        "file": "/workspace/generated_images/fakao-4k-source/lighting/autumn-v2-night-portrait.png",
+        "sha256": "2eb6ece70ce746be135e628a68490cf337195bc8a6219350ef6ec42f0dd2a1cb",
         "size": [
           1086,
           1448
@@ -2705,13 +2765,13 @@
         "role": "low-frequency-light-and-color-only"
       },
       "output": {
-        "file": "/workspace/fakao-rpg/web/assets/academy/scene/academy-autumn-night-portrait-4k.webp",
-        "sha256": "1cd08fb85273d11c31e0dee549c2a6b6f5c443c891ff672f9edaeda0e9d21a1d",
+        "file": "web/assets/academy/scene/academy-autumn-night-portrait-4k.webp",
+        "sha256": "6433019fd1948630b6373a9f0b27321edc70d45a25a1220621497554fa31bd17",
         "size": [
           2880,
           3840
         ],
-        "bytes": 3516076
+        "bytes": 3306348
       }
     },
     "web/assets/academy/scene/academy-winter-dusk-4k.webp": {
@@ -3074,5 +3134,11 @@
         "bytes": 2191452
       }
     }
+  },
+  "autumnRevision": {
+    "purpose": "柔和麦金与蓝色秋景，昼昏夜各横竖一套",
+    "method": "generated-low-frequency-color-guides-over-native-4k-detailed-masters",
+    "detailSource": "4K original native-tile autumn master; no low-resolution image enlarged as final texture",
+    "nativeDetailWeight": 0.62
   }
 }
