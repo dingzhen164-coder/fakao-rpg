@@ -184,14 +184,14 @@ function configurePortal() {
     {id:'notes',label:'魔法手记',view:'notes',x:49,y:91,nx:47,ny:93},{id:'contest',label:'竞技场',view:'contest',x:31,y:77,nx:20,ny:76},
     {id:'log',label:'成长档案',view:'log',x:76,y:77,nx:80,ny:91},{id:'journal',label:'学院纪事与委托',view:'journal',x:87,y:92,nx:50,ny:70},
     {id:'tianji',label:'天机台',view:'tianji',x:7,y:9,nx:50,ny:3},
-    {id:'subject-minfa',label:'契约馆 · 民法',view:'train',region:'民法',x:18,y:53,nx:20,ny:27},
-    {id:'subject-xingfa',label:'审判堡 · 刑法',view:'train',region:'刑法',x:29,y:38,nx:80,ny:29},
-    {id:'subject-minsu',label:'衡序厅 · 民诉',view:'train',region:'民诉',x:68,y:42,nx:20,ny:43},
-    {id:'subject-xingsu',label:'真相塔 · 刑诉',view:'train',region:'刑诉',x:88,y:48,nx:65,ny:38},
-    {id:'subject-xingzheng',label:'律令宫 · 行政法',view:'train',region:'行政法',x:76,y:64,nx:20,ny:61},
-    {id:'subject-shangjing',label:'创艺坊 · 商经知',view:'train',region:'商经知',x:11,y:65,nx:80,ny:63},
-    {id:'subject-sanguo',label:'万国馆 · 三国法',view:'train',region:'三国法',x:89,y:58,nx:80,ny:47},
-    {id:'subject-lilun',label:'星穹馆 · 理论法',view:'train',region:'理论法',x:83,y:83,nx:80,ny:79},
+    {id:'subject-minfa',label:'契约馆 · 民法',glyph:'民',view:'train',region:'民法',x:18,y:53,nx:20,ny:27},
+    {id:'subject-xingfa',label:'审判堡 · 刑法',glyph:'刑',view:'train',region:'刑法',x:29,y:38,nx:80,ny:29},
+    {id:'subject-minsu',label:'衡序厅 · 民诉',glyph:'民訴',view:'train',region:'民诉',x:68,y:42,nx:20,ny:43},
+    {id:'subject-xingsu',label:'真相塔 · 刑诉',glyph:'刑訴',view:'train',region:'刑诉',x:88,y:48,nx:65,ny:38},
+    {id:'subject-xingzheng',label:'律令宫 · 行政法',glyph:'行',view:'train',region:'行政法',x:76,y:64,nx:20,ny:61},
+    {id:'subject-shangjing',label:'创艺坊 · 商经知',glyph:'商',view:'train',region:'商经知',x:11,y:65,nx:80,ny:63},
+    {id:'subject-sanguo',label:'万国馆 · 三国法',glyph:'國',view:'train',region:'三国法',x:89,y:58,nx:80,ny:47},
+    {id:'subject-lilun',label:'星穹馆 · 理论法',glyph:'理',view:'train',region:'理论法',x:83,y:83,nx:80,ny:79},
   ]};
   SCENE_PORTAL.configure(sceneConfig,p=>{if(p.region){STUDY_REGIONS.select(p.region);return go('train');}return p.view==='journal'?NARRATIVE.open():go(p.view);});
   ACADEMY_SCENE.bind(sceneConfig);
@@ -1578,8 +1578,9 @@ function startTimer() {
 // 修炼对话框顶上：标题和进度合成一行（标题后面跟小标签，底边一道细进度线），不再占一大块
 function sessionHead() {
   const b = T.battle;
-  if (!b) return `<div class="review-head"><b>${esc(T.title)}</b></div>`;
-  return b.label ? reviewHead(b) : bankHead(b);
+  // 答题/复盘的状态条一律由fixed_layout.pageBar搬进地点顶栏（bank-head），不再占题目上方的一行。
+  if (!b) return `<div class="review-head bank-head"><b>${esc(T.title)}</b></div>`;
+  return (b.label ? reviewHead(b) : bankHead(b)).replace('class="review-head"', 'class="review-head bank-head"');
 }
 function headRow(title, tags, ratio) {
   return `<div class="review-head"><b>${esc(title)}</b><span class="rh-stats">${tags.filter(Boolean).join("")}</span>
