@@ -83,6 +83,10 @@ main仅publish：tools/publish_validated.py要求双亲merge，main整树等于�
 
 # DESIGN · 法师成长记（法考 RPG）
 
+## 公考3.8.1共用兼容转移（2026-10-26，仅dev）
+
+共享BeautyArt保留法考独立学院图，新增行测原生分时场景、旧内置导出指纹回退均只在行测守卫生效。导图打开时全局Tab设置快捷键让出，Esc仍先收起临时层；法考原阅读器与八科入口保留。公共战绩显示兼容命名试卷，但法考后端/奖励沿本科分支，不移植行测整卷考场、通透外壳或导图增强。按shared清单转移并做法考布局/阅读/导航/相关单元，不改法考版本、发布请求或存档结构，不另发布。
+
 ## 3.3.9追加：粉笔HTML导入与分组录入（2026-10-18，未发布）
 
 - 行测新增`rpg/html_mock.py`和POST `/api/import/html`，请求`{name,data(base64),resources?:{name,data},season?,commit?,digest?}`。支持单HTML、HTML加_files资源ZIP、含一份HTML的完整ZIP。标准库HTMLParser解析已保存DOM，不运行/导入script/style，不访问外链；ZIP不解压到磁盘，仅按安全相对路径读取资源，32MB单文件/64MB展开总量/2500条目、节点与深度上限、拒绝路径穿越/链接/加密。仅接收有签名的PNG/JPEG/GIF/WebP，图片按内容SHA256落训练/题库/图片/HTML，原子写入且不覆盖已有图片。

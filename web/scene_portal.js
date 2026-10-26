@@ -23,8 +23,8 @@
   const placeName = (p, layout=load()) => layout.names[p.id] || p.label;
   const PEAK_GLYPH = {'peak-chang':'政','peak-yan':'言','peak-li':'邏','peak-shu':'數','peak-zi':'資'};
   function placeIcon(p){
-    const glyph=config.id==='xingce'&&PEAK_GLYPH[p.id];
-    return glyph?`<span class="portal-calligraphy no-ic">${glyph}</span>`:(PLACE_ICON[p.id]||'◆');
+    const glyph=p.glyph||(config.id==='xingce'&&PEAK_GLYPH[p.id]);
+    return glyph?`<span class="portal-calligraphy no-ic">${esc(glyph)}</span>`:(PLACE_ICON[p.id]||'◆');
   }
   function title(view) {return view==='home'?config?.title:config?.viewTitles?.[view]||config?.places.find(p=>p.view===view)&&placeName(config.places.find(p=>p.view===view));}
   const layoutKey = () => 'scene-layout:' + config.id + ':saved'; // 稳定键不随版本/美术文件名变动
@@ -82,7 +82,7 @@
     const stage=`<div class="portal-stage ${editing?'portal-stage-editor':''}" data-profile="${device}" data-portal-stage="${editing?'edit':'home'}"${config.framing==='extended'?' data-framing="extended"':''} data-map-height="${geo.height}" data-map-top="${geo.top}" data-map-span="${geo.span}" data-world-stage="${editing?0:config.progress?.stage||0}">${editing?'':'<div class="portal-atmosphere" aria-hidden="true"><i class="portal-cloud"></i><i class="portal-glow"></i></div>'}${landscapeHtml()}${config.places.map(p=>{
       const pos=layout[device][p.id];return `<button class="portal-place" style="--px:${pos.x}%;--py:${pos.y}%;--portal-y:${pos.y/100}" ${editing?`data-portal-point="${esc(p.id)}" aria-pressed="${p.id===edit.selected}"`:`data-portal-go="${esc(p.id)}"`}><span class="portal-ic" aria-hidden="true">${placeIcon(p)}</span>${signHtml(placeName(p,layout))}</button>`;
     }).join('')}</div>`;
-    return editing?`<div class="portal-preview-frame" style="aspect-ratio:${geo.width}/${geo.height};--preview-width:${geo.width}px;--preview-height:${geo.height}px">${stage}</div>`:stage;
+    return editing?`<div class="portal-preview-frame portal-${esc(config.id)}" style="aspect-ratio:${geo.width}/${geo.height};--preview-width:${geo.width}px;--preview-height:${geo.height}px">${stage}</div>`:stage;
   }
   function homeHtml() {return `<section class="portal-world portal-${esc(config.id)}" aria-label="${esc(config.title)}">${stageHtml(load(),profile())}</section>`;}
   function motionHtml() {return `<button class="portal-motion" data-portal-motion aria-pressed="${motionOff()}">减少动画：${motionOff()?'已开启':'未开启'}</button>`;}

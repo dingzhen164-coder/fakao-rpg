@@ -19,7 +19,6 @@
 """
 import shutil
 import json
-import hashlib
 from functools import lru_cache
 from pathlib import Path
 
@@ -123,6 +122,13 @@ def slots(subject):
         legacy = '演武场' if subject == '行测' and view == 'contest' else ''
         for suffix, rel in [('', 'beauty/page/%s.webp' % view), ('-白天', 'beauty/page/%s-day.webp' % view), ('-夜晚', 'beauty/page/%s-night.webp' % view)]:
             out.append(("子地图背景", place + suffix, rel, None, "image", (legacy + suffix,) if legacy else ()))
+        if subject == '行测' and view in ('dwelling', 'bank', 'contest', 'skeleton', 'tianji', 'settings'):
+            out.append(("子地图背景", place + '-黄昏', 'beauty/page/%s-dusk.webp' % view, None, "image", ()))
+            if view == 'bank':
+                out.append(("子地图背景", place + '-清晨', 'beauty/page/bank-dawn.webp', None, "image", ()))
+    if subject == '行测':
+        for phase, label in [('dawn', '清晨'), ('day', '白天'), ('dusk', '黄昏'), ('night', '夜晚')]:
+            out.append(("子地图背景", '试炼塔-选择厅-' + label, 'beauty/trial/selection-%s.webp' % phase, None, "image", ()))
     for key, name in REGIONS.get(subject, []):
         out.append(("子地图背景", name, "beauty/page/train-%s.webp" % key, None, "image", ()))
         out.append(("子地图背景", name + "-白天", "beauty/page/train-%s-day.webp" % key, None, "image", ()))
@@ -174,34 +180,53 @@ def known(subject):
     return {s[2] for s in slots(subject)}
 
 
-# 3.6.8之前“导出自带美术”的精确文件指纹（737ce912）；只忽略原样副本，绝不删除。
-# 后来编辑过、重新编码过或另选的用户图片仍是显式覆盖，不能按文件名一概迁移。
-_RETIRED_PEAKS = {
-    'chang': ((94368, '3bcd461210df13ee062fa5282be7b903357846b5a7958fa95c4823c6b7b923f2'), (316218, 'd0acf0eac29a995d236aed7a200125cabd8c8f8fe5c2f679afb73938d20ea6bb')),
-    'yan': ((95366, '9dd1b8f0b5b9c55310bda8acf41b74b6d8c1bcbe1e55fe913b9eddd0a5c677b7'), (333696, '5d639326f82818773a00497c60d116b366b6cde14ee2a0de8d6e78ba62038a58')),
-    'li': ((87426, 'a5390c3a1e4d184f19adbaa3316a7458e795feb64f35cd55eb6ceb6b11fe922e'), (316178, 'b4cb260faf16b71aa3c7240bfbc93a16db71d5e0ad6ed39df73a37c66322611e')),
-    'shu': ((105050, '0059dbc290805dab4dd6416caec7bad2c0ff4c6e0ce4423c7cdb5cc58a5160b7'), (339946, 'fae545ecb004c03e0334c498af52abd5de0f8a7c5d4cf3633093ec23d1eedb03')),
-    'zi': ((91724, '43c5db9b4ed285e27ada4a25489ae233613ef2169936d7d77b561beeef6a777f'), (316754, 'dca9b8a6fa8be4c8cc4db08d546279a41326e54d03a53d6283de1e71c85f2e07')),
-}
+# 行测五峰（万象/辨言/明理/演数/观星）的昼、昏、夜背景一律用程序内置的新图：
+# 美术文件夹里即使有同名文件（比如以前“导出自带美术”留下的旧图、被改过或重新编码的旧图）也不再顶替，
+# 否则旧图会带着旧的灰蒙蒙效果盖掉新版。文件不删除、不改动，只是这五峰不读它们。
+_PEAK_KEYS = ('chang', 'yan', 'li', 'shu', 'zi')
+_PEAK_RELS = frozenset('beauty/page/train-%s%s.webp' % (k, t) for k in _PEAK_KEYS for t in ('', '-day', '-night', '-dusk'))
 
 
-@lru_cache(maxsize=128)
-def _file_hash(file, size, mtime_ns):
-    return hashlib.sha256(Path(file).read_bytes()).hexdigest()
+@lru_cache(maxsize=256)
+def _same_export381(own, old, own_time, old_time):
+    """只比对原样导出模板；时间作为缓存键，改绘后立即重新判断。"""
+    return Path(own).read_bytes() == Path(old).read_bytes()
+
+
+def _retired_export381(rel, own):
+    if not rel.startswith('beauty/page/'):
+        return False
+    parts = rel[len('beauty/page/'):-5].split('-')
+    phase = parts[-1] if parts[-1] in ('day', 'dusk', 'night', 'dawn') else 'day'
+    if phase in ('dusk', 'dawn'):
+        return False
+    suffix = '-night' if phase == 'night' else ''
+    scene, legacy = parts[0], ''
+    if scene == 'dwelling':
+        tab = parts[1] if len(parts) > 1 and parts[1] in dict(DWELLING_TABS['行测']) else 'growth'
+        legacy = 'beauty/scenes/xingce/dwelling-' + tab + suffix + '.webp'
+    elif scene in ('skeleton', 'tianji', 'settings'):
+        old = {'skeleton': 'dwelling-records', 'tianji': 'train-zi', 'settings': 'settings'}[scene]
+        legacy = 'beauty/scenes/xingce/' + old + suffix + '.webp'
+    elif scene in ('bank', 'contest') and phase == 'night':
+        legacy = 'beauty/' + ('trial/landscape' if scene == 'bank' else 'contest/arena') + '-night.webp'
+    if not legacy:
+        return False
+    from .paths import WEB_DIR
+    old = WEB_DIR / 'assets' / legacy
+    try:
+        a, b = own.stat(), old.stat()
+        return a.st_size == b.st_size and _same_export381(str(own), str(old), a.st_mtime_ns, b.st_mtime_ns)
+    except OSError:
+        return False
 
 
 def _override(paths, subject, slot):
     folder, stem, rel, _b, kind, aliases = slot
-    p = _find(paths, folder, stem, kind, aliases)
-    if p and subject == '行测':
-        for peak, versions in _RETIRED_PEAKS.items():
-            root = 'beauty/page/train-' + peak
-            if rel in (root+'.webp', root+'-day.webp', root+'-night.webp'):
-                size, digest = versions[1 if rel.endswith('-night.webp') else 0]
-                stat = p.stat()
-                if stat.st_size == size and _file_hash(str(p), size, stat.st_mtime_ns) == digest:
-                    return None
-    return p
+    if subject == '行测' and rel in _PEAK_RELS:
+        return None
+    own = _find(paths, folder, stem, kind, aliases)
+    return None if own and subject == '行测' and _retired_export381(rel, own) else own
 
 
 def lookup(paths, subject, asset_rel):
@@ -232,7 +257,8 @@ README = """美术文件夹说明
 
 首页全景/      白天、夜晚                         （地图首页的全景图）
 子地图背景/    <地点名>、<地点名>-白天、<地点名>-夜晚   （每个子页面背后的背景；不放就用程序默认的淡透全景）
-               行测五峰另认<峰名>-黄昏，如万象峰-黄昏.webp；黄昏使用独立美术，不重复套滤镜。
+               行测五峰（万象峰、辨言峰、明理峰、演数峰、观星峰）的白天/黄昏/夜晚背景固定使用程序自带的新图，这里放同名文件不会生效（不会删除）。
+               行测六处新场景跳过与旧内置图字节完全相同的导出模板（文件不删除），自行改绘仍可覆盖。黄昏用“地点-黄昏”；塔还支持“试炼塔-清晨”和“试炼塔-选择厅-白天/黄昏/夜晚/清晨”。
                洞府还可以每个页签单独一张：洞府-<页签名>、洞府-<页签名>-白天、洞府-<页签名>-夜晚（行测页签：修为与突破、十二经、修行记录、储物袋、修行日志）
 人物立绘/      平静、鼓励、讲解、关切、欣慰、眨眼     （引导人物半身立绘；行测、法考的眨眼图只含眼部，位置由程序固定）
                申论每个人单独一套：<姓名>-<表情>，例如 周静宜-平静.png（九位人物见 rpg/art.py）。纯色底（洋红/绿）的图会自动去底。

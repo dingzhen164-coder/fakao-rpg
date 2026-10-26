@@ -12,15 +12,35 @@
   const TAB_KEY = { '修为与突破': 'growth', '仕途与晋升': 'growth', '成长与晋升': 'growth', '十二经': 'shier', '修行记录': 'records', '学习记录': 'records', '储物袋': 'bag', '修行日志': 'diary', '学时与出勤': 'daily', '时辰与日课': 'daily' };
   const REGION_KEY = { '万象峰': 'chang', '辨言峰': 'yan', '明理峰': 'li', '演数峰': 'shu', '观星峰': 'zi', '归纳概括': 'guina', '综合分析': 'zonghe', '提出对策': 'duice', '贯彻执行': 'guanche', '大作文': 'dazuowen',
     '民法': 'minfa', '刑法': 'xingfa', '民诉': 'minsu', '刑诉': 'xingsu', '行政法': 'xingzheng', '商经知': 'shangjing', '三国法': 'sanguo', '理论法': 'lilun' };
+  const PEAK_NAMES = ['万象峰', '辨言峰', '明理峰', '演数峰', '观星峰'];
+  const ACADEMY_NAMES = ['民法','刑法','民诉','刑诉','行政法','商经知','三国法','理论法'];
+  const ROOMS381=['dwelling','bank','contest','skeleton','tianji','settings'];
+  // 科目守卫用转义：申论wording会改写源码中的“行测”字面量，不能让专属场景误启用。
+  const isXingce=()=>{try{return (typeof DASH!=='undefined'?DASH.subject:'')==='\u884c\u6d4b';}catch(_){return false;}};
+  const phase=()=>document.documentElement.dataset.scenePhase||document.documentElement.dataset.sceneTime||'day';
   const regionName = () => { try { return window.STUDY_REGIONS ? STUDY_REGIONS.title() : ''; } catch (e) { return ''; } };
   const tabLabel = () => { const t = document.querySelector('.fx-tab[aria-selected="true"]'); return t ? t.textContent.trim() : ''; };
   let view = '', applied='';
   function findHit(page, dn=document.documentElement.dataset.scenePhase==='dusk'?'dusk':document.documentElement.dataset.sceneTime || 'day') {
+    if(isXingce()&&ROOMS381.includes(page)){
+      const p=page==='bank'&&phase()==='dawn'?'dawn':dn,tk=page==='dwelling'?TAB_KEY[tabLabel()]:'';
+      const exact=[...(tk?[`beauty/page/dwelling-${tk}-${p}.webp`]:[]),`beauty/page/${page}-${p}.webp`];
+      const generic=[...(tk?[`beauty/page/dwelling-${tk}.webp`]:[]),`beauty/page/${page}.webp`];
+      // 明确的专用覆盖仍优先；旧内置洞府页签不能抢过新整体分时场景。
+      const own=[...exact,...generic].find(r=>custom.has(r)&&has(r));
+      if(own)return own;
+      if(has(`beauty/page/${page}-${p}.webp`))return `beauty/page/${page}-${p}.webp`;
+    }
     const others=dn==='dusk'?['day','night']:[dn==='night'?'day':'night'], want = [], fallback=[];
     if (page && page !== 'home') {
       const tk = page === 'dwelling' ? TAB_KEY[tabLabel()] : '';              // 洞府每个页签可单独配背景，没有就回退洞府整体背景
       if (tk) {want.push(`beauty/page/dwelling-${tk}-${dn}.webp`, `beauty/page/dwelling-${tk}.webp`);fallback.push(...others.map(t=>`beauty/page/dwelling-${tk}-${t}.webp`));}
       const rk = page === 'train' ? REGION_KEY[regionName()] : '';          // 修炼页选中某个分区（五峰等）时可单独配背景
+      // 独立分区的背景只在本分区选择；通用“修炼”图不覆盖五峰或八科楼。
+      if (rk && [...PEAK_NAMES,...ACADEMY_NAMES].includes(regionName())) {
+        const own=[`beauty/page/train-${rk}-${dn}.webp`, `beauty/page/train-${rk}.webp`, ...others.map(t => `beauty/page/train-${rk}-${t}.webp`)];
+        return own.find(r => custom.has(r) && has(r)) || own.find(has);
+      }
       if (rk) {want.push(`beauty/page/train-${rk}-${dn}.webp`, `beauty/page/train-${rk}.webp`);fallback.push(...others.map(t=>`beauty/page/train-${rk}-${t}.webp`));}
       want.push(`beauty/page/${page}-${dn}.webp`, `beauty/page/${page}.webp`);fallback.push(...others.map(t=>`beauty/page/${page}-${t}.webp`));
       want.push(...fallback);
@@ -29,9 +49,10 @@
     return want.find(r => custom.has(r) && has(r)) || want.find(has);
   }
   const decoded=new Map();
-  function decode(src){if(!decoded.has(src))decoded.set(src,new Promise(resolve=>{const img=new Image();img.onload=()=>{if(img.decode)img.decode().catch(()=>{}).then(resolve);else resolve();};img.onerror=()=>resolve();img.src=src;}));return decoded.get(src);}
+  function decode(src){if(!decoded.has(src))decoded.set(src,new Promise(resolve=>{const img=new Image();img.onload=()=>{if(img.decode)img.decode().then(()=>resolve(true),()=>resolve(false));else resolve(true);};img.onerror=()=>resolve(false);img.src=src;}));return decoded.get(src);}
   function prepare(page){const hit=findHit(page),urls=hit?[url(hit)]:[];
     const opposite=findHit(page,document.documentElement.dataset.sceneTime==='night'?'day':'night');if(opposite&&opposite!==hit)urls.push(url(opposite));
+    if(isXingce()&&page==='bank'){const selection=`beauty/trial/selection-${phase()}.webp`;if(has(selection))urls.push(url(selection));}
     const examScene=!(typeof isSL==='function'&&isSL());
     if(page==='bank'&&examScene)urls.push(...['tower','gate','landscape'].map(k=>has(`beauty/trial/${k}-night.webp`)&&document.documentElement.dataset.sceneTime==='night'?url(`beauty/trial/${k}-night.webp`):`assets/beauty/trial/${k}.png`));
     if(page==='contest'&&examScene)urls.push('assets/beauty/contest/arena.png');
@@ -39,12 +60,22 @@
   }
   function apply(){const b=document.body;if(!b)return;let hit=findHit(view);
     // 五峰是独立地点，不再被旧全局背景压住；专门设置的峰/页背景仍优先。
-    const peakScene=view==='train'&&['万象峰','辨言峰','明理峰','演数峰','观星峰'].includes(regionName());
-    if(hit&&!custom.has(hit)&&b.classList.contains('has-bg')&&!peakScene)hit='';
+    const peakScene=view==='train'&&PEAK_NAMES.includes(regionName());
+    const roomScene=view==='train'&&b.classList.contains('academy-room');
+    const independent=isXingce()&&ROOMS381.includes(view),nativeRoom=independent&&hit&&(!custom.has(hit)||/-(day|dusk|night|dawn)\.webp$/.test(hit));
+    if(hit&&!custom.has(hit)&&b.classList.contains('has-bg')&&!peakScene&&!roomScene&&!independent)hit='';
     // 专用夜景/黄昏不重复调色；单张图与用户全局图使用程序光照。
-    b.dataset.sceneRelight=(hit?/(?:-night|-dusk)\.webp$/.test(hit):!b.classList.contains('has-bg')&&document.documentElement.dataset.sceneTime==='night')?'native':'synthetic';
+    b.dataset.sceneRelight=(hit?(peakScene||nativeRoom||/(?:-night|-dusk)\.webp$/.test(hit)):!b.classList.contains('has-bg')&&document.documentElement.dataset.sceneTime==='night')?'native':'synthetic';
     // 五峰自己的昼/昏/夜画面按原图显示：不再叠整页遮罩（遮罩会把浅色洗白、深色压成灰黑）。
-    if(hit&&peakScene)b.dataset.sceneArt='peak';else delete b.dataset.sceneArt;
+    if(hit&&peakScene)b.dataset.sceneArt='peak';else if(nativeRoom)b.dataset.sceneArt='room381';else delete b.dataset.sceneArt;
+    if(independent&&view==='bank'&&hit){
+      const src=url(hit),img=document.querySelector('.th-panorama');
+      b.style.setProperty('--scene381-tower',`url("${src}")`);
+      if(img&&img.getAttribute('src')!==src)decode(src).then(ok=>{if(ok&&img.isConnected&&findHit(view)===hit){img.src=src;img.dataset.native381='true';}});
+      const selection=`beauty/trial/selection-${phase()}.webp`;
+      if(has(selection)){b.style.setProperty('--scene381-selection',`url("${url(selection)}")`);b.dataset.sceneSelection='native381';}
+      else{b.style.removeProperty('--scene381-selection');delete b.dataset.sceneSelection;}
+    }else delete b.dataset.sceneSelection;
     b.dataset.sceneRoom=['dwelling','skeleton','notes','settings'].includes(view)||b.classList.contains('guantu')?'indoor':'outdoor';
     // 原建筑节点原位换图，不重建练习卷宗；缺夜图或旧用户建筑覆盖仍沿兼容光照。
     const trialNight=document.documentElement.dataset.sceneTime==='night'&&['tower','gate','landscape'].every(k=>has(`beauty/trial/${k}-night.webp`)&&!custom.has(`beauty/trial/${k}.png`));

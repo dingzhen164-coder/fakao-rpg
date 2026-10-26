@@ -33,10 +33,13 @@ async function graph(p){return p.locator('#lnCanvas svg>g').first().getAttribute
   await p.evaluate(async region=>{STUDY_REGIONS.select(region);await go('train');},region);await p.locator('.fx-region-work').waitFor();
   assert.equal(await p.locator('[data-study-regions-back]').count(),0);assert(await p.locator('.subpage-place').innerText().then(s=>s.includes(subject==='行测'?'辨言峰':board)));
   const geometry=await p.evaluate(()=>{const a=document.querySelector('.fx-region-work').getBoundingClientRect(),v=document.querySelector('#view').getBoundingClientRect(),h=document.querySelector('#studyHud').getBoundingClientRect(),cards=[...document.querySelectorAll('.fx-region-work>.card')].map(e=>({height:e.clientHeight,scroll:e.scrollHeight}));return {top:a.top,bottom:a.bottom,viewBottom:v.bottom,hudBottom:h.bottom,cards};});
-  if(subject==='行测'){
+  const activeSubject=await p.evaluate(()=>document.body.classList.contains('xuanhuan')?'法考':DASH.subject);
+  if(activeSubject==='行测'){
    const panel=await p.locator('.fx-scenic-peak').boundingBox();
    assert(panel.width<viewport.width*.95&&panel.height<viewport.height*.8,'四峰选择页收拢、留出山景 '+JSON.stringify(panel));
    assert(geometry.top>geometry.hudBottom+24&&geometry.bottom<geometry.viewBottom-24,'四峰上下留景 '+JSON.stringify(geometry));
+  }else if(activeSubject==='法考'){
+   assert(geometry.top>geometry.hudBottom+48&&geometry.bottom<geometry.viewBottom-8&&geometry.cards.every(c=>c.height>180),'学科楼展示环境且资料卡可读 '+JSON.stringify(geometry));
   }else assert(Math.abs(geometry.bottom-geometry.viewBottom)<20&&Math.abs(geometry.top-geometry.hudBottom)<24,'资料用满顶栏下工作区 '+JSON.stringify(geometry));
   assert(geometry.cards.every(c=>c.height>100));
   if(process.argv.includes('--shots')&&size==='tablet'){fs.mkdirSync(out,{recursive:true});await p.screenshot({path:path.join(out,(subject||'法考')+'-region.png')});}
@@ -49,8 +52,9 @@ async function graph(p){return p.locator('#lnCanvas svg>g').first().getAttribute
   await p.evaluate(async r=>{STUDY_REGIONS.select(r);await go('train');},secondRegion);releaseCards();await p.evaluate(()=>__oldPeak);await p.unroute('**/api/cards');
   await p.locator('button[data-yjgo=""]').click();await p.locator('#yjShow').waitFor();assert((await p.locator('.yj-stage').textContent()).includes('自编第二分区'),'当前峰温简不得串到旧峰');await p.locator('#yjBack').click();await p.locator('.yj-stage').waitFor({state:'detached'});
   await p.evaluate(async r=>{STUDY_REGIONS.select(r);await go('train');},region);
-  await p.locator('[data-ln]').first().click();await p.locator('#lnCanvas svg>g').first().waitFor();assert.equal(await p.locator('.ln-reading-body').getAttribute('data-mode'),'split');assert(await p.locator('#lnMarkdown').isVisible());assert.equal(await p.locator('#lnFile,#lnLayout').count(),0);assert.equal(await p.locator('.yj-top>.ln-reading-tabs').count(),1,'阅读工具并入图名同一栏');assert(await p.locator('.yj-top').evaluate(e=>{const a=e.getBoundingClientRect(),b=e.querySelector('.ln-reading-tabs').getBoundingClientRect();return b.top>=a.top&&b.bottom<=a.bottom+1;}));
+  await p.locator('[data-ln]').first().click();await p.locator('#lnCanvas svg>g').first().waitFor();assert.equal(await p.locator('.ln-reading-body').getAttribute('data-mode'),subject==='行测'&&viewport.height>viewport.width?'map':'split');if(subject==='行测'&&viewport.height>viewport.width)await p.locator('[data-ln-mode=split]').click();assert(await p.locator('#lnMarkdown').isVisible());assert.equal(await p.locator('#lnFile,#lnLayout').count(),0);assert.equal(await p.locator('.yj-top>.ln-reading-tabs').count(),1,'阅读工具并入图名同一栏');assert(await p.locator('.yj-top').evaluate(e=>{const a=e.getBoundingClientRect(),b=e.querySelector('.ln-reading-tabs').getBoundingClientRect();return b.top>=a.top&&b.bottom<=a.bottom+1;}));
   const reader=await p.locator('.ln-stage').boundingBox();
+  assert.equal(await p.locator('.mm381-tools').count(),subject==='行测'?1:0,'行测专属工具不能被申论文案替换误启用');
   const hudBottom=await p.locator('#studyHud').evaluate(e=>e.getBoundingClientRect().bottom);
   assert(reader.width>=viewport.width-2&&Math.abs(reader.y-hudBottom)<2&&Math.abs(reader.y+reader.height-viewport.height)<2,'实际阅读器用满顶栏下工作区 '+JSON.stringify(reader));
   await p.locator('#lnMarkdown').evaluate(e=>e.scrollTop=850);const canvas=await p.locator('#lnCanvas').boundingBox();await p.mouse.move(canvas.x+canvas.width*.5,canvas.y+canvas.height*.5);await p.mouse.wheel(0,-350);

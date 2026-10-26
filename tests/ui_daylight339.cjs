@@ -16,7 +16,13 @@ async function setTime(p,mode){await p.evaluate(m=>{localStorage.setItem('scene-
  const p=await browser.newPage({viewport});active=p;const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(base);await p.waitForFunction(()=>!!window.DASH_REF?.());
  assert.deepEqual(await p.evaluate(()=>[5.49,5.5,8,17,19.5].map(h=>SCENE_CLOCK.phase(new Date(2026,9,17,Math.floor(h),Math.round(h%1*60))))),['night','dawn','day','dusk','night']);
  for(const theme of ['light','dark']){await p.evaluate(t=>document.documentElement.dataset.theme=t,theme);for(const mode of ['day','night']){
-  await setTime(p,mode);await p.evaluate(()=>go('home'));assert(await p.locator('.portal-'+mode).first().isVisible());
+  await setTime(p,mode);await p.evaluate(()=>go('home'));
+  const homeArt=await p.evaluate(m=>{
+   const stage=document.querySelector('.portal-stage');
+   if(document.body.classList.contains('xuanhuan')&&matchMedia('(orientation: portrait)').matches)
+    return getComputedStyle(stage,'::before').backgroundImage.includes('academy-');
+   return [...document.querySelectorAll('.portal-'+m)].some(img=>img.getClientRects().length&&getComputedStyle(img).display!=='none');
+  },mode);assert(homeArt,'对应时段的学院或地图背景可见');
   for(const view of ['dwelling','train','skeleton','notes','settings',...(subject==='申论'?[]:['bank','contest'])]){
    await p.evaluate(v=>go(v),view);if(view==='bank'||view==='contest')await p.locator(view==='bank'?'.th-landscape':'.cs-landscape').waitFor();else await p.waitForFunction(()=>document.body.classList.contains('has-page-art'));
    assert.equal(await p.evaluate(()=>document.documentElement.dataset.sceneTime),mode);const filter=await p.locator(view==='bank'?'.th-landscape':view==='contest'?'.cs-landscape':'#bgLayer').evaluate(e=>getComputedStyle(e).filter);
@@ -27,8 +33,8 @@ async function setTime(p,mode){await p.evaluate(m=>{localStorage.setItem('scene-
  }}
  await p.evaluate(()=>go('dwelling'));
  // 页面返回时布局在下一帧建立洞府页签，先等对应背景就绪，再验证昼夜切换本身不重建页面。
- await p.waitForFunction(()=>document.querySelector('.fx-tab[aria-selected="true"]')&&getComputedStyle(document.querySelector('#bgLayer')).backgroundImage.includes('/dwelling-growth'));const before=await p.locator('#bgLayer').evaluate(e=>getComputedStyle(e).backgroundImage);await p.evaluate(()=>{window.__view=document.querySelector('#view').firstElementChild;window.__requests=0;const raw=fetch;window.fetch=(...a)=>{__requests++;return raw(...a);};});
- await p.evaluate(()=>{document.documentElement.dataset.scenePhase='dusk';document.documentElement.dataset.sceneTime='day';});await p.waitForFunction(()=>getComputedStyle(document.querySelector('#bgLayer')).filter.includes('sepia'),null,{timeout:5000}).catch(()=>{});const dusk=await p.locator('#bgLayer').evaluate(e=>getComputedStyle(e).filter);assert(dusk.includes('sepia'));
+ await p.waitForFunction(()=>document.querySelector('.fx-tab[aria-selected="true"]')&&getComputedStyle(document.querySelector('#bgLayer')).backgroundImage.includes('/dwelling-'));const before=await p.locator('#bgLayer').evaluate(e=>getComputedStyle(e).backgroundImage);await p.evaluate(()=>{window.__view=document.querySelector('#view').firstElementChild;window.__requests=0;const raw=fetch;window.fetch=(...a)=>{__requests++;return raw(...a);};});
+ await p.evaluate(()=>{document.documentElement.dataset.scenePhase='dusk';document.documentElement.dataset.sceneTime='day';});await p.waitForFunction(native=>native?document.body.dataset.sceneRelight==='native':getComputedStyle(document.querySelector('#bgLayer')).filter.includes('sepia'),subject==='行测');const dusk=await p.locator('#bgLayer').evaluate(e=>getComputedStyle(e).filter);if(subject==='行测')assert.equal(dusk,'none');else assert(dusk.includes('sepia'));
  await setTime(p,'night');assert.equal(await p.locator('#bgLayer').evaluate(e=>getComputedStyle(e).backgroundImage),before);assert(await p.evaluate(()=>__view===document.querySelector('#view').firstElementChild));assert.equal(await p.evaluate(()=>__requests),0);
  if(process.argv.includes('--shots')&&size==='desktop'){fs.mkdirSync(out,{recursive:true});await p.screenshot({path:path.join(out,(subject||'法考')+'-night.png')});await setTime(p,'day');await p.screenshot({path:path.join(out,(subject||'法考')+'-day.png')});}
  await setTime(p,'theme');assert.equal(await p.evaluate(()=>document.documentElement.dataset.sceneTime),'night');await p.evaluate(()=>document.documentElement.dataset.theme='light');await p.waitForFunction(()=>document.documentElement.dataset.sceneTime==='day');
