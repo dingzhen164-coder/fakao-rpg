@@ -63,6 +63,7 @@ HTTP 接口：把 engine / trainer / store 暴露给网页（web/app.js）。只
 """
 import datetime as dt
 from . import art
+import hashlib
 import json
 import mimetypes
 import re
@@ -1108,6 +1109,11 @@ ROUTES = {
 }
 
 
+def _stat_etag(p, extra=""):
+    st = p.stat()
+    return '"%x-%x%s"' % (st.st_mtime_ns, st.st_size, extra)
+
+
 def _music_file(paths, rel):
     """网页播放 BGM 用：只允许 训练/外观/音乐/ 里的音频文件"""
     if not paths.vault or not rel:
@@ -1616,14 +1622,36 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # 不在终端刷屏
         pass
 
-    def _send(self, code, body, ctype="application/json; charset=utf-8", cache=False):
+    def _static_cc(self):
+        """assets/ 下的图片/音频，地址带 ?v=文件修改时间：文件一变地址就变，可以长期留在浏览器里，连“问一下”都省了。其余静态文件每次问一下。"""
+        u = urlparse(self.path)
+        versioned = any(x.startswith("v=") for x in u.query.split("&"))
+        if versioned and u.path.lstrip("/").startswith("assets/") and u.path.lower().endswith((".webp", ".png", ".jpg", ".jpeg", ".ogg", ".mp3", ".woff2")):
+            return "public, max-age=31536000, immutable"
+        return "no-cache"
+
+    def _send(self, code, body, ctype="application/json; charset=utf-8", cache=False, etag=None):
         data = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(data)))
-        self.send_header("Cache-Control", "max-age=604800" if cache else "no-store")
+        if etag:                      # 静态文件：浏览器留一份，每次只问“变了吗”，没变就不再下载（4K背景图一张3–4MB）
+            self.send_header("ETag", etag)
+            self.send_header("Cache-Control", self._static_cc())
+        else:
+            self.send_header("Cache-Control", "max-age=604800" if cache else "no-store")
         self.end_headers()
         self.wfile.write(data)
+
+    def _not_modified(self, etag):
+        """浏览器带来的 If-None-Match 和现在的文件一致：回 304，不传文件内容。"""
+        if not etag or etag not in (self.headers.get("If-None-Match") or ""):
+            return False
+        self.send_response(304)
+        self.send_header("ETag", etag)
+        self.send_header("Cache-Control", self._static_cc())
+        self.end_headers()
+        return True
 
     def _send_range(self, p, ctype):
         """音频支持 Range（浏览器拖进度、循环播放会用到）"""
@@ -1771,10 +1799,16 @@ class Handler(BaseHTTPRequestHandler):
                 if ov.suffix.lower() in art.AUD:
                     return self._send_range(ov, ct)
                 if art.is_portrait('法考', rel[7:]):
+                    tag = _stat_etag(ov, "p")
+                    if self._not_modified(tag):
+                        return
                     done = art.processed(ov)
                     if done:
-                        return self._send(200, done[0], done[1])
-                return self._send(200, ov.read_bytes(), ct)
+                        return self._send(200, done[0], done[1], etag=tag)
+                tag = _stat_etag(ov)
+                if self._not_modified(tag):
+                    return
+                return self._send(200, ov.read_bytes(), ct, etag=tag)
         builtin = art.builtin_asset('法考', rel[7:]) if rel.startswith('assets/') else None
         f = (builtin or WEB_DIR / rel).resolve()
         if WEB_DIR.resolve() not in f.parents or not f.is_file():
@@ -1782,12 +1816,22 @@ class Handler(BaseHTTPRequestHandler):
         ctype = mimetypes.guess_type(f.name)[0] or "text/plain"
         if ctype.startswith("text/") or ctype in ("application/javascript",):
             ctype += "; charset=utf-8"
+        text_like = ctype.startswith("text/") or ctype.startswith("application/javascript")
+        tag = None if text_like else _stat_etag(f)         # 图片/字体/音频：看文件修改时间就够，没变不用读文件
+        if tag and self._not_modified(tag):
+            return
         raw = f.read_bytes()
         if rel == 'index.html':
             vp = find_vault(); p = Paths(vp) if vp else None
             af = art.available(p, '法考'); ac = [r for r, _v in art.files(p, '法考')]
             raw = raw.replace(b'</head>', ('<script>window.SUBJECT0="法考";window.ART_FILES=%s;window.ART_CUSTOM=%s;</script>\n</head>' % (json.dumps(af), json.dumps(ac))).encode('utf-8'), 1)
-        self._send(200, raw, ctype, cache=rel.startswith("vendor/"))
+        if rel.startswith("vendor/"):
+            return self._send(200, raw, ctype, cache=True)
+        if tag is None:                  # 网页/脚本/样式：内容（含注入的美术清单）的指纹
+            tag = '"%s"' % hashlib.sha1(raw).hexdigest()[:20]
+            if self._not_modified(tag):
+                return
+        self._send(200, raw, ctype, etag=tag)
 
     def do_GET(self):
         self._handle("GET")
