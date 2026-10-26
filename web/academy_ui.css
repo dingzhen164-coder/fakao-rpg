@@ -24,15 +24,23 @@ body.xuanhuan .fx-actions{background:var(--panel);border-color:var(--ac-line)}
 body.xuanhuan .ln-document,body.xuanhuan .nt-main,body.xuanhuan .mindmap-panel{color:var(--text);line-height:1.7}
 body.xuanhuan .ln-document{background:var(--panel);max-width:80ch;margin-inline:auto}
 
-/* 总览：保留完整横屏场景，竖屏换独立取景；入口与画面始终为分开的真实控件。 */
+/* 总览：横屏全幅铺满，竖屏换独立取景；入口与画面始终为分开的真实控件。 */
+@font-face{font-family:AcademyBrush;src:url('assets/beauty/fonts/academy-calligraphy.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 .portal-mage{--ds-scene-bg:var(--ac-sky);--ds-sign-bg:var(--ac-paper);--ds-sign-line:var(--ac-gold);
   --ds-sign-ink:var(--ac-ink);--ds-sign-hover:var(--ac-peach);--ds-sign-focus:var(--accent2);
   --ds-sign-symbol:var(--ac-gold);--ds-sign-symbol-shadow:var(--ac-paper);
   --ds-scene-cloud:transparent;--ds-scene-glow:transparent;background:var(--ac-sky)}
 .portal-mage .portal-landscape-fill{display:block;position:absolute;inset:-24px;background-image:var(--portal-fill-day);background-size:cover;background-position:center;filter:blur(20px);opacity:.6}
-.portal-mage .portal-landscape{object-fit:contain;object-position:center center}
+html[data-scene-time="night"] .portal-mage .portal-landscape-fill{background-image:var(--portal-fill-night)}
+html[data-scene-time="night"] .portal-mage .portal-landscape.portal-day{display:none}
+html[data-scene-time="night"] .portal-mage .portal-landscape.portal-night{display:block}
+html:not([data-scene-time="night"]) .portal-mage .portal-landscape.portal-day{display:block}
+html:not([data-scene-time="night"]) .portal-mage .portal-landscape.portal-night{display:none}
+.portal-mage .portal-landscape{object-fit:cover;object-position:center center}
 .portal-mage .portal-place{min-width:74px;max-width:126px;z-index:4;padding:0;filter:drop-shadow(0 2px 5px var(--ac-shadow))}
 .portal-mage .portal-place .portal-ic{display:block;line-height:1.15;font-size:var(--ds-fs-18)}
+.portal-mage .portal-ic .portal-calligraphy{font-family:AcademyBrush,serif;font-size:1.75em;line-height:1;font-weight:400;color:var(--ac-ink);text-shadow:0 1px 3px var(--ac-paper)}
+.portal-mage [data-portal-go="subject-minsu"] .portal-calligraphy,.portal-mage [data-portal-go="subject-xingsu"] .portal-calligraphy{font-size:1.3em}
 .portal-mage .portal-place>b{display:block;width:max-content;max-width:126px;padding:6px 10px;
   border-radius:var(--ds-r-12);border:2px solid var(--ac-gold);background:var(--ac-paper);
   color:var(--ac-ink);font-family:var(--display);font-size:var(--ds-fs-13);font-weight:800;
@@ -41,7 +49,7 @@ body.xuanhuan .ln-document{background:var(--panel);max-width:80ch;margin-inline:
 .portal-mage .portal-place:hover>b,.portal-mage .portal-place:focus-visible>b{background:var(--ac-peach);border-color:var(--accent2);outline:2px solid var(--accent2);outline-offset:2px}
 .portal-mage .portal-place:focus-visible{outline:3px solid var(--accent2);outline-offset:3px;border-radius:var(--ds-r-12)}
 .portal-mage .portal-stage-editor .portal-place>b{font-size:var(--ds-fs-13)}
-html[data-theme="dark"] .portal-mage .portal-stage:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--ac-lavender),var(--bg));opacity:.38;pointer-events:none;z-index:1}
+html[data-theme="dark"] .portal-mage .portal-stage:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--ac-lavender),var(--bg));opacity:.12;pointer-events:none;z-index:1}
 
 /* 八科卡片与楼内阅读：背景留景，卡片提供足够的不透明度与滚动空间。 */
 body.xuanhuan .study-towers{background:var(--ac-room-veil);border-color:var(--ac-line)}
@@ -50,6 +58,19 @@ body.xuanhuan .study-towers .study-region{justify-content:flex-start;min-height:
   background:var(--ac-paper);border:2px solid var(--ac-line);border-radius:var(--ds-r-12);overflow:hidden}
 body.xuanhuan .study-towers .study-region:hover,body.xuanhuan .study-towers .study-region:focus-visible{border-color:var(--accent2);transform:translateY(-2px)}
 body.xuanhuan .study-towers .study-region-image{display:block;width:100%;height:58%;min-height:80px;object-fit:cover;flex:1}
+body.xuanhuan .study-towers .academy-subject-mark{display:grid;place-items:center;width:100%;height:58%;min-height:110px;flex:1;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--mark-accent,var(--accent2)) 22%,var(--panel)),var(--ac-paper));
+  color:color-mix(in srgb,var(--mark-accent,var(--accent2)) 65%,var(--text));font-family:AcademyBrush,serif;font-size:clamp(66px,7vw,108px);font-weight:400;line-height:1;letter-spacing:-.12em}
+body.xuanhuan .study-towers [data-academy-subject="minsu"] .academy-subject-mark,
+body.xuanhuan .study-towers [data-academy-subject="xingsu"] .academy-subject-mark{font-size:clamp(49px,5vw,72px)}
+body.xuanhuan .study-towers [data-academy-subject="minfa"]{--mark-accent:var(--gold)}
+body.xuanhuan .study-towers [data-academy-subject="xingfa"]{--mark-accent:var(--red)}
+body.xuanhuan .study-towers [data-academy-subject="minsu"]{--mark-accent:var(--accent2)}
+body.xuanhuan .study-towers [data-academy-subject="xingsu"]{--mark-accent:var(--accent)}
+body.xuanhuan .study-towers [data-academy-subject="xingzheng"]{--mark-accent:var(--purple)}
+body.xuanhuan .study-towers [data-academy-subject="shangjing"]{--mark-accent:var(--orange)}
+body.xuanhuan .study-towers [data-academy-subject="sanguo"]{--mark-accent:var(--accent2)}
+body.xuanhuan .study-towers [data-academy-subject="lilun"]{--mark-accent:var(--purple)}
 body.xuanhuan .study-towers .study-region-copy{padding:var(--ds-sp-8) var(--ds-sp-12);gap:2px}
 body.xuanhuan .study-towers .study-region-copy b{font-size:var(--ds-fs-20);color:var(--text);line-height:1.2;font-weight:800}
 body.xuanhuan .study-towers .study-region-copy span{display:block;color:var(--accent2);font-size:var(--ds-fs-13);font-weight:700}
@@ -68,6 +89,7 @@ body.xuanhuan .study-region-heading small{color:var(--muted);font-size:var(--ds-
 body.xuanhuan .study-region-heading .academy-room-back{order:-1;white-space:nowrap;background:var(--panel);border-color:var(--ac-line)}
 body.xuanhuan.has-page-art:not(.portal-home) #bgLayer::after{opacity:.08}
 html[data-theme="dark"] body.xuanhuan.has-page-art:not(.portal-home) #bgLayer::after{opacity:.48}
+html[data-theme="dark"] body.xuanhuan.has-page-art[data-scene-relight="native"]:not(.portal-home) #bgLayer::after{opacity:.12}
 html:not([data-theme="dark"]) body.xuanhuan.academy-room[data-scene-relight="synthetic"] #bgLayer{filter:none}
 html:not([data-theme="dark"]) body.xuanhuan.academy-room[data-scene-relight="synthetic"] #bgLayer::before{display:none}
 body.xuanhuan.has-page-art .fx-region-work>.card,body.xuanhuan.has-page-art .scene-panel.fx-region-detail .fx-frame{background:var(--ac-room-veil);backdrop-filter:blur(5px)}
@@ -81,7 +103,7 @@ body.xuanhuan .fx-region-work{gap:var(--ds-sp-12)}
 @media(orientation:portrait){
   .portal-mage .portal-stage{background:var(--ac-sky)}
   .portal-mage .portal-stage .portal-landscape,.portal-mage .portal-landscape-fill{display:none!important}
-  .portal-mage .portal-stage:before{content:"";position:absolute;inset:0;background:url("assets/academy/scene/academy-portrait-4k.webp") center/cover no-repeat;pointer-events:none}
+  .portal-mage .portal-stage:before{content:"";position:absolute;inset:0;background:var(--academy-portrait-art,url("assets/academy/scene/academy-portrait-4k.webp")) center/cover no-repeat;pointer-events:none}
   .portal-mage .portal-place{max-width:42%}
   .portal-mage .portal-place>b{max-width:116px}
   body.xuanhuan .fx-region-work{grid-template-columns:minmax(0,1fr)}
