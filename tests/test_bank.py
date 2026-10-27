@@ -513,7 +513,8 @@ class BankTest(unittest.TestCase):
         self.assertIn('官方：C项“催生”指催促问世。', p)
         self.assertNotIn('蒸馏的推理', p)                           # 蒸馏小节、旧的学姐解惑不给学姐看
         self.assertNotIn('旧的讲解', p)
-        self.assertIn('哪个方法', p)
+        self.assertIn('讲解遵循给定skill', p)
+        self.assertIn('完整、不重复', p)
         self.assertIn('依据 skill「xingce-luojitiankong」：SKILL.md、references/六种对应关系.md、逻辑填空方法总纲.md', str(r))
 
     def test_exam_timing_table_and_log(self):

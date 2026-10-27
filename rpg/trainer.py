@@ -653,7 +653,7 @@ def _discuss_ask(g, s, text):
         return [_msg("npc", (_say(g, "试炼·解惑没AI") or "学姐今天不在研究室（没连上 AI）。") +
                      "\n（在“设置”里填 AI 的 API key 后，学姐就能按功法给你讲题、回答追问。）")]
     try:
-        r = ai.chat(prompts.discuss(g.persona, d, _skill_digest(g, d["board"], text), text), temperature=0.6, max_tokens=1500)
+        r = ai.chat(prompts.discuss(g.persona, d, _skill_digest(g, d["board"], text), text), temperature=0.6, max_tokens=12000)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     d["history"] += [{"role": "user", "content": text}, {"role": "assistant", "content": r}]
@@ -1488,7 +1488,7 @@ def _explain_group(g, board, material, items):
     skill = _skill_name(g, board)
     digest, used = vault.skill_for_tutor(g.paths, skill) if skill else ("", [])
     try:
-        text = ai.chat(prompts.group_explain(g.persona, material, items, digest, skill), temperature=0.5, max_tokens=2800)
+        text = ai.chat(prompts.group_explain(g.persona, material, items, digest, skill), temperature=0.5, max_tokens=12000)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     return text, skill, used
@@ -1556,7 +1556,7 @@ def _explain(g, q, r):
     digest, used, mode = _tutor_material(g, q['board'], q)
     try:
         msgs = prompts.law_explain(g.persona, q, r['answer'], digest) if mode == KNOW else prompts.bank_explain(g.persona, q, r['answer'], digest, skill)
-        text = ai.chat(msgs, temperature=0.5, max_tokens=1800)
+        text = ai.chat(msgs, temperature=0.5, max_tokens=12000)
     except ai.AIError as e:
         raise TrainError('学姐没回话：%s' % e)
     return text, (KNOW if mode == KNOW else skill), used
@@ -1589,7 +1589,7 @@ def _review_chat(g, s, run, text):
            "question": q["stem"] + "\n" + "\n".join("%s. %s" % kv for kv in q["options"].items()),
            "answer": q["answer"], "mine": r["answer"], "reference": q.get("analysis", "")[:3000]}
     try:
-        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, q["board"], text, q), text), temperature=0.6, max_tokens=1500)
+        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, q["board"], text, q), text), temperature=0.6, max_tokens=12000)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     hist += [{"role": "user", "content": text}, {"role": "assistant", "content": reply}]
@@ -1837,7 +1837,7 @@ def _mreview_chat(g, s, text):
     ctx = {"kind": "大比复盘", "title": "第%s季第%s题" % (s["season"], q["num"]), "board": pq["board"], "history": hist[-10:],
            "question": pq["stem"], "answer": q["correct"], "mine": q["mine"] or "没做", "reference": q["analysis"][:3000]}
     try:
-        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, pq["board"], text, pq), text), temperature=0.6, max_tokens=1500)
+        reply = ai.chat(prompts.discuss(g.persona, ctx, _skill_digest(g, pq["board"], text, pq), text), temperature=0.6, max_tokens=12000)
     except ai.AIError as e:
         raise TrainError("学姐没回话：%s" % e)
     hist += [{"role": "user", "content": text}, {"role": "assistant", "content": reply}]
