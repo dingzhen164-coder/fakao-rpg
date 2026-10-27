@@ -1,3 +1,9 @@
+## 开发中：灵脉图与分级文档格式显示（2026-10-28，未发布）
+
+- 新共享web/mindmap_text.js为SVG节点与分级文档提供同一行内格式：**/__加粗、*斜体、删除线、行内代码、Unicode/HTML实体箭头，以及常见LaTeX箭头、逻辑和数学符号；未知公式命令保留原文。样式不执行用户HTML，不加载用户标签中的资源。
+- 沿simple-mind-map现有SVG文本测量/布局，用原customCreateNodeContent回调在节点创建前接入SVG tspan；原始Markdown仍在node.data.text，编辑显示源文、保存不混入显示产物。旧richText只转换允许的格式，图/文档保持一致，不启用foreignObject插件，不改变缩放、双指平移、折叠与只读阅读计时。
+- Markdown导入改用既有后端结构解析（create接口可选markdown参数），避免随包库getNodeText把strong/emphasis剥掉；BOM可读取。旁置MD保持可读的行内格式，保留转义和LaTeX反斜线；rpg/mindmap_inline.py转换旧HTML格式。新生成的MD带隐藏inline:v1格式注释，区分旧转义文档与用户主动取消加粗；不新增JSON/学习存档字段。读取兼容旧整段转义生成的MD，仍保留JSON和现有MD原件；仅明确编辑保存时更新，外部改动的SHA256冲突保护保留。无新存档字段、无版本号/发布请求变更。
+
 ## 4.0.2 · 2026-10-27
 
 - 主地图和子页左右信息牌独立，返回地图不连成长框；“设置 → 外观与声音”新增本机界面透明度，默认68%，数值越大越通透，外壳字体加粗，正文、答题和手写底色保持清晰。
