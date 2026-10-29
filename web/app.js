@@ -178,20 +178,20 @@ function applyTheme() {
 function configurePortal() {
   // 地点ID和旧坐标保持稳定，用户已保存的横竖屏排布及旧存档继续使用。
   // 八科建筑只选择现有研习分区，不建立新的训练、计分或资料路径。
-  const sceneConfig={savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院总览',images:ACADEMY_SCENE.images(),layoutId:'mage-v2',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
+  const sceneConfig={savedLayout:DASH?.scene_layouts?.mage,progress:DASH?.narrative?.world_progress,id:'mage',title:'王立法学魔法学院',subtitle:'法师成长记 · 学院总览',images:ACADEMY_SCENE.images(),layoutId:'mage-v2',fit:{aspect:4/3},desktopVersion:'fit-v1',extraHtml:()=>NARRATIVE.homeHtml(DASH?.narrative),places:[
     // 主地图只留 12 处：八科楼 + 营地 + 试炼塔（做题，模考与复盘在塔里）+ 魔法手记（手写）+ 咒文书馆（藏经阁）。
     // 学院大厅、天机台已去掉；竞技场（大比）并进试炼塔，成长档案、学院纪事与委托并进营地。旧存档里这些地点的位置记录无害，不再使用。
-    {id:'dwelling',label:'营地',view:'dwelling',x:9,y:88,nx:20,ny:91},
-    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:48,y:79,nx:50,ny:83},{id:'bank',label:'试炼塔',view:'bank',x:93,y:30,nx:80,ny:18},
-    {id:'notes',label:'魔法手记',view:'notes',x:31,y:77,nx:22,ny:76},
-    {id:'subject-minfa',label:'契约馆 · 民法',glyph:'民',view:'train',region:'民法',x:18,y:53,nx:20,ny:27},
-    {id:'subject-xingfa',label:'审判堡 · 刑法',glyph:'刑',view:'train',region:'刑法',x:29,y:38,nx:80,ny:29},
-    {id:'subject-minsu',label:'衡序厅 · 民诉',glyph:'民訴',view:'train',region:'民诉',x:68,y:42,nx:20,ny:43},
-    {id:'subject-xingsu',label:'真相塔 · 刑诉',glyph:'刑訴',view:'train',region:'刑诉',x:86,y:46,nx:65,ny:38},
-    {id:'subject-xingzheng',label:'律令宫 · 行政法',glyph:'行',view:'train',region:'行政法',x:76,y:64,nx:20,ny:61},
-    {id:'subject-shangjing',label:'创艺坊 · 商经知',glyph:'商',view:'train',region:'商经知',x:11,y:65,nx:80,ny:63},
-    {id:'subject-sanguo',label:'万国馆 · 三国法',glyph:'國',view:'train',region:'三国法',x:90,y:60,nx:80,ny:47},
-    {id:'subject-lilun',label:'星穹馆 · 理论法',glyph:'理',view:'train',region:'理论法',x:83,y:83,nx:80,ny:79},
+    {id:'dwelling',label:'营地',view:'dwelling',x:15.9,y:78.4,nx:20,ny:91},
+    {id:'skeleton',label:'咒文书馆',view:'skeleton',x:64.9,y:85.0,nx:50,ny:83},{id:'bank',label:'试炼塔',view:'bank',x:55.4,y:58.0,nx:80,ny:18},
+    {id:'notes',label:'魔法手记',view:'notes',x:38.3,y:85.4,nx:22,ny:76},
+    {id:'subject-minfa',label:'契约馆 · 民法',glyph:'民',view:'train',region:'民法',x:10.2,y:36.8,nx:20,ny:27},
+    {id:'subject-xingfa',label:'审判堡 · 刑法',glyph:'刑',view:'train',region:'刑法',x:38.4,y:25.6,nx:80,ny:29},
+    {id:'subject-minsu',label:'衡序厅 · 民诉',glyph:'民訴',view:'train',region:'民诉',x:63.3,y:26.9,nx:20,ny:43},
+    {id:'subject-xingsu',label:'真相塔 · 刑诉',glyph:'刑訴',view:'train',region:'刑诉',x:91.0,y:35.7,nx:65,ny:38},
+    {id:'subject-xingzheng',label:'律令宫 · 行政法',glyph:'行',view:'train',region:'行政法',x:31.2,y:48.1,nx:20,ny:61},
+    {id:'subject-shangjing',label:'创艺坊 · 商经知',glyph:'商',view:'train',region:'商经知',x:19.8,y:62.8,nx:80,ny:63},
+    {id:'subject-sanguo',label:'万国馆 · 三国法',glyph:'國',view:'train',region:'三国法',x:64.9,y:67.5,nx:80,ny:47},
+    {id:'subject-lilun',label:'星穹馆 · 理论法',glyph:'理',view:'train',region:'理论法',x:89.7,y:70.1,nx:80,ny:79},
   ]};
   SCENE_PORTAL.configure(sceneConfig,p=>{if(p.region){STUDY_REGIONS.select(p.region);return go('train');}return p.view==='journal'?NARRATIVE.open():go(p.view);});
   ACADEMY_SCENE.bind(sceneConfig);
