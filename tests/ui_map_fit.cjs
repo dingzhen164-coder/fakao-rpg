@@ -25,7 +25,7 @@ const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR
       assert(info, `${name} 没有 .portal-frame`);
       assert(Math.abs(info.ratio - 4 / 3) < 0.02 && info.fits, `${name} 地图框应保持 4:3 且不超出舞台`);
       assert.equal(info.n, 12, `${name} 应有 12 个地点`);
-      assert(Math.abs(info.dx - 15.9) < 1 && Math.abs(info.dy - 78.4) < 1.5, `${name} 旧版保存的横屏位置应被丢弃，营地按新默认 (15.9,78.4)，实际 (${info.dx.toFixed(1)},${info.dy.toFixed(1)})`);
+      assert(Math.abs(info.dx - 19.1) < 1 && Math.abs(info.dy - 78.1) < 1.5, `${name} 旧版保存的横屏位置应被丢弃，营地按新默认 (19.1,78.1)，实际 (${info.dx.toFixed(1)},${info.dy.toFixed(1)})`);
       assert.deepEqual(info.outside, [], `${name} 名牌不能伸出地图框`);
       assert.deepEqual(errors, [], `${name} 脚本报错`);
       await ctx.close();
