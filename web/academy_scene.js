@@ -14,8 +14,11 @@
     const current=root.dataset.scenePhase||window.SCENE_CLOCK?.resolve().ph||'day';
     return {season,phase:current==='night'?'night':current==='dusk'?'dusk':'day'};
   }
+  // 横屏地图换了新布局（12 处极简版）后，名牌坐标是一套；只有已经做好新布局的季节才用对应季节图，其余季节先沿用春季图，
+  // 等夏、秋、冬的新图做好后把季节加进这个名单即可（竖屏图仍按季节，用旧布局的竖屏坐标）。
+  const NEW_LAYOUT=['spring'];
   function images(){
-    const {season,phase}=state();
+    const {season:real,phase}=state(),season=NEW_LAYOUT.includes(real)?real:NEW_LAYOUT[0];
     return {day:file(season,phase==='night'?'day':phase),night:file(season,'night')};
   }
   function apply(){

@@ -84,10 +84,15 @@ async function shape(page,where){
         assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(el=>getComputedStyle(el).display),'none');
         if(!only)assert.match(await page.locator('.portal-stage').evaluate(el=>getComputedStyle(el,'::before').backgroundImage),/academy-portrait-4k/);
       }
-      else assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(el=>getComputedStyle(el).objectFit),'cover','横屏学院必须铺满画布');
+      else{
+        // 12 处极简新地图：图片按 4:3 原比例居中（contain），名牌放进同比例 .portal-frame，名牌按图片坐标定位。
+        assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(el=>getComputedStyle(el).objectFit),'contain','横屏地图按原比例完整显示');
+        const box=await page.locator('.portal-frame').evaluate(el=>{const r=el.getBoundingClientRect();return [r.width,r.height];});
+        assert.ok(Math.abs(box[0]/box[1]-4/3)<0.02,'地图框保持4:3');
+      }
       if(size.name!=='landscape')for(const season of ['spring','summer','autumn','winter'])for(const phase of ['day','dusk','night']){
         await page.evaluate(([s,p])=>{localStorage.setItem('scene-season',s);localStorage.setItem('scene-time',p);SCENE_FX.apply();},[season,phase]);
-        const file=sceneFile(season,phase,portrait);
+        const file=sceneFile(portrait?season:'spring',phase,portrait);      // 横屏：新布局只有春季，其余季节先沿用春季图（academy_scene.js NEW_LAYOUT）
         if(portrait){
           await page.waitForFunction(name=>getComputedStyle(document.querySelector('.portal-stage'),'::before').backgroundImage.includes(name),file);
           const img=await page.evaluate(name=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve([i.naturalWidth,i.naturalHeight]);i.onerror=reject;i.src='assets/academy/scene/'+name;}),file);
@@ -150,7 +155,7 @@ async function shape(page,where){
         await page.locator('select[data-scene-season]').selectOption('winter');
         await page.locator('select[data-scene-time]').selectOption('dusk');
         await home(page);
-        await page.waitForFunction(()=>document.querySelector('.portal-day')?.getAttribute('src')?.includes('academy-winter-dusk-4k.webp'));
+        await page.waitForFunction(()=>document.querySelector('.portal-day')?.getAttribute('src')?.includes('academy-spring-dusk-4k.webp'));   // 冬季新布局还没做：横屏地图先沿用春季图
         assert.deepEqual(await page.evaluate(()=>[localStorage.getItem('scene-season'),localStorage.getItem('scene-time')]),['winter','dusk']);
         await page.evaluate(()=>{localStorage.setItem('scene-season','spring');localStorage.setItem('scene-time','day');SCENE_FX.apply();});
       }

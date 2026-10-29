@@ -82,6 +82,7 @@ jobs:
       - name: Complete layout and narrative checks
         run: |
           node tests/ui_academy.cjs
+          node tests/ui_map_fit.cjs
           node tests/test_narrative_ink.cjs
           node tests/test_journey_dom.cjs
           node tests/ui_map_navigation.cjs
