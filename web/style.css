@@ -1751,3 +1751,5 @@ details.card-fold > summary small { font-family: system-ui, sans-serif; font-wei
 .tj-chapter-parts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
 .tj-chapter-parts .on{background:var(--accent);color:var(--panel)}
 @media(max-width:1100px){.wx-exam-list{grid-template-columns:1fr}.wx-exam-list .wx-atlas-entry{flex-direction:row;align-items:center}.wx-source-counts{margin-top:7px}}
+
+.camp-links{gap:var(--ds-sp-8,8px);margin-bottom:var(--ds-sp-12,12px);flex-wrap:wrap}

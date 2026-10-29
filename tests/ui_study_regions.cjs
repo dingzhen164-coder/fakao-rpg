@@ -11,7 +11,7 @@ async function compact(selector){await page.waitForFunction(()=>document.documen
  const base=await ready;browser=await chromium.launch(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{});page=await browser.newPage({viewport:{width:1280,height:860}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());await page.goto(base);await page.locator('.portal-world').waitFor();assert.equal(await page.locator('#studyHud').evaluate(x=>getComputedStyle(x).position),'fixed');
  const boards=await page.evaluate(()=>DASH.tree.map(b=>b.board));const first=boards[0],other=subject==='行测'?'资料分析':boards.find(b=>b!==first);
  await page.evaluate(async({first,other})=>{for(const deck of [first+'::自编',first+'::'+other+'::自编',other+'::自编','未分类自编'])await api('/api/cards/add',{deck,type:'问答',front:'自编条件 '+deck,back:'自编答案'});},{first,other});
- await page.locator('[data-portal-go="train"]').click();await page.locator('.study-regions').waitFor();
+ await page.evaluate(()=>go('train'));await page.locator('.study-regions').waitFor();
  assert.equal(await page.locator('[data-study-region]').count(),subject==='行测'||subject==='申论'?5:boards.length);
  if(subject==='行测'){assert.deepEqual(await page.locator('.study-region-copy b').allTextContents(),['万象峰','辨言峰','明理峰','演数峰','观星峰']);assert.equal(await page.locator('.study-peak-art').count(),5);}
  assert.equal(await page.locator('.yj-hall,.ln-hall').count(),0,'选择分区前不铺全部学习内容');

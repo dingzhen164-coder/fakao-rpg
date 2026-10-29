@@ -29,7 +29,7 @@ const ready=new Promise((ok,no)=>{let text='';const t=setTimeout(()=>no(Error(lo
   }
   if(subject==='申论'){
    const n=await page.evaluate(()=>fetch('/api/narrative').then(r=>r.json()));assert(n.profile.portraits.calm);if(!fixture)assert.deepEqual(Object.keys(n.profile.portraits),['calm']);
-   await page.evaluate(()=>go('home'));await page.locator('[data-portal-go="journal"]').click();await page.locator('.qb-archive>summary').click();await page.locator('[data-narrative-chapter="prologue"]').click();
+   await page.evaluate(()=>go('dwelling'));await page.locator('#campJournal').click();await page.locator('.qb-archive>summary').click();await page.locator('[data-narrative-chapter="prologue"]').click();
    const img=page.locator('.narrative-stage img').first();await img.waitFor({state:'attached'});await page.waitForFunction(()=>Array.from(document.querySelectorAll('.narrative-stage img')).some(i=>i.complete&&i.naturalWidth>0));
    await page.locator('.narrative-stage').waitFor();
    if(process.argv.includes('--shots')&&label==='tablet')await page.screenshot({path:path.resolve('ui-artifacts/art338/申论-人物.png')});

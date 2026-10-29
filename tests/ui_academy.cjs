@@ -75,7 +75,7 @@ async function shape(page,where){
       assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(img=>img.naturalWidth),3840);
       const nativeWidth=size.name==='portrait'?2880:3840;
       assert.ok(nativeWidth>=size.width*size.dpr,`${size.name}地图图像不足以覆盖设备像素`);
-      assert.equal(await page.locator('[data-portal-go]').count(),17);
+      assert.equal(await page.locator('[data-portal-go]').count(),12);
       for(const [key,glyph] of Object.entries(glyphs))assert.equal(await page.locator(`[data-portal-go="subject-${key}"] .portal-calligraphy`).textContent(),glyph);
       await shape(page,size.name+'总览');
       const portrait=await page.evaluate(()=>matchMedia('(orientation:portrait)').matches);
@@ -136,9 +136,10 @@ async function shape(page,where){
         await page.locator('.academy-room-back').click();
         await page.locator('.portal-world').waitFor();
       }
-      for(const [id,view] of Object.entries({dwelling:'dwelling',train:'train',skeleton:'skeleton',bank:'bank',notes:'notes',contest:'contest',log:'log',tianji:'tianji'})){
+      for(const [id,view] of Object.entries({dwelling:'dwelling',skeleton:'skeleton',bank:'bank',notes:'notes',contest:'contest',log:'log'})){
         await home(page);
-        await page.locator(`[data-portal-go="${id}"]`).click();
+        if(['contest','log'].includes(id))await page.evaluate(v=>go(v),id);          // 竞技场/成长档案不再占地图：从试炼塔、营地进，这里只查页面本身
+        else await page.locator(`[data-portal-go="${id}"]`).click();
         await page.waitForFunction(target=>VIEW===target,view);
         assert.ok((await page.locator('#view').innerText()).trim().length>8,id+'页面空白');
         await shape(page,size.name+' '+id);

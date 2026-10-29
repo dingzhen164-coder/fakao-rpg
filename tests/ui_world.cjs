@@ -8,8 +8,8 @@ let logs='',browser,page;srv.stderr.on('data',b=>logs+=b);
 const ready=new Promise((resolve,reject)=>{let out='';const timer=setTimeout(()=>reject(Error(logs||'临时库未启动')),20000);
  srv.stdout.on('data',b=>{out+=b;const m=out.match(/UI-READY (http:\/\/\S+)/);if(m){clearTimeout(timer);resolve(m[1]);}});
  srv.on('exit',c=>{clearTimeout(timer);reject(Error('服务退出 '+c+' '+logs));});});
-async function open(){await page.locator('[data-narrative="catalogue"],[data-portal-go="journal"]').first().click();await page.locator('.narrative-dialog').waitFor();}
-async function home(){await page.evaluate(()=>go('home'));await page.locator('[data-narrative="catalogue"],[data-portal-go="journal"]').first().waitFor();}
+async function open(){await page.evaluate(()=>go('dwelling'));await page.locator('#campJournal').first().click();await page.locator('.narrative-dialog').waitFor();}
+async function home(){await page.evaluate(()=>go('home'));await page.locator('.portal-world').first().waitFor();}
 async function card(){await page.getByRole('button',{name:/显示答案|揭示答案/}).click();await page.locator('[data-rate="4"]').click();await page.locator('#yjBack').click();await home();}
 async function data(){return page.evaluate(()=>fetch('/api/narrative').then(r=>r.json()));}
 async function bounds(){assert.equal(await page.evaluate(()=>{const d=document.querySelector('.narrative-dialog'),r=d.getBoundingClientRect();return document.documentElement.scrollWidth<=innerWidth+2&&r.left>=0&&r.right<=innerWidth&&d.scrollWidth<=d.clientWidth+2;}),true);}
