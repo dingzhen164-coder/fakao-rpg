@@ -68,6 +68,7 @@ jobs:
       - name: Training workspace, scene clock and folded entry
         run: |
           node tests/ui_training339.cjs
+          node tests/ui_legacy_css.cjs
           node tests/ui_daylight339.cjs
           node tests/ui_mock_html.cjs
           node tests/ui_mock_details.cjs
