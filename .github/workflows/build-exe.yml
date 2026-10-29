@@ -52,6 +52,17 @@ jobs:
               message = result.stdout[-10000:].replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
               print('::error title=Interface regression::' + message, flush=True)
               raise SystemExit(result.returncode)
+      - name: Mindmap inline formatting
+        shell: python
+        run: |
+          import subprocess
+          for command in [['node', 'tests/test_mindmap_text.cjs'], ['node', 'tests/ui_mindmap_format.cjs']]:
+              result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+              print(' '.join(command) + '\n' + result.stdout, flush=True)
+              if result.returncode:
+                  message = result.stdout[-10000:].replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+                  print('::error title=Mindmap formatting::' + message, flush=True)
+                  raise SystemExit(result.returncode)
       - name: Check scene layout regression
         run: node tests/test_scene_portal.cjs
       - name: Scene panels, trial hall, contest and map/shelf regressions
@@ -68,6 +79,7 @@ jobs:
       - name: Training workspace, scene clock and folded entry
         run: |
           node tests/ui_training339.cjs
+          node tests/ui_legacy_css.cjs
           node tests/ui_daylight339.cjs
           node tests/ui_mock_html.cjs
           node tests/ui_mock_details.cjs
