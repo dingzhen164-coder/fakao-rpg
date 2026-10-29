@@ -1,6 +1,6 @@
 {
-  "method": "native-tiled-day-masters-with-native-4k-time-light-composites",
-  "source": "/workspace/generated_images/fakao-4k-source",
+  "method": "学院场景来源依各记录而定；春季横屏为原生地形分块与独立建筑分层合成，其余沿用既有记录。",
+  "source": "场景素材来源与摘要分别见 records、lighting、sceneMatrix 和 springMinimal。",
   "records": {
     "academy": {
       "key": "academy",
@@ -8,129 +8,236 @@
         3840,
         2880
       ],
+      "method": "native terrain tiles and independently generated building sprites, downscaled and composited",
       "grid": [
         4,
         2
       ],
-      "overlap": 16,
-      "reference": {
-        "file": "exec-3511f378-1067-437e-b817-1cb3456c5d2a.png",
-        "sha256": "8444f74c145dc6e34650973398376bdfc2927618ce4f668caade4071a4bf8947",
-        "size": [
-          1448,
-          1086
-        ],
-        "role": "composition-and-low-frequency-tone-only"
-      },
+      "overlap_px": 64,
       "tiles": [
         {
           "row": 0,
           "col": 0,
           "x": 0,
           "y": 0,
-          "w": 976,
-          "h": 1456,
+          "w": 992,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1029,
+            1528
           ],
-          "sha256": "9ae8bf78f7d108dc7afbd13bf7ace85764ba3b60cf24908b60710c2bc94f9334"
+          "sha256": "73a02a6261c8e3d2ec6b65f986db3646ef229eb99d816584891151344f17eb9b",
+          "generated_source": "exec-0c21527e-9d84-4da2-b91a-cf4884633fbc.png"
         },
         {
           "row": 0,
           "col": 1,
-          "x": 944,
+          "x": 928,
           "y": 0,
-          "w": 992,
-          "h": 1456,
+          "w": 1024,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1046,
+            1504
           ],
-          "sha256": "e3a8430a06b433a1fced57591bc2012587f24b5233fae48b6379e696f24574bf"
+          "sha256": "2fa46e0479649269afcaa92875731d9b944898c5a8a99ff46896386510c781fd",
+          "generated_source": "exec-18dcf20d-a3d9-449b-8c4f-df2c6506c64c.png"
         },
         {
           "row": 0,
           "col": 2,
-          "x": 1904,
+          "x": 1888,
           "y": 0,
-          "w": 992,
-          "h": 1456,
+          "w": 1024,
+          "h": 1472,
           "native": [
-            1033,
-            1523
+            1046,
+            1504
           ],
-          "sha256": "5a05e776bd86bfe7bd9699c1b0ad56e73ecd7142f374134f51ccad8a2b92d6c0"
+          "sha256": "56eca1e0da4e3b2a4e4d0212483cddf7eb60a295be0d49655912386ffe1bb6ed",
+          "generated_source": "exec-cd4cca0c-75b3-44eb-83b9-867e5d549f3d.png"
         },
         {
           "row": 0,
           "col": 3,
-          "x": 2864,
+          "x": 2848,
           "y": 0,
-          "w": 976,
-          "h": 1456,
+          "w": 992,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1029,
+            1528
           ],
-          "sha256": "d5ca73886ad4d9ed03fe20f26bd1be79d4e9f8f8a8756b5ecfd9a063e35091e5"
+          "sha256": "31e8bd77c1d7ca6701e0dc7ae9cff51cb6cfb0841269333c0bb2db79b581e6fc",
+          "generated_source": "exec-bb63c678-ca9e-4950-9316-0ad94d44e099.png"
         },
         {
           "row": 1,
           "col": 0,
           "x": 0,
-          "y": 1424,
-          "w": 976,
-          "h": 1456,
+          "y": 1408,
+          "w": 992,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1029,
+            1528
           ],
-          "sha256": "c0a0d6c908913b276cd15700d5744a78c6c1fee64a1c7b8bf017e989f3284084"
+          "sha256": "bd88319ab454afb32ef633944c70be4afefb4fa109c80be3ae05ed15ba49cbea",
+          "generated_source": "exec-f61baa60-ed85-43e4-af3c-15b33a0841a1.png"
         },
         {
           "row": 1,
           "col": 1,
-          "x": 944,
-          "y": 1424,
-          "w": 992,
-          "h": 1456,
+          "x": 928,
+          "y": 1408,
+          "w": 1024,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1046,
+            1504
           ],
-          "sha256": "a5f6337dd5ff98518d6e06943e208a1c315059f3c9d2b50cb3575bcfb0c80cb5"
+          "sha256": "f5b4d6c1cbb59d255cdd5c1217c0252ca4d44e9f9129541b99b49225d8e031a9",
+          "generated_source": "exec-b11e3a5a-34bd-4367-918f-971f04fd51a9.png"
         },
         {
           "row": 1,
           "col": 2,
-          "x": 1904,
-          "y": 1424,
-          "w": 992,
-          "h": 1456,
+          "x": 1888,
+          "y": 1408,
+          "w": 1024,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1046,
+            1504
           ],
-          "sha256": "1731b34f2ea6b32065c6db926d768fec2851fa7d9aa624cf865cb3c9a5f12e9e"
+          "sha256": "e819a79150fae59d1419d96c92ba429d570d9b9c4b7b15f5f787bc523693a2d9",
+          "generated_source": "exec-ac76cfe0-063d-42e6-9e27-fb247b471682.png"
         },
         {
           "row": 1,
           "col": 3,
-          "x": 2864,
-          "y": 1424,
-          "w": 976,
-          "h": 1456,
+          "x": 2848,
+          "y": 1408,
+          "w": 992,
+          "h": 1472,
           "native": [
-            1024,
-            1536
+            1029,
+            1528
           ],
-          "sha256": "3514ada777859b0afe6365a2adaf4458d7d241d0df03815bbc54ca50d6b3b638"
+          "sha256": "e55c6fccb6368c012a71cb4aa61d9f32f77d6f96c10258252226cfed0416da26",
+          "generated_source": "exec-9ffcb305-bef4-4d0d-a8f4-8e9c4fb269f9.png"
         }
       ],
+      "patches": [
+        {
+          "id": "minfa",
+          "source": "exec-6422170c-bfb6-4c11-b673-6c1c7abffcdb.png",
+          "source_sha256": "56661a0f2974bc7906a5691b0a956cd29a40a481d60188a253278d7c01c47795",
+          "native": [
+            1254,
+            1254
+          ],
+          "target": [
+            0,
+            690,
+            768,
+            768
+          ],
+          "feather_px": 120,
+          "scale": [
+            0.6124401913875598,
+            0.6124401913875598
+          ]
+        },
+        {
+          "id": "xingsu",
+          "source": "exec-d6bb6b6e-06ec-4d32-a234-fb621da5c407.png",
+          "source_sha256": "c75a90cebe089a177e3f6cb79f08a49b954e51881847003fb49b6b9d7515a5ab",
+          "native": [
+            1254,
+            1254
+          ],
+          "target": [
+            3072,
+            700,
+            768,
+            768
+          ],
+          "feather_px": 120,
+          "scale": [
+            0.6124401913875598,
+            0.6124401913875598
+          ]
+        },
+        {
+          "id": "dwelling",
+          "source": "exec-b1e42e57-d4cd-4471-8069-4ed0eb5f44f7.png",
+          "source_sha256": "6e36489f9be625607bc0cf2969bd87adcb021ecd5ba39472b7bf6b8b279c26b2",
+          "native": [
+            1254,
+            1254
+          ],
+          "target": [
+            250,
+            1970,
+            768,
+            768
+          ],
+          "feather_px": 120,
+          "scale": [
+            0.6124401913875598,
+            0.6124401913875598
+          ]
+        },
+        {
+          "id": "skeleton",
+          "source": "exec-e9b1b320-217f-4aa8-ad1f-79750004ac61.png",
+          "source_sha256": "1887c79f09c9e48367066b1d1c9affc87b77c4fb801d37b17d7feac81f7bc0ca",
+          "native": [
+            1254,
+            1254
+          ],
+          "target": [
+            2080,
+            2000,
+            768,
+            768
+          ],
+          "feather_px": 120,
+          "scale": [
+            0.6124401913875598,
+            0.6124401913875598
+          ]
+        }
+      ],
+      "contact_patch": {
+        "source": "exec-916e835a-7d49-42ab-8258-a385fb4bc5cd.png",
+        "native_size": [
+          1448,
+          1086
+        ],
+        "reference_crop": [
+          0,
+          750,
+          800,
+          600
+        ],
+        "target": [
+          245,
+          1060,
+          300,
+          62
+        ],
+        "scale": [
+          0.5524861878453039,
+          0.5524861878453039
+        ],
+        "sha256": "8a912b7d38a3988cc67ec765260939c7071057cd7d9e6215325316e676068017"
+      },
+      "building_variants": "springMinimal.phases.day.buildings",
       "output": "web/assets/academy/scene/academy-day-4k.webp",
-      "bytes": 3761780,
-      "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650"
+      "bytes": 3583070,
+      "sha256": "5a0e51ec1d10a43145601dcbc742bb1db065162693eda3a8d8217fe1c035d039"
     },
     "academy-portrait": {
       "key": "academy-portrait",
@@ -2202,8 +2309,8 @@
         3840,
         2880
       ],
-      "bytes": 3761780,
-      "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650"
+      "bytes": 3583070,
+      "sha256": "5a0e51ec1d10a43145601dcbc742bb1db065162693eda3a8d8217fe1c035d039"
     },
     "spring-day-portrait": {
       "file": "web/assets/academy/scene/academy-portrait-4k.webp",
@@ -2220,8 +2327,8 @@
         3840,
         2880
       ],
-      "bytes": 3206986,
-      "sha256": "02cb2599df33bc10510eef7dce03eab0bc4666139e76455b859a8d30a0edb7ec"
+      "bytes": 3210434,
+      "sha256": "63b668c64f015c4674bdff0344dcebbe95f0b534452ea640d63a808f06809329"
     },
     "spring-dusk-portrait": {
       "file": "web/assets/academy/scene/academy-spring-dusk-portrait-4k.webp",
@@ -2238,8 +2345,8 @@
         3840,
         2880
       ],
-      "bytes": 2863616,
-      "sha256": "94be741699b07c904778f7cea94aa78d614c3f1b7c47fb2c2cefbdbda946e10b"
+      "bytes": 2871744,
+      "sha256": "bcebb2e387d1e9df6b69a926052d720e7c9ae253b675e16fca79d4ec1dcb4e9d"
     },
     "spring-night-portrait": {
       "file": "web/assets/academy/scene/academy-spring-night-portrait-4k.webp",
@@ -2415,34 +2522,48 @@
   },
   "lighting": {
     "web/assets/academy/scene/academy-spring-dusk-4k.webp": {
-      "method": "native-4k-base-with-low-frequency-generated-light-guide",
-      "nativeDetailWeight": 0.88,
-      "base": {
-        "file": "web/assets/academy/scene/academy-day-4k.webp",
-        "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650",
-        "size": [
-          3840,
-          2880
-        ]
+      "method": "native-terrain-low-frequency-guide-plus-separately-relit-registered-buildings",
+      "terrain": {
+        "method": "native-4k-base-with-low-frequency-generated-light-guide",
+        "nativeDetailWeight": 0.88,
+        "base": {
+          "file": "/workspace/academy-spring-final/work/terrain-ready.png",
+          "sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+          "size": [
+            3840,
+            2880
+          ]
+        },
+        "reference": {
+          "file": "/workspace/generated_images/exec-d11ef8c4-447e-4249-af02-d7fcc89158c9.png",
+          "sha256": "2f4a478b49fb1c0575c88b0c9f414af9c33d13d0e7695615e4653414b6e1977e",
+          "size": [
+            1448,
+            1086
+          ],
+          "role": "low-frequency-light-and-color-only"
+        },
+        "output": {
+          "file": "/workspace/academy-spring-final/work/terrain-ready-dusk.webp",
+          "sha256": "2ab98cb9d9d003eb1df7575026c331df51ec3ea61535853a56fbddd513f6b5ae",
+          "size": [
+            3840,
+            2880
+          ],
+          "bytes": 2913814
+        }
       },
-      "reference": {
-        "file": "/workspace/generated_images/fakao-4k-source/lighting/spring-dusk-landscape.png",
-        "sha256": "8d2dbf8c5a559f439933f60cc3a409c45ee893a6b7584ceff0bf695ca2af8dab",
-        "size": [
-          1448,
-          1086
-        ],
-        "role": "low-frequency-light-and-color-only"
-      },
+      "building_variants": "springMinimal.phases.dusk.buildings",
       "output": {
         "file": "web/assets/academy/scene/academy-spring-dusk-4k.webp",
-        "sha256": "02cb2599df33bc10510eef7dce03eab0bc4666139e76455b859a8d30a0edb7ec",
         "size": [
           3840,
           2880
         ],
-        "bytes": 3206986
-      }
+        "bytes": 3210434,
+        "sha256": "63b668c64f015c4674bdff0344dcebbe95f0b534452ea640d63a808f06809329"
+      },
+      "procedural_stars": 0
     },
     "web/assets/academy/scene/academy-spring-dusk-portrait-4k.webp": {
       "method": "native-4k-base-with-low-frequency-generated-light-guide",
@@ -2475,34 +2596,48 @@
       }
     },
     "web/assets/academy/scene/academy-spring-night-4k.webp": {
-      "method": "native-4k-base-with-low-frequency-generated-light-guide",
-      "nativeDetailWeight": 0.72,
-      "base": {
-        "file": "web/assets/academy/scene/academy-day-4k.webp",
-        "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650",
-        "size": [
-          3840,
-          2880
-        ]
+      "method": "native-terrain-low-frequency-guide-plus-separately-relit-registered-buildings",
+      "terrain": {
+        "method": "native-4k-base-with-low-frequency-generated-light-guide",
+        "nativeDetailWeight": 0.72,
+        "base": {
+          "file": "/workspace/academy-spring-final/work/terrain-ready.png",
+          "sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+          "size": [
+            3840,
+            2880
+          ]
+        },
+        "reference": {
+          "file": "/workspace/generated_images/exec-b29282ef-d033-426d-bf04-0749d576b526.png",
+          "sha256": "5eb484a4f3b97bac0817963784e8816514e051a47c3ea9e248e7c5dd241a192e",
+          "size": [
+            1448,
+            1086
+          ],
+          "role": "low-frequency-light-and-color-only"
+        },
+        "output": {
+          "file": "/workspace/academy-spring-final/work/terrain-ready-night.webp",
+          "sha256": "000cd45a5ce90ade4c889b0812e5e3035a990081529a63f0cda0eae8f8a1db3b",
+          "size": [
+            3840,
+            2880
+          ],
+          "bytes": 2478750
+        }
       },
-      "reference": {
-        "file": "/workspace/generated_images/fakao-4k-source/lighting/spring-night-landscape.png",
-        "sha256": "978fc17e65fa342625e6c2938074cbd8026dfe6d268cc3765c2e80085ec67ce6",
-        "size": [
-          1448,
-          1086
-        ],
-        "role": "low-frequency-light-and-color-only"
-      },
+      "building_variants": "springMinimal.phases.night.buildings",
       "output": {
         "file": "web/assets/academy/scene/academy-spring-night-4k.webp",
-        "sha256": "94be741699b07c904778f7cea94aa78d614c3f1b7c47fb2c2cefbdbda946e10b",
         "size": [
           3840,
           2880
         ],
-        "bytes": 2863616
-      }
+        "bytes": 2871744,
+        "sha256": "bcebb2e387d1e9df6b69a926052d720e7c9ae253b675e16fca79d4ec1dcb4e9d"
+      },
+      "procedural_stars": 75
     },
     "web/assets/academy/scene/academy-spring-night-portrait-4k.webp": {
       "method": "native-4k-base-with-low-frequency-generated-light-guide",
@@ -3140,5 +3275,2216 @@
     "method": "generated-low-frequency-color-guides-over-native-4k-detailed-masters",
     "detailSource": "4K original native-tile autumn master; no low-resolution image enlarged as final texture",
     "nativeDetailWeight": 0.62
+  },
+  "springMinimal": {
+    "approved": true,
+    "description": "12处极简学院，横屏春季三时段；仅开发分支，未发布",
+    "original_day_record": {
+      "key": "academy",
+      "target": [
+        3840,
+        2880
+      ],
+      "grid": [
+        4,
+        2
+      ],
+      "overlap": 16,
+      "reference": {
+        "file": "exec-3511f378-1067-437e-b817-1cb3456c5d2a.png",
+        "sha256": "8444f74c145dc6e34650973398376bdfc2927618ce4f668caade4071a4bf8947",
+        "size": [
+          1448,
+          1086
+        ],
+        "role": "composition-and-low-frequency-tone-only"
+      },
+      "tiles": [
+        {
+          "row": 0,
+          "col": 0,
+          "x": 0,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "9ae8bf78f7d108dc7afbd13bf7ace85764ba3b60cf24908b60710c2bc94f9334"
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "x": 944,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "e3a8430a06b433a1fced57591bc2012587f24b5233fae48b6379e696f24574bf"
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "x": 1904,
+          "y": 0,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1033,
+            1523
+          ],
+          "sha256": "5a05e776bd86bfe7bd9699c1b0ad56e73ecd7142f374134f51ccad8a2b92d6c0"
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "x": 2864,
+          "y": 0,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "d5ca73886ad4d9ed03fe20f26bd1be79d4e9f8f8a8756b5ecfd9a063e35091e5"
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "x": 0,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "c0a0d6c908913b276cd15700d5744a78c6c1fee64a1c7b8bf017e989f3284084"
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "x": 944,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "a5f6337dd5ff98518d6e06943e208a1c315059f3c9d2b50cb3575bcfb0c80cb5"
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "x": 1904,
+          "y": 1424,
+          "w": 992,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "1731b34f2ea6b32065c6db926d768fec2851fa7d9aa624cf865cb3c9a5f12e9e"
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "x": 2864,
+          "y": 1424,
+          "w": 976,
+          "h": 1456,
+          "native": [
+            1024,
+            1536
+          ],
+          "sha256": "3514ada777859b0afe6365a2adaf4458d7d241d0df03815bbc54ca50d6b3b638"
+        }
+      ],
+      "output": "web/assets/academy/scene/academy-day-4k.webp",
+      "bytes": 3761780,
+      "sha256": "7eec532f20b5258ea8a7314a0d33dc93d7d7cf53bab4f19063af647c5c2a8650"
+    },
+    "hsv_method": "Pillow HSV；S<0.20 或 V<0.15 计中性；H 20–65° 黄橙、65–170° 绿、170–260° 蓝青，其余红紫等；占全部像素百分比",
+    "phases": {
+      "day": {
+        "status": "approved and installed on development branch",
+        "phase": "day",
+        "output": {
+          "path": "web/assets/academy/scene/academy-day-4k.webp",
+          "dimensions": [
+            3840,
+            2880
+          ],
+          "bytes": 3583070,
+          "sha256": "5a0e51ec1d10a43145601dcbc742bb1db065162693eda3a8d8217fe1c035d039"
+        },
+        "terrain": {
+          "reference_sha256": "42b2cfed8b1c68d39b402d385549b5d0f93732b124cb633bd10ece2c5930dcf3",
+          "original_tiles": [
+            {
+              "row": 0,
+              "col": 0,
+              "x": 0,
+              "y": 0,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "73a02a6261c8e3d2ec6b65f986db3646ef229eb99d816584891151344f17eb9b",
+              "generated_source": "exec-0c21527e-9d84-4da2-b91a-cf4884633fbc.png"
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "x": 928,
+              "y": 0,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "2fa46e0479649269afcaa92875731d9b944898c5a8a99ff46896386510c781fd",
+              "generated_source": "exec-18dcf20d-a3d9-449b-8c4f-df2c6506c64c.png"
+            },
+            {
+              "row": 0,
+              "col": 2,
+              "x": 1888,
+              "y": 0,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "56eca1e0da4e3b2a4e4d0212483cddf7eb60a295be0d49655912386ffe1bb6ed",
+              "generated_source": "exec-cd4cca0c-75b3-44eb-83b9-867e5d549f3d.png"
+            },
+            {
+              "row": 0,
+              "col": 3,
+              "x": 2848,
+              "y": 0,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "31e8bd77c1d7ca6701e0dc7ae9cff51cb6cfb0841269333c0bb2db79b581e6fc",
+              "generated_source": "exec-bb63c678-ca9e-4950-9316-0ad94d44e099.png"
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "x": 0,
+              "y": 1408,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "bd88319ab454afb32ef633944c70be4afefb4fa109c80be3ae05ed15ba49cbea",
+              "generated_source": "exec-f61baa60-ed85-43e4-af3c-15b33a0841a1.png"
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "x": 928,
+              "y": 1408,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "f5b4d6c1cbb59d255cdd5c1217c0252ca4d44e9f9129541b99b49225d8e031a9",
+              "generated_source": "exec-b11e3a5a-34bd-4367-918f-971f04fd51a9.png"
+            },
+            {
+              "row": 1,
+              "col": 2,
+              "x": 1888,
+              "y": 1408,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "e819a79150fae59d1419d96c92ba429d570d9b9c4b7b15f5f787bc523693a2d9",
+              "generated_source": "exec-ac76cfe0-063d-42e6-9e27-fb247b471682.png"
+            },
+            {
+              "row": 1,
+              "col": 3,
+              "x": 2848,
+              "y": 1408,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "e55c6fccb6368c012a71cb4aa61d9f32f77d6f96c10258252226cfed0416da26",
+              "generated_source": "exec-9ffcb305-bef4-4d0d-a8f4-8e9c4fb269f9.png"
+            }
+          ],
+          "overlap_px": 64,
+          "patches": [
+            {
+              "id": "minfa",
+              "source": "exec-6422170c-bfb6-4c11-b673-6c1c7abffcdb.png",
+              "source_sha256": "56661a0f2974bc7906a5691b0a956cd29a40a481d60188a253278d7c01c47795",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                0,
+                690,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "xingsu",
+              "source": "exec-d6bb6b6e-06ec-4d32-a234-fb621da5c407.png",
+              "source_sha256": "c75a90cebe089a177e3f6cb79f08a49b954e51881847003fb49b6b9d7515a5ab",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                3072,
+                700,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "dwelling",
+              "source": "exec-b1e42e57-d4cd-4471-8069-4ed0eb5f44f7.png",
+              "source_sha256": "6e36489f9be625607bc0cf2969bd87adcb021ecd5ba39472b7bf6b8b279c26b2",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                250,
+                1970,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "skeleton",
+              "source": "exec-e9b1b320-217f-4aa8-ad1f-79750004ac61.png",
+              "source_sha256": "1887c79f09c9e48367066b1d1c9affc87b77c4fb801d37b17d7feac81f7bc0ca",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                2080,
+                2000,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            }
+          ],
+          "contact_patch": {
+            "source": "exec-916e835a-7d49-42ab-8258-a385fb4bc5cd.png",
+            "native_size": [
+              1448,
+              1086
+            ],
+            "reference_crop": [
+              0,
+              750,
+              800,
+              600
+            ],
+            "target": [
+              245,
+              1060,
+              300,
+              62
+            ],
+            "scale": [
+              0.5524861878453039,
+              0.5524861878453039
+            ],
+            "sha256": "8a912b7d38a3988cc67ec765260939c7071057cd7d9e6215325316e676068017"
+          },
+          "ready_png_sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+          "time_lighting": null
+        },
+        "buildings": [
+          {
+            "id": "subject-minfa",
+            "day_source": "/workspace/generated_images/exec-6cccc413-279c-4e8e-b9b2-b6719bfc12de.png",
+            "day_native": [
+              1254,
+              1254
+            ],
+            "day_sha256": "0e7e9a693269d0bac4e22b2c881a4592fd7185f526b4960ce295f8f1efcfa47d",
+            "day_keyed_sha256": "2ed194b0f4dc7f1a1f75aab0a4ba60d472280ea76df3f37e83e010d17d612597",
+            "time_variant": null,
+            "placement_px": [
+              267,
+              797,
+              250,
+              264
+            ],
+            "entry_px": [
+              392,
+              1061
+            ],
+            "scale": 0.23585
+          },
+          {
+            "id": "subject-xingfa",
+            "day_source": "/workspace/generated_images/exec-66eb5601-7916-4b08-a174-9792fe9ab44c.png",
+            "day_native": [
+              1560,
+              1008
+            ],
+            "day_sha256": "0bd3df54a50b37ec0d7f666f3c8caa0990ff30ba222951cad7228e2ccd2da7b3",
+            "day_keyed_sha256": "ba6937d5433274be8924ea1445c6e992f0d3c2736ed55868a3f251f6281b2116",
+            "time_variant": null,
+            "placement_px": [
+              1003,
+              346,
+              662,
+              410
+            ],
+            "entry_px": [
+              1521,
+              736
+            ],
+            "scale": 0.43158
+          },
+          {
+            "id": "subject-minsu",
+            "day_source": "/workspace/generated_images/exec-8ddb5c0b-1e71-4637-826d-7a6bb1f0fba0.png",
+            "day_native": [
+              1656,
+              950
+            ],
+            "day_sha256": "2be7619045d0a4fe75a2b0a7d961e3cf6dc204480f2b7a5253fb4d9d67751b56",
+            "day_keyed_sha256": "54e84fb95a30002c4f27ca4314cc0ecbb8da2e90702b27a3f296dbf39498e7e2",
+            "time_variant": null,
+            "placement_px": [
+              2099,
+              391,
+              735,
+              405
+            ],
+            "entry_px": [
+              2397,
+              776
+            ],
+            "scale": 0.46024
+          },
+          {
+            "id": "subject-xingsu",
+            "day_source": "/workspace/generated_images/exec-86fe804f-9c91-4566-aac3-2fdb91ceadf6.png",
+            "day_native": [
+              1001,
+              1572
+            ],
+            "day_sha256": "9dc43f0f6cbc681e237e4b8806639e6aa4d1302e9f41db25c871c0bc6f12afed",
+            "day_keyed_sha256": "1f79e082121f6c207a88d48cb0fd14bcf5bf038bf6d0685da3e95b007ccec436",
+            "time_variant": null,
+            "placement_px": [
+              3375,
+              564,
+              240,
+              470
+            ],
+            "entry_px": [
+              3465,
+              1029
+            ],
+            "scale": 0.30691
+          },
+          {
+            "id": "subject-xingzheng",
+            "day_source": "/workspace/generated_images/exec-bc677522-b2f0-4f31-b7fb-1876a8b3a67a.png",
+            "day_native": [
+              1593,
+              987
+            ],
+            "day_sha256": "de7277f5f98a79ef1dfdaae0a871f17243ed4950aa90630eaf0ab835b109960f",
+            "day_keyed_sha256": "f85977d66adef1075daa73bf5c56e3ab78f9c9eb8c950c2a8f73466be1396220",
+            "time_variant": null,
+            "placement_px": [
+              960,
+              986,
+              695,
+              420
+            ],
+            "entry_px": [
+              1198,
+              1386
+            ],
+            "scale": 0.4521
+          },
+          {
+            "id": "subject-shangjing",
+            "day_source": "/workspace/generated_images/exec-058fa3ea-d6b4-48df-8f38-ee537f11b326.png",
+            "day_native": [
+              1574,
+              999
+            ],
+            "day_sha256": "655217e4ca5513316aca6c9114ba978eba778d0eac8c37f6c100157b79868dd8",
+            "day_keyed_sha256": "3a6d208f0d423d2eb082060f85b1145b54309ac7bd4124152941f4bf468a4645",
+            "time_variant": null,
+            "placement_px": [
+              264,
+              1456,
+              650,
+              374
+            ],
+            "entry_px": [
+              799,
+              1810
+            ],
+            "scale": 0.43103
+          },
+          {
+            "id": "subject-sanguo",
+            "day_source": "/workspace/generated_images/exec-86c7080d-e85e-4d44-a2b0-96a3eebd77ed.png",
+            "day_native": [
+              1297,
+              1213
+            ],
+            "day_sha256": "6a8f91444d030a2a8206295a06eb790d99baecc32ad9aca222c1352b98be3b10",
+            "day_keyed_sha256": "4028d828aa41339ab160f73521d65f178d4074e3556e6e135311ed4116ac3858",
+            "time_variant": null,
+            "placement_px": [
+              2362,
+              1566,
+              420,
+              383
+            ],
+            "entry_px": [
+              2477,
+              1944
+            ],
+            "scale": 0.34539
+          },
+          {
+            "id": "subject-lilun",
+            "day_source": "/workspace/generated_images/exec-c841cbfb-c4f1-44ed-8f02-33863f76010c.png",
+            "day_native": [
+              1413,
+              1113
+            ],
+            "day_sha256": "5af49b08a7cf5e4f39a0f0818588ac00c901890018eebe550ce2ab3fdf8c4148",
+            "day_keyed_sha256": "7c70e030adb7df137244e116c79c65714b01f1d76fd5817d4bef49bcbc20a77c",
+            "time_variant": null,
+            "placement_px": [
+              2934,
+              1509,
+              698,
+              520
+            ],
+            "entry_px": [
+              3503,
+              2019
+            ],
+            "scale": 0.51232
+          },
+          {
+            "id": "dwelling",
+            "day_source": "/workspace/generated_images/exec-72b5af66-ee48-46f5-b77b-ee160f8b11f7.png",
+            "day_native": [
+              1659,
+              948
+            ],
+            "day_sha256": "90242124614a2ef0c9ed3472da3fa9ef4bc7bf4a2015a8f9a372155d363cde69",
+            "day_keyed_sha256": "e54eb52bc8899e9470f46734bb5f229e0ed47b875d9ad1b3f20ff4863db9cc45",
+            "time_variant": null,
+            "placement_px": [
+              296,
+              2014,
+              511,
+              280
+            ],
+            "entry_px": [
+              732,
+              2249
+            ],
+            "scale": 0.32672
+          },
+          {
+            "id": "bank",
+            "day_source": "/workspace/generated_images/exec-27ed6d50-be58-4ec2-a4fc-b62439a23015.png",
+            "day_native": [
+              1145,
+              1374
+            ],
+            "day_sha256": "4d23591cd60ae45d8db085cfa3341ce9c7fdee4e5fefc3946122a32329247c66",
+            "day_keyed_sha256": "dda42465e5dd19b6b4cf18edeb91f13969db4fce2f78108b687c2e016e34276b",
+            "time_variant": null,
+            "placement_px": [
+              1832,
+              984,
+              394,
+              700
+            ],
+            "entry_px": [
+              2149,
+              1669
+            ],
+            "scale": 0.52317
+          },
+          {
+            "id": "skeleton",
+            "day_source": "/workspace/generated_images/exec-95c84e20-232d-4ba4-9dd0-c046f79d8d4d.png",
+            "day_native": [
+              1405,
+              1119
+            ],
+            "day_sha256": "bf849a8ff253ddcd445853f275eb6dcdbef3cc16eda550ca5c30ad25fedf320a",
+            "day_keyed_sha256": "cf1e2dcf1ecc3b1fa2491814e9e977c5afafa87c80a0b9a7463091293ebb6c38",
+            "time_variant": null,
+            "placement_px": [
+              2216,
+              1992,
+              553,
+              435
+            ],
+            "entry_px": [
+              2492,
+              2447
+            ],
+            "scale": 0.42439
+          },
+          {
+            "id": "notes",
+            "day_source": "/workspace/generated_images/exec-e2a3cc41-5ed2-4800-b290-2615ed151e0c.png",
+            "day_native": [
+              1176,
+              1337
+            ],
+            "day_sha256": "c37186deff4339632b20cfa46db170d1db7f42590048bb71ef32a4d4656b1fca",
+            "day_keyed_sha256": "41ff70cd71fd1d5fef617fb0adc0a324a1db9dab82e019456e058638edadbf41",
+            "time_variant": null,
+            "placement_px": [
+              1269,
+              1971,
+              273,
+              469
+            ],
+            "entry_px": [
+              1500,
+              2445
+            ],
+            "scale": 0.38192
+          }
+        ],
+        "method": {
+          "placement": "frozen day layout; native single-building assets downscaled only",
+          "daylight_composition": "magenta key, contact shadow; green saturation x0.88, global saturation x0.63, subtle upper haze",
+          "time_variants": "new generated lighting variants registered to original day alpha; absent color pixels filled by tinted day pixels",
+          "sky_stars": 0,
+          "phase_saturation_factor": 0.63,
+          "notes": "地形参考仅用于模糊后低频光色；建筑时段版本沿用白天透明边界；原始与中间文件保存在工作区，不随仓库分发。"
+        },
+        "hsv_percent": {
+          "green": 31.62,
+          "blue_cyan": 27.04,
+          "neutral": 25.22,
+          "yellow_orange": 14.86,
+          "other": 1.26
+        }
+      },
+      "dusk": {
+        "status": "approved and installed on development branch",
+        "phase": "dusk",
+        "output": {
+          "path": "web/assets/academy/scene/academy-spring-dusk-4k.webp",
+          "dimensions": [
+            3840,
+            2880
+          ],
+          "bytes": 3210434,
+          "sha256": "63b668c64f015c4674bdff0344dcebbe95f0b534452ea640d63a808f06809329"
+        },
+        "terrain": {
+          "reference_sha256": "42b2cfed8b1c68d39b402d385549b5d0f93732b124cb633bd10ece2c5930dcf3",
+          "original_tiles": [
+            {
+              "row": 0,
+              "col": 0,
+              "x": 0,
+              "y": 0,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "73a02a6261c8e3d2ec6b65f986db3646ef229eb99d816584891151344f17eb9b",
+              "generated_source": "exec-0c21527e-9d84-4da2-b91a-cf4884633fbc.png"
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "x": 928,
+              "y": 0,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "2fa46e0479649269afcaa92875731d9b944898c5a8a99ff46896386510c781fd",
+              "generated_source": "exec-18dcf20d-a3d9-449b-8c4f-df2c6506c64c.png"
+            },
+            {
+              "row": 0,
+              "col": 2,
+              "x": 1888,
+              "y": 0,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "56eca1e0da4e3b2a4e4d0212483cddf7eb60a295be0d49655912386ffe1bb6ed",
+              "generated_source": "exec-cd4cca0c-75b3-44eb-83b9-867e5d549f3d.png"
+            },
+            {
+              "row": 0,
+              "col": 3,
+              "x": 2848,
+              "y": 0,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "31e8bd77c1d7ca6701e0dc7ae9cff51cb6cfb0841269333c0bb2db79b581e6fc",
+              "generated_source": "exec-bb63c678-ca9e-4950-9316-0ad94d44e099.png"
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "x": 0,
+              "y": 1408,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "bd88319ab454afb32ef633944c70be4afefb4fa109c80be3ae05ed15ba49cbea",
+              "generated_source": "exec-f61baa60-ed85-43e4-af3c-15b33a0841a1.png"
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "x": 928,
+              "y": 1408,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "f5b4d6c1cbb59d255cdd5c1217c0252ca4d44e9f9129541b99b49225d8e031a9",
+              "generated_source": "exec-b11e3a5a-34bd-4367-918f-971f04fd51a9.png"
+            },
+            {
+              "row": 1,
+              "col": 2,
+              "x": 1888,
+              "y": 1408,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "e819a79150fae59d1419d96c92ba429d570d9b9c4b7b15f5f787bc523693a2d9",
+              "generated_source": "exec-ac76cfe0-063d-42e6-9e27-fb247b471682.png"
+            },
+            {
+              "row": 1,
+              "col": 3,
+              "x": 2848,
+              "y": 1408,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "e55c6fccb6368c012a71cb4aa61d9f32f77d6f96c10258252226cfed0416da26",
+              "generated_source": "exec-9ffcb305-bef4-4d0d-a8f4-8e9c4fb269f9.png"
+            }
+          ],
+          "overlap_px": 64,
+          "patches": [
+            {
+              "id": "minfa",
+              "source": "exec-6422170c-bfb6-4c11-b673-6c1c7abffcdb.png",
+              "source_sha256": "56661a0f2974bc7906a5691b0a956cd29a40a481d60188a253278d7c01c47795",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                0,
+                690,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "xingsu",
+              "source": "exec-d6bb6b6e-06ec-4d32-a234-fb621da5c407.png",
+              "source_sha256": "c75a90cebe089a177e3f6cb79f08a49b954e51881847003fb49b6b9d7515a5ab",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                3072,
+                700,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "dwelling",
+              "source": "exec-b1e42e57-d4cd-4471-8069-4ed0eb5f44f7.png",
+              "source_sha256": "6e36489f9be625607bc0cf2969bd87adcb021ecd5ba39472b7bf6b8b279c26b2",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                250,
+                1970,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "skeleton",
+              "source": "exec-e9b1b320-217f-4aa8-ad1f-79750004ac61.png",
+              "source_sha256": "1887c79f09c9e48367066b1d1c9affc87b77c4fb801d37b17d7feac81f7bc0ca",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                2080,
+                2000,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            }
+          ],
+          "contact_patch": {
+            "source": "exec-916e835a-7d49-42ab-8258-a385fb4bc5cd.png",
+            "native_size": [
+              1448,
+              1086
+            ],
+            "reference_crop": [
+              0,
+              750,
+              800,
+              600
+            ],
+            "target": [
+              245,
+              1060,
+              300,
+              62
+            ],
+            "scale": [
+              0.5524861878453039,
+              0.5524861878453039
+            ],
+            "sha256": "8a912b7d38a3988cc67ec765260939c7071057cd7d9e6215325316e676068017"
+          },
+          "ready_png_sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+          "time_lighting": {
+            "method": "native-4k-base-with-low-frequency-generated-light-guide",
+            "nativeDetailWeight": 0.88,
+            "base": {
+              "file": "/workspace/academy-spring-final/work/terrain-ready.png",
+              "sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+              "size": [
+                3840,
+                2880
+              ]
+            },
+            "reference": {
+              "file": "/workspace/generated_images/exec-d11ef8c4-447e-4249-af02-d7fcc89158c9.png",
+              "sha256": "2f4a478b49fb1c0575c88b0c9f414af9c33d13d0e7695615e4653414b6e1977e",
+              "size": [
+                1448,
+                1086
+              ],
+              "role": "low-frequency-light-and-color-only"
+            },
+            "output": {
+              "file": "/workspace/academy-spring-final/work/terrain-ready-dusk.webp",
+              "sha256": "2ab98cb9d9d003eb1df7575026c331df51ec3ea61535853a56fbddd513f6b5ae",
+              "size": [
+                3840,
+                2880
+              ],
+              "bytes": 2913814
+            }
+          }
+        },
+        "buildings": [
+          {
+            "id": "subject-minfa",
+            "day_source": "/workspace/generated_images/exec-6cccc413-279c-4e8e-b9b2-b6719bfc12de.png",
+            "day_native": [
+              1254,
+              1254
+            ],
+            "day_sha256": "0e7e9a693269d0bac4e22b2c881a4592fd7185f526b4960ce295f8f1efcfa47d",
+            "day_keyed_sha256": "2ed194b0f4dc7f1a1f75aab0a4ba60d472280ea76df3f37e83e010d17d612597",
+            "time_variant": {
+              "id": "minfa",
+              "phase": "dusk",
+              "source": "exec-36ed747e-0041-4ed7-8be5-f5c4162e4f1f.png",
+              "source_sha256": "790cd857ebc6baa81c77d3ecac3ea619aafec0a1901f8e9e4a1d42187a846b8b",
+              "source_size": [
+                1254,
+                1254
+              ],
+              "day_source": "exec-6cccc413-279c-4e8e-b9b2-b6719bfc12de.png",
+              "day_source_sha256": "0e7e9a693269d0bac4e22b2c881a4592fd7185f526b4960ce295f8f1efcfa47d",
+              "crop": [
+                98,
+                24,
+                1158,
+                1144
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 481054
+            },
+            "placement_px": [
+              267,
+              797,
+              250,
+              264
+            ],
+            "entry_px": [
+              392,
+              1061
+            ],
+            "scale": 0.23585
+          },
+          {
+            "id": "subject-xingfa",
+            "day_source": "/workspace/generated_images/exec-66eb5601-7916-4b08-a174-9792fe9ab44c.png",
+            "day_native": [
+              1560,
+              1008
+            ],
+            "day_sha256": "0bd3df54a50b37ec0d7f666f3c8caa0990ff30ba222951cad7228e2ccd2da7b3",
+            "day_keyed_sha256": "ba6937d5433274be8924ea1445c6e992f0d3c2736ed55868a3f251f6281b2116",
+            "time_variant": {
+              "id": "xingfa",
+              "phase": "dusk",
+              "source": "exec-db9b24bc-9490-4b93-9d3a-e63201e288db.png",
+              "source_sha256": "125a895f12039046ae42edb479b2427452eefaaefb4ba89b770cef986b125d36",
+              "source_size": [
+                1560,
+                1008
+              ],
+              "day_source": "exec-66eb5601-7916-4b08-a174-9792fe9ab44c.png",
+              "day_source_sha256": "0bd3df54a50b37ec0d7f666f3c8caa0990ff30ba222951cad7228e2ccd2da7b3",
+              "crop": [
+                12,
+                27,
+                1547,
+                977
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 568273
+            },
+            "placement_px": [
+              1003,
+              346,
+              662,
+              410
+            ],
+            "entry_px": [
+              1521,
+              736
+            ],
+            "scale": 0.43158
+          },
+          {
+            "id": "subject-minsu",
+            "day_source": "/workspace/generated_images/exec-8ddb5c0b-1e71-4637-826d-7a6bb1f0fba0.png",
+            "day_native": [
+              1656,
+              950
+            ],
+            "day_sha256": "2be7619045d0a4fe75a2b0a7d961e3cf6dc204480f2b7a5253fb4d9d67751b56",
+            "day_keyed_sha256": "54e84fb95a30002c4f27ca4314cc0ecbb8da2e90702b27a3f296dbf39498e7e2",
+            "time_variant": {
+              "id": "minsu",
+              "phase": "dusk",
+              "source": "exec-04f6170d-08c3-4437-b2e5-76305bc232ce.png",
+              "source_sha256": "d5957861ba3e9f61c0a1903054bcf2f82970d75234513085192382808a0ac2dc",
+              "source_size": [
+                1655,
+                950
+              ],
+              "day_source": "exec-8ddb5c0b-1e71-4637-826d-7a6bb1f0fba0.png",
+              "day_source_sha256": "2be7619045d0a4fe75a2b0a7d961e3cf6dc204480f2b7a5253fb4d9d67751b56",
+              "crop": [
+                30,
+                38,
+                1627,
+                917
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 561507
+            },
+            "placement_px": [
+              2099,
+              391,
+              735,
+              405
+            ],
+            "entry_px": [
+              2397,
+              776
+            ],
+            "scale": 0.46024
+          },
+          {
+            "id": "subject-xingsu",
+            "day_source": "/workspace/generated_images/exec-86fe804f-9c91-4566-aac3-2fdb91ceadf6.png",
+            "day_native": [
+              1001,
+              1572
+            ],
+            "day_sha256": "9dc43f0f6cbc681e237e4b8806639e6aa4d1302e9f41db25c871c0bc6f12afed",
+            "day_keyed_sha256": "1f79e082121f6c207a88d48cb0fd14bcf5bf038bf6d0685da3e95b007ccec436",
+            "time_variant": {
+              "id": "xingsu",
+              "phase": "dusk",
+              "source": "exec-3e21ac13-2f09-4c11-bc7c-410570d27e84.png",
+              "source_sha256": "62fa0f68cc600f5ec600a01ce51df188e5bfbc037cab7b29d608d21d87f1a9a5",
+              "source_size": [
+                1001,
+                1572
+              ],
+              "day_source": "exec-86fe804f-9c91-4566-aac3-2fdb91ceadf6.png",
+              "day_source_sha256": "9dc43f0f6cbc681e237e4b8806639e6aa4d1302e9f41db25c871c0bc6f12afed",
+              "crop": [
+                106,
+                2,
+                888,
+                1535
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 663803
+            },
+            "placement_px": [
+              3375,
+              564,
+              240,
+              470
+            ],
+            "entry_px": [
+              3465,
+              1029
+            ],
+            "scale": 0.30691
+          },
+          {
+            "id": "subject-xingzheng",
+            "day_source": "/workspace/generated_images/exec-bc677522-b2f0-4f31-b7fb-1876a8b3a67a.png",
+            "day_native": [
+              1593,
+              987
+            ],
+            "day_sha256": "de7277f5f98a79ef1dfdaae0a871f17243ed4950aa90630eaf0ab835b109960f",
+            "day_keyed_sha256": "f85977d66adef1075daa73bf5c56e3ab78f9c9eb8c950c2a8f73466be1396220",
+            "time_variant": {
+              "id": "xingzheng",
+              "phase": "dusk",
+              "source": "exec-932bee20-1422-4fad-8c0c-8290b75a7749.png",
+              "source_sha256": "8c5ebc48fdb3128b0820b9de36a0799b9d2b75a1b06c39318448abe478665b09",
+              "source_size": [
+                1593,
+                987
+              ],
+              "day_source": "exec-bc677522-b2f0-4f31-b7fb-1876a8b3a67a.png",
+              "day_source_sha256": "de7277f5f98a79ef1dfdaae0a871f17243ed4950aa90630eaf0ab835b109960f",
+              "crop": [
+                28,
+                32,
+                1565,
+                961
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 633564
+            },
+            "placement_px": [
+              960,
+              986,
+              695,
+              420
+            ],
+            "entry_px": [
+              1198,
+              1386
+            ],
+            "scale": 0.4521
+          },
+          {
+            "id": "subject-shangjing",
+            "day_source": "/workspace/generated_images/exec-058fa3ea-d6b4-48df-8f38-ee537f11b326.png",
+            "day_native": [
+              1574,
+              999
+            ],
+            "day_sha256": "655217e4ca5513316aca6c9114ba978eba778d0eac8c37f6c100157b79868dd8",
+            "day_keyed_sha256": "3a6d208f0d423d2eb082060f85b1145b54309ac7bd4124152941f4bf468a4645",
+            "time_variant": {
+              "id": "shangjing",
+              "phase": "dusk",
+              "source": "exec-04f2a1f2-21d8-4de5-b26a-a1fcf6eab21a.png",
+              "source_sha256": "a74ac1c090b40aaeed699643c9a86767a8222d997b8c8954371e8843f95ba6c4",
+              "source_size": [
+                1574,
+                999
+              ],
+              "day_source": "exec-058fa3ea-d6b4-48df-8f38-ee537f11b326.png",
+              "day_source_sha256": "655217e4ca5513316aca6c9114ba978eba778d0eac8c37f6c100157b79868dd8",
+              "crop": [
+                37,
+                59,
+                1545,
+                926
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 529025
+            },
+            "placement_px": [
+              264,
+              1456,
+              650,
+              374
+            ],
+            "entry_px": [
+              799,
+              1810
+            ],
+            "scale": 0.43103
+          },
+          {
+            "id": "subject-sanguo",
+            "day_source": "/workspace/generated_images/exec-86c7080d-e85e-4d44-a2b0-96a3eebd77ed.png",
+            "day_native": [
+              1297,
+              1213
+            ],
+            "day_sha256": "6a8f91444d030a2a8206295a06eb790d99baecc32ad9aca222c1352b98be3b10",
+            "day_keyed_sha256": "4028d828aa41339ab160f73521d65f178d4074e3556e6e135311ed4116ac3858",
+            "time_variant": {
+              "id": "sanguo",
+              "phase": "dusk",
+              "source": "exec-afdb3e48-a5f5-4033-bd07-adfc631f5300.png",
+              "source_sha256": "e08b982d723b548c1b552aa2e909d590be947f1247a12489fbfb150b02282ac1",
+              "source_size": [
+                1297,
+                1213
+              ],
+              "day_source": "exec-86c7080d-e85e-4d44-a2b0-96a3eebd77ed.png",
+              "day_source_sha256": "6a8f91444d030a2a8206295a06eb790d99baecc32ad9aca222c1352b98be3b10",
+              "crop": [
+                39,
+                53,
+                1255,
+                1161
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 522021
+            },
+            "placement_px": [
+              2362,
+              1566,
+              420,
+              383
+            ],
+            "entry_px": [
+              2477,
+              1944
+            ],
+            "scale": 0.34539
+          },
+          {
+            "id": "subject-lilun",
+            "day_source": "/workspace/generated_images/exec-c841cbfb-c4f1-44ed-8f02-33863f76010c.png",
+            "day_native": [
+              1413,
+              1113
+            ],
+            "day_sha256": "5af49b08a7cf5e4f39a0f0818588ac00c901890018eebe550ce2ab3fdf8c4148",
+            "day_keyed_sha256": "7c70e030adb7df137244e116c79c65714b01f1d76fd5817d4bef49bcbc20a77c",
+            "time_variant": {
+              "id": "lilun",
+              "phase": "dusk",
+              "source": "exec-5d413337-0e16-4e63-8e68-0165de415155.png",
+              "source_sha256": "ab0f59c5c3d6a4b5cf4b01ba91de0de341bb60d87f37e200307a36364e99e006",
+              "source_size": [
+                1413,
+                1113
+              ],
+              "day_source": "exec-c841cbfb-c4f1-44ed-8f02-33863f76010c.png",
+              "day_source_sha256": "5af49b08a7cf5e4f39a0f0818588ac00c901890018eebe550ce2ab3fdf8c4148",
+              "crop": [
+                30,
+                44,
+                1392,
+                1059
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 607072
+            },
+            "placement_px": [
+              2934,
+              1509,
+              698,
+              520
+            ],
+            "entry_px": [
+              3503,
+              2019
+            ],
+            "scale": 0.51232
+          },
+          {
+            "id": "dwelling",
+            "day_source": "/workspace/generated_images/exec-72b5af66-ee48-46f5-b77b-ee160f8b11f7.png",
+            "day_native": [
+              1659,
+              948
+            ],
+            "day_sha256": "90242124614a2ef0c9ed3472da3fa9ef4bc7bf4a2015a8f9a372155d363cde69",
+            "day_keyed_sha256": "e54eb52bc8899e9470f46734bb5f229e0ed47b875d9ad1b3f20ff4863db9cc45",
+            "time_variant": {
+              "id": "dwelling",
+              "phase": "dusk",
+              "source": "exec-b3264305-c4ab-46c1-ad54-d0b5dea18795.png",
+              "source_sha256": "fce99ced732cee13e9eaf6cb5972b303e0cff284426205f3bb0452944fe9a8b2",
+              "source_size": [
+                1659,
+                948
+              ],
+              "day_source": "exec-72b5af66-ee48-46f5-b77b-ee160f8b11f7.png",
+              "day_source_sha256": "90242124614a2ef0c9ed3472da3fa9ef4bc7bf4a2015a8f9a372155d363cde69",
+              "crop": [
+                52,
+                32,
+                1617,
+                889
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 598362
+            },
+            "placement_px": [
+              296,
+              2014,
+              511,
+              280
+            ],
+            "entry_px": [
+              732,
+              2249
+            ],
+            "scale": 0.32672
+          },
+          {
+            "id": "bank",
+            "day_source": "/workspace/generated_images/exec-27ed6d50-be58-4ec2-a4fc-b62439a23015.png",
+            "day_native": [
+              1145,
+              1374
+            ],
+            "day_sha256": "4d23591cd60ae45d8db085cfa3341ce9c7fdee4e5fefc3946122a32329247c66",
+            "day_keyed_sha256": "dda42465e5dd19b6b4cf18edeb91f13969db4fce2f78108b687c2e016e34276b",
+            "time_variant": {
+              "id": "bank",
+              "phase": "dusk",
+              "source": "exec-91433f71-3542-4745-bf1e-746166efa5b8.png",
+              "source_sha256": "d0482dbe1c0c4d7353cc3cd6e16bbe113d8b404242576ab01e5fe7f13bfad18b",
+              "source_size": [
+                1145,
+                1374
+              ],
+              "day_source": "exec-27ed6d50-be58-4ec2-a4fc-b62439a23015.png",
+              "day_source_sha256": "4d23591cd60ae45d8db085cfa3341ce9c7fdee4e5fefc3946122a32329247c66",
+              "crop": [
+                208,
+                17,
+                961,
+                1355
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 611780
+            },
+            "placement_px": [
+              1832,
+              984,
+              394,
+              700
+            ],
+            "entry_px": [
+              2149,
+              1669
+            ],
+            "scale": 0.52317
+          },
+          {
+            "id": "skeleton",
+            "day_source": "/workspace/generated_images/exec-95c84e20-232d-4ba4-9dd0-c046f79d8d4d.png",
+            "day_native": [
+              1405,
+              1119
+            ],
+            "day_sha256": "bf849a8ff253ddcd445853f275eb6dcdbef3cc16eda550ca5c30ad25fedf320a",
+            "day_keyed_sha256": "cf1e2dcf1ecc3b1fa2491814e9e977c5afafa87c80a0b9a7463091293ebb6c38",
+            "time_variant": {
+              "id": "skeleton",
+              "phase": "dusk",
+              "source": "exec-48a99cb8-d167-4268-9225-327387bebdaf.png",
+              "source_sha256": "3a04ea3b0d98c979788c94c31a803ee66b6c2e265e3dc7fa43c70997f6451ab0",
+              "source_size": [
+                1405,
+                1119
+              ],
+              "day_source": "exec-95c84e20-232d-4ba4-9dd0-c046f79d8d4d.png",
+              "day_source_sha256": "bf849a8ff253ddcd445853f275eb6dcdbef3cc16eda550ca5c30ad25fedf320a",
+              "crop": [
+                48,
+                39,
+                1351,
+                1064
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 514508
+            },
+            "placement_px": [
+              2216,
+              1992,
+              553,
+              435
+            ],
+            "entry_px": [
+              2492,
+              2447
+            ],
+            "scale": 0.42439
+          },
+          {
+            "id": "notes",
+            "day_source": "/workspace/generated_images/exec-e2a3cc41-5ed2-4800-b290-2615ed151e0c.png",
+            "day_native": [
+              1176,
+              1337
+            ],
+            "day_sha256": "c37186deff4339632b20cfa46db170d1db7f42590048bb71ef32a4d4656b1fca",
+            "day_keyed_sha256": "41ff70cd71fd1d5fef617fb0adc0a324a1db9dab82e019456e058638edadbf41",
+            "time_variant": {
+              "id": "notes",
+              "phase": "dusk",
+              "source": "exec-39e9454c-4ef9-4d76-8827-88694e523565.png",
+              "source_sha256": "a4fe858d516f16e96ddbd9de1b77887ce6dfffebbaacf32fe4b5e09407fae8fa",
+              "source_size": [
+                1176,
+                1337
+              ],
+              "day_source": "exec-e2a3cc41-5ed2-4800-b290-2615ed151e0c.png",
+              "day_source_sha256": "c37186deff4339632b20cfa46db170d1db7f42590048bb71ef32a4d4656b1fca",
+              "crop": [
+                232,
+                51,
+                946,
+                1279
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 399860
+            },
+            "placement_px": [
+              1269,
+              1971,
+              273,
+              469
+            ],
+            "entry_px": [
+              1500,
+              2445
+            ],
+            "scale": 0.38192
+          }
+        ],
+        "method": {
+          "placement": "frozen day layout; native single-building assets downscaled only",
+          "daylight_composition": "magenta key, contact shadow; green saturation x0.88, global saturation x0.63, subtle upper haze",
+          "time_variants": "new generated lighting variants registered to original day alpha; absent color pixels filled by tinted day pixels",
+          "sky_stars": 0,
+          "phase_saturation_factor": 0.78,
+          "notes": "地形参考仅用于模糊后低频光色；建筑时段版本沿用白天透明边界；原始与中间文件保存在工作区，不随仓库分发。"
+        },
+        "hsv_percent": {
+          "green": 18.92,
+          "blue_cyan": 20.87,
+          "neutral": 29.53,
+          "yellow_orange": 14.67,
+          "other": 16.01
+        }
+      },
+      "night": {
+        "status": "approved and installed on development branch",
+        "phase": "night",
+        "output": {
+          "path": "web/assets/academy/scene/academy-spring-night-4k.webp",
+          "dimensions": [
+            3840,
+            2880
+          ],
+          "bytes": 2871744,
+          "sha256": "bcebb2e387d1e9df6b69a926052d720e7c9ae253b675e16fca79d4ec1dcb4e9d"
+        },
+        "terrain": {
+          "reference_sha256": "42b2cfed8b1c68d39b402d385549b5d0f93732b124cb633bd10ece2c5930dcf3",
+          "original_tiles": [
+            {
+              "row": 0,
+              "col": 0,
+              "x": 0,
+              "y": 0,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "73a02a6261c8e3d2ec6b65f986db3646ef229eb99d816584891151344f17eb9b",
+              "generated_source": "exec-0c21527e-9d84-4da2-b91a-cf4884633fbc.png"
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "x": 928,
+              "y": 0,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "2fa46e0479649269afcaa92875731d9b944898c5a8a99ff46896386510c781fd",
+              "generated_source": "exec-18dcf20d-a3d9-449b-8c4f-df2c6506c64c.png"
+            },
+            {
+              "row": 0,
+              "col": 2,
+              "x": 1888,
+              "y": 0,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "56eca1e0da4e3b2a4e4d0212483cddf7eb60a295be0d49655912386ffe1bb6ed",
+              "generated_source": "exec-cd4cca0c-75b3-44eb-83b9-867e5d549f3d.png"
+            },
+            {
+              "row": 0,
+              "col": 3,
+              "x": 2848,
+              "y": 0,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "31e8bd77c1d7ca6701e0dc7ae9cff51cb6cfb0841269333c0bb2db79b581e6fc",
+              "generated_source": "exec-bb63c678-ca9e-4950-9316-0ad94d44e099.png"
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "x": 0,
+              "y": 1408,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "bd88319ab454afb32ef633944c70be4afefb4fa109c80be3ae05ed15ba49cbea",
+              "generated_source": "exec-f61baa60-ed85-43e4-af3c-15b33a0841a1.png"
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "x": 928,
+              "y": 1408,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "f5b4d6c1cbb59d255cdd5c1217c0252ca4d44e9f9129541b99b49225d8e031a9",
+              "generated_source": "exec-b11e3a5a-34bd-4367-918f-971f04fd51a9.png"
+            },
+            {
+              "row": 1,
+              "col": 2,
+              "x": 1888,
+              "y": 1408,
+              "w": 1024,
+              "h": 1472,
+              "native": [
+                1046,
+                1504
+              ],
+              "sha256": "e819a79150fae59d1419d96c92ba429d570d9b9c4b7b15f5f787bc523693a2d9",
+              "generated_source": "exec-ac76cfe0-063d-42e6-9e27-fb247b471682.png"
+            },
+            {
+              "row": 1,
+              "col": 3,
+              "x": 2848,
+              "y": 1408,
+              "w": 992,
+              "h": 1472,
+              "native": [
+                1029,
+                1528
+              ],
+              "sha256": "e55c6fccb6368c012a71cb4aa61d9f32f77d6f96c10258252226cfed0416da26",
+              "generated_source": "exec-9ffcb305-bef4-4d0d-a8f4-8e9c4fb269f9.png"
+            }
+          ],
+          "overlap_px": 64,
+          "patches": [
+            {
+              "id": "minfa",
+              "source": "exec-6422170c-bfb6-4c11-b673-6c1c7abffcdb.png",
+              "source_sha256": "56661a0f2974bc7906a5691b0a956cd29a40a481d60188a253278d7c01c47795",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                0,
+                690,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "xingsu",
+              "source": "exec-d6bb6b6e-06ec-4d32-a234-fb621da5c407.png",
+              "source_sha256": "c75a90cebe089a177e3f6cb79f08a49b954e51881847003fb49b6b9d7515a5ab",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                3072,
+                700,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "dwelling",
+              "source": "exec-b1e42e57-d4cd-4471-8069-4ed0eb5f44f7.png",
+              "source_sha256": "6e36489f9be625607bc0cf2969bd87adcb021ecd5ba39472b7bf6b8b279c26b2",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                250,
+                1970,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            },
+            {
+              "id": "skeleton",
+              "source": "exec-e9b1b320-217f-4aa8-ad1f-79750004ac61.png",
+              "source_sha256": "1887c79f09c9e48367066b1d1c9affc87b77c4fb801d37b17d7feac81f7bc0ca",
+              "native": [
+                1254,
+                1254
+              ],
+              "target": [
+                2080,
+                2000,
+                768,
+                768
+              ],
+              "feather_px": 120,
+              "scale": [
+                0.6124401913875598,
+                0.6124401913875598
+              ]
+            }
+          ],
+          "contact_patch": {
+            "source": "exec-916e835a-7d49-42ab-8258-a385fb4bc5cd.png",
+            "native_size": [
+              1448,
+              1086
+            ],
+            "reference_crop": [
+              0,
+              750,
+              800,
+              600
+            ],
+            "target": [
+              245,
+              1060,
+              300,
+              62
+            ],
+            "scale": [
+              0.5524861878453039,
+              0.5524861878453039
+            ],
+            "sha256": "8a912b7d38a3988cc67ec765260939c7071057cd7d9e6215325316e676068017"
+          },
+          "ready_png_sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+          "time_lighting": {
+            "method": "native-4k-base-with-low-frequency-generated-light-guide",
+            "nativeDetailWeight": 0.72,
+            "base": {
+              "file": "/workspace/academy-spring-final/work/terrain-ready.png",
+              "sha256": "f25c158233171a93964ddd62e284204c916a445390d593a5113d54b7722af11c",
+              "size": [
+                3840,
+                2880
+              ]
+            },
+            "reference": {
+              "file": "/workspace/generated_images/exec-b29282ef-d033-426d-bf04-0749d576b526.png",
+              "sha256": "5eb484a4f3b97bac0817963784e8816514e051a47c3ea9e248e7c5dd241a192e",
+              "size": [
+                1448,
+                1086
+              ],
+              "role": "low-frequency-light-and-color-only"
+            },
+            "output": {
+              "file": "/workspace/academy-spring-final/work/terrain-ready-night.webp",
+              "sha256": "000cd45a5ce90ade4c889b0812e5e3035a990081529a63f0cda0eae8f8a1db3b",
+              "size": [
+                3840,
+                2880
+              ],
+              "bytes": 2478750
+            }
+          }
+        },
+        "buildings": [
+          {
+            "id": "subject-minfa",
+            "day_source": "/workspace/generated_images/exec-6cccc413-279c-4e8e-b9b2-b6719bfc12de.png",
+            "day_native": [
+              1254,
+              1254
+            ],
+            "day_sha256": "0e7e9a693269d0bac4e22b2c881a4592fd7185f526b4960ce295f8f1efcfa47d",
+            "day_keyed_sha256": "2ed194b0f4dc7f1a1f75aab0a4ba60d472280ea76df3f37e83e010d17d612597",
+            "time_variant": {
+              "id": "minfa",
+              "phase": "night",
+              "source": "exec-3b828d1a-0e44-4ae7-9d4e-21a24b7e13ef.png",
+              "source_sha256": "76057734085610ef8e8bbb4536fe861f20ad2a8f84420c2e7b6dba8229a02034",
+              "source_size": [
+                1254,
+                1254
+              ],
+              "day_source": "exec-6cccc413-279c-4e8e-b9b2-b6719bfc12de.png",
+              "day_source_sha256": "0e7e9a693269d0bac4e22b2c881a4592fd7185f526b4960ce295f8f1efcfa47d",
+              "crop": [
+                98,
+                24,
+                1158,
+                1144
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 480204
+            },
+            "placement_px": [
+              267,
+              797,
+              250,
+              264
+            ],
+            "entry_px": [
+              392,
+              1061
+            ],
+            "scale": 0.23585
+          },
+          {
+            "id": "subject-xingfa",
+            "day_source": "/workspace/generated_images/exec-66eb5601-7916-4b08-a174-9792fe9ab44c.png",
+            "day_native": [
+              1560,
+              1008
+            ],
+            "day_sha256": "0bd3df54a50b37ec0d7f666f3c8caa0990ff30ba222951cad7228e2ccd2da7b3",
+            "day_keyed_sha256": "ba6937d5433274be8924ea1445c6e992f0d3c2736ed55868a3f251f6281b2116",
+            "time_variant": {
+              "id": "xingfa",
+              "phase": "night",
+              "source": "exec-978c82bf-9cc2-4e36-8d2f-ecc34ddf358d.png",
+              "source_sha256": "d0982398ae3144cd66d7d4ce949f9658bf11c31d36e26bf7d6c54a2ea6a43ecb",
+              "source_size": [
+                1560,
+                1008
+              ],
+              "day_source": "exec-66eb5601-7916-4b08-a174-9792fe9ab44c.png",
+              "day_source_sha256": "0bd3df54a50b37ec0d7f666f3c8caa0990ff30ba222951cad7228e2ccd2da7b3",
+              "crop": [
+                12,
+                27,
+                1547,
+                977
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 568082
+            },
+            "placement_px": [
+              1003,
+              346,
+              662,
+              410
+            ],
+            "entry_px": [
+              1521,
+              736
+            ],
+            "scale": 0.43158
+          },
+          {
+            "id": "subject-minsu",
+            "day_source": "/workspace/generated_images/exec-8ddb5c0b-1e71-4637-826d-7a6bb1f0fba0.png",
+            "day_native": [
+              1656,
+              950
+            ],
+            "day_sha256": "2be7619045d0a4fe75a2b0a7d961e3cf6dc204480f2b7a5253fb4d9d67751b56",
+            "day_keyed_sha256": "54e84fb95a30002c4f27ca4314cc0ecbb8da2e90702b27a3f296dbf39498e7e2",
+            "time_variant": {
+              "id": "minsu",
+              "phase": "night",
+              "source": "exec-d5931785-fe9f-49d3-b8c9-96abd89ab004.png",
+              "source_sha256": "e291e1f90f01f127eedbe0aa12aa5733110f8a3100a1344291b3e6c476eaff9d",
+              "source_size": [
+                1656,
+                950
+              ],
+              "day_source": "exec-8ddb5c0b-1e71-4637-826d-7a6bb1f0fba0.png",
+              "day_source_sha256": "2be7619045d0a4fe75a2b0a7d961e3cf6dc204480f2b7a5253fb4d9d67751b56",
+              "crop": [
+                30,
+                38,
+                1627,
+                917
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 557776
+            },
+            "placement_px": [
+              2099,
+              391,
+              735,
+              405
+            ],
+            "entry_px": [
+              2397,
+              776
+            ],
+            "scale": 0.46024
+          },
+          {
+            "id": "subject-xingsu",
+            "day_source": "/workspace/generated_images/exec-86fe804f-9c91-4566-aac3-2fdb91ceadf6.png",
+            "day_native": [
+              1001,
+              1572
+            ],
+            "day_sha256": "9dc43f0f6cbc681e237e4b8806639e6aa4d1302e9f41db25c871c0bc6f12afed",
+            "day_keyed_sha256": "1f79e082121f6c207a88d48cb0fd14bcf5bf038bf6d0685da3e95b007ccec436",
+            "time_variant": {
+              "id": "xingsu",
+              "phase": "night",
+              "source": "exec-61d6a3db-0209-43ca-8abe-ce695af2162e.png",
+              "source_sha256": "8e12c235497136c24131f2f09ab9fc0d9988bac0cc2b3ad88fc3c352ce3dd713",
+              "source_size": [
+                1001,
+                1572
+              ],
+              "day_source": "exec-86fe804f-9c91-4566-aac3-2fdb91ceadf6.png",
+              "day_source_sha256": "9dc43f0f6cbc681e237e4b8806639e6aa4d1302e9f41db25c871c0bc6f12afed",
+              "crop": [
+                106,
+                2,
+                888,
+                1535
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 664918
+            },
+            "placement_px": [
+              3375,
+              564,
+              240,
+              470
+            ],
+            "entry_px": [
+              3465,
+              1029
+            ],
+            "scale": 0.30691
+          },
+          {
+            "id": "subject-xingzheng",
+            "day_source": "/workspace/generated_images/exec-bc677522-b2f0-4f31-b7fb-1876a8b3a67a.png",
+            "day_native": [
+              1593,
+              987
+            ],
+            "day_sha256": "de7277f5f98a79ef1dfdaae0a871f17243ed4950aa90630eaf0ab835b109960f",
+            "day_keyed_sha256": "f85977d66adef1075daa73bf5c56e3ab78f9c9eb8c950c2a8f73466be1396220",
+            "time_variant": {
+              "id": "xingzheng",
+              "phase": "night",
+              "source": "exec-af12c04c-57a9-4f89-ac25-e610db84b7cb.png",
+              "source_sha256": "3e53f936285e9a233de62e5b792050c00e22cdccc204ec6def81d0e10ca8aeca",
+              "source_size": [
+                1593,
+                987
+              ],
+              "day_source": "exec-bc677522-b2f0-4f31-b7fb-1876a8b3a67a.png",
+              "day_source_sha256": "de7277f5f98a79ef1dfdaae0a871f17243ed4950aa90630eaf0ab835b109960f",
+              "crop": [
+                28,
+                32,
+                1565,
+                961
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 633361
+            },
+            "placement_px": [
+              960,
+              986,
+              695,
+              420
+            ],
+            "entry_px": [
+              1198,
+              1386
+            ],
+            "scale": 0.4521
+          },
+          {
+            "id": "subject-shangjing",
+            "day_source": "/workspace/generated_images/exec-058fa3ea-d6b4-48df-8f38-ee537f11b326.png",
+            "day_native": [
+              1574,
+              999
+            ],
+            "day_sha256": "655217e4ca5513316aca6c9114ba978eba778d0eac8c37f6c100157b79868dd8",
+            "day_keyed_sha256": "3a6d208f0d423d2eb082060f85b1145b54309ac7bd4124152941f4bf468a4645",
+            "time_variant": {
+              "id": "shangjing",
+              "phase": "night",
+              "source": "exec-984c0b0f-caa1-40c3-8762-9a65fe22a28a.png",
+              "source_sha256": "819794e8b18fec2d50fa41b126d150c6e85df70da68fbcf497bcca32e56f3208",
+              "source_size": [
+                1574,
+                999
+              ],
+              "day_source": "exec-058fa3ea-d6b4-48df-8f38-ee537f11b326.png",
+              "day_source_sha256": "655217e4ca5513316aca6c9114ba978eba778d0eac8c37f6c100157b79868dd8",
+              "crop": [
+                37,
+                59,
+                1545,
+                926
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 526002
+            },
+            "placement_px": [
+              264,
+              1456,
+              650,
+              374
+            ],
+            "entry_px": [
+              799,
+              1810
+            ],
+            "scale": 0.43103
+          },
+          {
+            "id": "subject-sanguo",
+            "day_source": "/workspace/generated_images/exec-86c7080d-e85e-4d44-a2b0-96a3eebd77ed.png",
+            "day_native": [
+              1297,
+              1213
+            ],
+            "day_sha256": "6a8f91444d030a2a8206295a06eb790d99baecc32ad9aca222c1352b98be3b10",
+            "day_keyed_sha256": "4028d828aa41339ab160f73521d65f178d4074e3556e6e135311ed4116ac3858",
+            "time_variant": {
+              "id": "sanguo",
+              "phase": "night",
+              "source": "exec-69d41220-8803-49fe-8b0e-79c88a6cb70f.png",
+              "source_sha256": "9075fc144d2ec1a04938907104727ed4c064daea6979a485122ecc50343a2853",
+              "source_size": [
+                1296,
+                1213
+              ],
+              "day_source": "exec-86c7080d-e85e-4d44-a2b0-96a3eebd77ed.png",
+              "day_source_sha256": "6a8f91444d030a2a8206295a06eb790d99baecc32ad9aca222c1352b98be3b10",
+              "crop": [
+                39,
+                53,
+                1255,
+                1161
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 522047
+            },
+            "placement_px": [
+              2362,
+              1566,
+              420,
+              383
+            ],
+            "entry_px": [
+              2477,
+              1944
+            ],
+            "scale": 0.34539
+          },
+          {
+            "id": "subject-lilun",
+            "day_source": "/workspace/generated_images/exec-c841cbfb-c4f1-44ed-8f02-33863f76010c.png",
+            "day_native": [
+              1413,
+              1113
+            ],
+            "day_sha256": "5af49b08a7cf5e4f39a0f0818588ac00c901890018eebe550ce2ab3fdf8c4148",
+            "day_keyed_sha256": "7c70e030adb7df137244e116c79c65714b01f1d76fd5817d4bef49bcbc20a77c",
+            "time_variant": {
+              "id": "lilun",
+              "phase": "night",
+              "source": "exec-8cf367b8-8409-4356-b139-965f7fd67b09.png",
+              "source_sha256": "7518c29e7a00ace9eb2445e49585f7ac2b8518c8b284703a9aa6063af74cf304",
+              "source_size": [
+                1413,
+                1113
+              ],
+              "day_source": "exec-c841cbfb-c4f1-44ed-8f02-33863f76010c.png",
+              "day_source_sha256": "5af49b08a7cf5e4f39a0f0818588ac00c901890018eebe550ce2ab3fdf8c4148",
+              "crop": [
+                30,
+                44,
+                1392,
+                1059
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 608285
+            },
+            "placement_px": [
+              2934,
+              1509,
+              698,
+              520
+            ],
+            "entry_px": [
+              3503,
+              2019
+            ],
+            "scale": 0.51232
+          },
+          {
+            "id": "dwelling",
+            "day_source": "/workspace/generated_images/exec-72b5af66-ee48-46f5-b77b-ee160f8b11f7.png",
+            "day_native": [
+              1659,
+              948
+            ],
+            "day_sha256": "90242124614a2ef0c9ed3472da3fa9ef4bc7bf4a2015a8f9a372155d363cde69",
+            "day_keyed_sha256": "e54eb52bc8899e9470f46734bb5f229e0ed47b875d9ad1b3f20ff4863db9cc45",
+            "time_variant": {
+              "id": "dwelling",
+              "phase": "night",
+              "source": "exec-7c351e97-0771-4920-a987-4c5aa3c4ad43.png",
+              "source_sha256": "66fa1e1bb6ed10ba9e170fc313f0ec67c83578e3324a677ec462dddad8c5b3e2",
+              "source_size": [
+                1659,
+                948
+              ],
+              "day_source": "exec-72b5af66-ee48-46f5-b77b-ee160f8b11f7.png",
+              "day_source_sha256": "90242124614a2ef0c9ed3472da3fa9ef4bc7bf4a2015a8f9a372155d363cde69",
+              "crop": [
+                52,
+                32,
+                1617,
+                889
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 596440
+            },
+            "placement_px": [
+              296,
+              2014,
+              511,
+              280
+            ],
+            "entry_px": [
+              732,
+              2249
+            ],
+            "scale": 0.32672
+          },
+          {
+            "id": "bank",
+            "day_source": "/workspace/generated_images/exec-27ed6d50-be58-4ec2-a4fc-b62439a23015.png",
+            "day_native": [
+              1145,
+              1374
+            ],
+            "day_sha256": "4d23591cd60ae45d8db085cfa3341ce9c7fdee4e5fefc3946122a32329247c66",
+            "day_keyed_sha256": "dda42465e5dd19b6b4cf18edeb91f13969db4fce2f78108b687c2e016e34276b",
+            "time_variant": {
+              "id": "bank",
+              "phase": "night",
+              "source": "exec-2ec0494e-980d-4a2b-8f71-0ae9d7d85107.png",
+              "source_sha256": "ce9ac0bb920b6e954a268000c3d457885074b7de18314702a6a08bfa72944946",
+              "source_size": [
+                1145,
+                1374
+              ],
+              "day_source": "exec-27ed6d50-be58-4ec2-a4fc-b62439a23015.png",
+              "day_source_sha256": "4d23591cd60ae45d8db085cfa3341ce9c7fdee4e5fefc3946122a32329247c66",
+              "crop": [
+                208,
+                17,
+                961,
+                1355
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 609533
+            },
+            "placement_px": [
+              1832,
+              984,
+              394,
+              700
+            ],
+            "entry_px": [
+              2149,
+              1669
+            ],
+            "scale": 0.52317
+          },
+          {
+            "id": "skeleton",
+            "day_source": "/workspace/generated_images/exec-95c84e20-232d-4ba4-9dd0-c046f79d8d4d.png",
+            "day_native": [
+              1405,
+              1119
+            ],
+            "day_sha256": "bf849a8ff253ddcd445853f275eb6dcdbef3cc16eda550ca5c30ad25fedf320a",
+            "day_keyed_sha256": "cf1e2dcf1ecc3b1fa2491814e9e977c5afafa87c80a0b9a7463091293ebb6c38",
+            "time_variant": {
+              "id": "skeleton",
+              "phase": "night",
+              "source": "exec-bf8b0744-8a8d-40bc-9345-9ac19f37c044.png",
+              "source_sha256": "e840db2f4a8ce5ee8aec7e3aeea6389a5a0d673ea6718a8daa9e9c930aa08432",
+              "source_size": [
+                1405,
+                1119
+              ],
+              "day_source": "exec-95c84e20-232d-4ba4-9dd0-c046f79d8d4d.png",
+              "day_source_sha256": "bf849a8ff253ddcd445853f275eb6dcdbef3cc16eda550ca5c30ad25fedf320a",
+              "crop": [
+                48,
+                39,
+                1351,
+                1064
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 515754
+            },
+            "placement_px": [
+              2216,
+              1992,
+              553,
+              435
+            ],
+            "entry_px": [
+              2492,
+              2447
+            ],
+            "scale": 0.42439
+          },
+          {
+            "id": "notes",
+            "day_source": "/workspace/generated_images/exec-e2a3cc41-5ed2-4800-b290-2615ed151e0c.png",
+            "day_native": [
+              1176,
+              1337
+            ],
+            "day_sha256": "c37186deff4339632b20cfa46db170d1db7f42590048bb71ef32a4d4656b1fca",
+            "day_keyed_sha256": "41ff70cd71fd1d5fef617fb0adc0a324a1db9dab82e019456e058638edadbf41",
+            "time_variant": {
+              "id": "notes",
+              "phase": "night",
+              "source": "exec-f56986a7-520f-4388-b845-9217c5a1558d.png",
+              "source_sha256": "c06da9dfd52d35fee257e8eaf64cd7112e0c05670a8d2ef601e12220b6262a92",
+              "source_size": [
+                1176,
+                1337
+              ],
+              "day_source": "exec-e2a3cc41-5ed2-4800-b290-2615ed151e0c.png",
+              "day_source_sha256": "c37186deff4339632b20cfa46db170d1db7f42590048bb71ef32a4d4656b1fca",
+              "crop": [
+                232,
+                51,
+                946,
+                1279
+              ],
+              "mask": "registered exact day alpha; variant magenta holes filled with tinted day pixel",
+              "filled_pixel_count": 400450
+            },
+            "placement_px": [
+              1269,
+              1971,
+              273,
+              469
+            ],
+            "entry_px": [
+              1500,
+              2445
+            ],
+            "scale": 0.38192
+          }
+        ],
+        "method": {
+          "placement": "frozen day layout; native single-building assets downscaled only",
+          "daylight_composition": "magenta key, contact shadow; green saturation x0.88, global saturation x0.63, subtle upper haze",
+          "time_variants": "new generated lighting variants registered to original day alpha; absent color pixels filled by tinted day pixels",
+          "sky_stars": 75,
+          "phase_saturation_factor": 0.82,
+          "notes": "地形参考仅用于模糊后低频光色；建筑时段版本沿用白天透明边界；原始与中间文件保存在工作区，不随仓库分发。"
+        },
+        "hsv_percent": {
+          "green": 25.26,
+          "blue_cyan": 54.32,
+          "neutral": 15.57,
+          "yellow_orange": 2.51,
+          "other": 2.33
+        }
+      }
+    }
   }
 }
