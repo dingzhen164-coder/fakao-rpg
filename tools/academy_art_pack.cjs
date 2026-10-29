@@ -12,7 +12,10 @@ if(!keys.includes(key)&&!seasonal)throw Error('需要指定 academy、academy-po
 const folder=path.join(root,key),work=path.join(folder,'pack');fs.mkdirSync(work,{recursive:true});
 const refs=JSON.parse(fs.readFileSync(path.join(root,'references.json'),'utf8'));
 const base=path.join(root,'..',refs[key]);
-const portrait=key==='academy-portrait'||!!seasonal?.[2],W=portrait?2880:3840,H=portrait?3840:2880,PAD=16;
+const portrait=key==='academy-portrait'||!!seasonal?.[2],W=portrait?2880:3840,H=portrait?3840:2880;
+// 每侧留白32像素时，相邻块重叠64像素；旧工作流默认保留16。
+const PAD=Number(process.env.ACADEMY_ART_PAD||16);
+if(!Number.isInteger(PAD)||PAD<1||PAD>32)throw Error('ACADEMY_ART_PAD须为1到32的整数（每侧像素）');
 const cols=portrait?3:4,rows=portrait?3:2,cellW=W/cols,cellH=H/rows;
 function magick(args){const argv=args[0]==='identify'?['identify','-limit','thread','2',...args.slice(1)]:['-limit','thread','2',...args];return execFileSync('magick',argv,{encoding:'utf8',maxBuffer:1024*1024});}
 function size(file){return magick(['identify','-format','%w %h',file]).trim().split(' ').map(Number);}
@@ -33,8 +36,8 @@ for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
   magick([source,'-alpha','off','-resize',`${w}x${h}!`,fit]);
   // 大尺度色差校正只影响低频；参考图的细节不会进入成品。
   magick([fit,ref,'(','-clone','0','-blur','0x24',')','(','-clone','1','-blur','0x24',')','-delete','1','-fx','u[0]+u[2]-u[1]',tone]);
-  const f=[];if(x>0)f.push('min(1,i/31)');if(x+w<W)f.push('min(1,(w-1-i)/31)');
-  if(y>0)f.push('min(1,j/31)');if(y+h<H)f.push('min(1,(h-1-j)/31)');
+  const f=[];if(x>0)f.push(`min(1,i/${2*PAD-1})`);if(x+w<W)f.push(`min(1,(w-1-i)/${2*PAD-1})`);
+  if(y>0)f.push(`min(1,j/${2*PAD-1})`);if(y+h<H)f.push(`min(1,(h-1-j)/${2*PAD-1})`);
   // -fx 的 u 是强度标量，直接乘彩色图会退成灰阶；先画权重图再逐通道相乘。
   magick(['-size',`${w}x${h}`,'xc:white','-fx',f.join('*')||'1',weight]);
   magick([tone,weight,'-compose','Multiply','-composite',blend]);
