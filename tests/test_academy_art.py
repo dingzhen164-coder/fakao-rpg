@@ -23,7 +23,11 @@ class AcademyArtTest(unittest.TestCase):
             self.assertEqual(tuple(record['target']), expected)
             self.assertEqual(tuple(record['grid']), (3, 3) if key.endswith('-portrait') else (4, 2))
             self.assertEqual(len(record['tiles']), 9 if key.endswith('-portrait') else 8)
-            self.assertEqual(record['reference']['role'], 'composition-and-low-frequency-tone-only')
+            if key == 'academy':        # 春季白天：12 处极简新地图是“地形原生块 + 建筑单体合成”，没有整图构图参考
+                self.assertEqual(record['overlap_px'], 64)
+                self.assertIn('composited', record['method'])
+            else:
+                self.assertEqual(record['reference']['role'], 'composition-and-low-frequency-tone-only')
             for tile in record['tiles']:
                 self.assertGreaterEqual(tile['native'][0], tile['w'])
                 self.assertGreaterEqual(tile['native'][1], tile['h'])

@@ -1,0 +1,12 @@
+{
+  "file": "dwelling-night.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 390448,
+  "sha256": "0f01a8e929bf095113e5512eb0f8a26b91abd64ada7e382bfbfbfadc3a15f90a",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "81975292aecb489c876719db2e8c313a7fb51eee5b1f6ffad53acdf597094751",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}

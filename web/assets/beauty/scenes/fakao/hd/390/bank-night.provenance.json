@@ -1,0 +1,12 @@
+{
+  "file": "bank-night.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 466960,
+  "sha256": "85c8ebcfcbfd91f653943d0c346efc2d59c7873b71a6fd83990a720ce5e5a705",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "a670db4c3818537103bc1a8e9fda02033815c0bbdf648c7bbff6f25407b14fbd",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}

@@ -8,7 +8,7 @@ let logs='',browser,active;service.stderr.on('data',x=>logs+=x);
 const ready=new Promise((resolve,reject)=>{let s='';const timer=setTimeout(()=>reject(Error(logs||'服务启动超时')),20000);service.stdout.on('data',x=>{s+=x;const m=s.match(/UI-READY (http:\/\/\S+)/);if(m){clearTimeout(timer);resolve(m[1]);}});service.on('exit',c=>{clearTimeout(timer);reject(Error('服务退出 '+c+logs));});});
 const out=path.resolve('ui-artifacts/task-board');
 async function fit(page){assert.deepEqual(await page.evaluate(()=>{const e=[];if(document.documentElement.scrollHeight>innerHeight+2||document.documentElement.scrollWidth>innerWidth+2||scrollY)e.push('整页滚动');for(const el of document.querySelectorAll('.qb-dialog,.qb-wall,.qb-slip,.qb-settings,.fx-records-list>.card')){const r=el.getBoundingClientRect();if(r.width&&r.height&&r.right>innerWidth+1)e.push('横向越界 '+el.className);}return e;}),[]);}
-async function open(page){await page.evaluate(()=>go('home'));await page.locator('[data-portal-go="journal"]').click();await page.waitForSelector('.qb-wall');}
+async function open(page){await page.evaluate(()=>go('dwelling'));await page.locator('#campJournal').click();await page.waitForSelector('.qb-wall');}
 (async()=>{try{
  const base=await ready;browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined});
  const sizes=process.argv.find(a=>a.startsWith('--sizes='))?.split('=')[1]?.split(',');

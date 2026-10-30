@@ -1,0 +1,52 @@
+{
+  "landscape": {
+    "subject-minfa": {
+      "x": 10.2,
+      "y": 36.8
+    },
+    "subject-xingfa": {
+      "x": 39.6,
+      "y": 25.6
+    },
+    "subject-minsu": {
+      "x": 62.4,
+      "y": 26.9
+    },
+    "subject-xingsu": {
+      "x": 90.2,
+      "y": 35.7
+    },
+    "subject-xingzheng": {
+      "x": 31.2,
+      "y": 48.1
+    },
+    "subject-shangjing": {
+      "x": 20.8,
+      "y": 62.8
+    },
+    "subject-sanguo": {
+      "x": 64.5,
+      "y": 67.5
+    },
+    "subject-lilun": {
+      "x": 91.2,
+      "y": 70.1
+    },
+    "dwelling": {
+      "x": 19.1,
+      "y": 78.1
+    },
+    "bank": {
+      "x": 56.0,
+      "y": 58.0
+    },
+    "skeleton": {
+      "x": 64.9,
+      "y": 85.0
+    },
+    "notes": {
+      "x": 39.1,
+      "y": 84.9
+    }
+  }
+}

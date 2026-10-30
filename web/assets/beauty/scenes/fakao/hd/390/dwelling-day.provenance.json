@@ -1,0 +1,12 @@
+{
+  "file": "dwelling-day.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 440964,
+  "sha256": "4c16adc815e849f19ec6c847dea3d48b74dbca26d4c541b88e84934805c2d238",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "cdfe12e62bb1512b4eda69a160835bd06aa7d33e8b74c61cb540c997672b4704",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}

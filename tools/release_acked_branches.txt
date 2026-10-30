@@ -1,3 +1,5 @@
 # 长期确认“不随发布”的远端分支（一行一个，不带 origin/；#开头为注释）。新的并行分支不要写在这里，要合入当前分支。
 claude/determined-cannon-8bgw1p   # 旧分支（用户2026-10-22前的改动已另行发布）
 claude/pdf-cards   # 2026年10月前的旧分支
+codex/fakao-minimal-academy   # 仅供评审的预览分支，成品已由 Claude 手工合入，评审素材不随发布
+codex/fakao-scenes-art        # 仅供评审的预览分支，成品图已由 Claude 手工合入（1600×1200），评审素材不随发布

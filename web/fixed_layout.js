@@ -60,7 +60,7 @@
       const name=title(n),has=s=>n.matches(s)||!!n.querySelector(s);
       if(route==='dwelling'){
         if(has('.narrative-dwelling,.xc-guide-scene,.npc.greet')){n.remove();continue;}
-        if(has('.hero,.trib-card,.retreat,.mock-rewards'))group('growth',mode==='office'?'仕途与晋升':mode==='mage'?'成长与晋升':'修为与突破',n);
+        if(has('.hero,.trib-card,.retreat,.mock-rewards,.camp-links'))group('growth',mode==='office'?'仕途与晋升':mode==='mage'?'成长与晋升':'修为与突破',n);
         else if(has('.sancai,.grid.g5'))group('daily',mode==='office'?'学时与出勤':'时辰与日课',n);
         else if(has('.lecture-card'))group('records',mode==='peaks'?'修行记录':'学习记录',n,true);
         else group('other','成长记录',n);

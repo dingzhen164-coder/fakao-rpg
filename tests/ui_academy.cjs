@@ -75,7 +75,7 @@ async function shape(page,where){
       assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(img=>img.naturalWidth),3840);
       const nativeWidth=size.name==='portrait'?2880:3840;
       assert.ok(nativeWidth>=size.width*size.dpr,`${size.name}地图图像不足以覆盖设备像素`);
-      assert.equal(await page.locator('[data-portal-go]').count(),17);
+      assert.equal(await page.locator('[data-portal-go]').count(),12);
       for(const [key,glyph] of Object.entries(glyphs))assert.equal(await page.locator(`[data-portal-go="subject-${key}"] .portal-calligraphy`).textContent(),glyph);
       await shape(page,size.name+'总览');
       const portrait=await page.evaluate(()=>matchMedia('(orientation:portrait)').matches);
@@ -84,10 +84,15 @@ async function shape(page,where){
         assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(el=>getComputedStyle(el).display),'none');
         if(!only)assert.match(await page.locator('.portal-stage').evaluate(el=>getComputedStyle(el,'::before').backgroundImage),/academy-portrait-4k/);
       }
-      else assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(el=>getComputedStyle(el).objectFit),'cover','横屏学院必须铺满画布');
+      else{
+        // 12 处极简新地图：图片按 4:3 原比例居中（contain），名牌放进同比例 .portal-frame，名牌按图片坐标定位。
+        assert.equal(await page.locator('.portal-landscape.portal-day').evaluate(el=>getComputedStyle(el).objectFit),'contain','横屏地图按原比例完整显示');
+        const box=await page.locator('.portal-frame').evaluate(el=>{const r=el.getBoundingClientRect();return [r.width,r.height];});
+        assert.ok(Math.abs(box[0]/box[1]-4/3)<0.02,'地图框保持4:3');
+      }
       if(size.name!=='landscape')for(const season of ['spring','summer','autumn','winter'])for(const phase of ['day','dusk','night']){
         await page.evaluate(([s,p])=>{localStorage.setItem('scene-season',s);localStorage.setItem('scene-time',p);SCENE_FX.apply();},[season,phase]);
-        const file=sceneFile(season,phase,portrait);
+        const file=sceneFile(portrait?season:'spring',phase,portrait);      // 横屏：新布局只有春季，其余季节先沿用春季图（academy_scene.js NEW_LAYOUT）
         if(portrait){
           await page.waitForFunction(name=>getComputedStyle(document.querySelector('.portal-stage'),'::before').backgroundImage.includes(name),file);
           const img=await page.evaluate(name=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve([i.naturalWidth,i.naturalHeight]);i.onerror=reject;i.src='assets/academy/scene/'+name;}),file);
@@ -136,9 +141,10 @@ async function shape(page,where){
         await page.locator('.academy-room-back').click();
         await page.locator('.portal-world').waitFor();
       }
-      for(const [id,view] of Object.entries({dwelling:'dwelling',train:'train',skeleton:'skeleton',bank:'bank',notes:'notes',contest:'contest',log:'log',tianji:'tianji'})){
+      for(const [id,view] of Object.entries({dwelling:'dwelling',skeleton:'skeleton',bank:'bank',notes:'notes',contest:'contest',log:'log'})){
         await home(page);
-        await page.locator(`[data-portal-go="${id}"]`).click();
+        if(['contest','log'].includes(id))await page.evaluate(v=>go(v),id);          // 竞技场/成长档案不再占地图：从试炼塔、营地进，这里只查页面本身
+        else await page.locator(`[data-portal-go="${id}"]`).click();
         await page.waitForFunction(target=>VIEW===target,view);
         assert.ok((await page.locator('#view').innerText()).trim().length>8,id+'页面空白');
         await shape(page,size.name+' '+id);
@@ -149,7 +155,7 @@ async function shape(page,where){
         await page.locator('select[data-scene-season]').selectOption('winter');
         await page.locator('select[data-scene-time]').selectOption('dusk');
         await home(page);
-        await page.waitForFunction(()=>document.querySelector('.portal-day')?.getAttribute('src')?.includes('academy-winter-dusk-4k.webp'));
+        await page.waitForFunction(()=>document.querySelector('.portal-day')?.getAttribute('src')?.includes('academy-spring-dusk-4k.webp'));   // 冬季新布局还没做：横屏地图先沿用春季图
         assert.deepEqual(await page.evaluate(()=>[localStorage.getItem('scene-season'),localStorage.getItem('scene-time')]),['winter','dusk']);
         await page.evaluate(()=>{localStorage.setItem('scene-season','spring');localStorage.setItem('scene-time','day');SCENE_FX.apply();});
       }
