@@ -1,0 +1,12 @@
+{
+  "file": "skeleton-day.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 433332,
+  "sha256": "a151407eeabb3cbf738e07b8df8dd6a0922763b2c6f9a5fa15213e95a54a8847",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "8929bfe9fbf6b79b35b7406b69265dc0e09ce56f1ec7de6ebaa44a2bdeb7e022",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}

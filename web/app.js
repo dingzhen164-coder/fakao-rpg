@@ -1087,6 +1087,7 @@ async function shizhanHtml() {
   return TRIAL_HALL.html(d,c,{scope:DASH?.vault||'',subject:DASH?.subject||'',
     title:SCENE_PORTAL.title('bank'),mage:document.body.classList.contains('xuanhuan'),
     catalogHtml:window.EXAMS?await EXAMS.shelfHtml('adventure'):'',contestEntry:true,
+    painted:!!window.BeautyArt?.has?.('beauty/page/bank-day.webp'),          // 法考有整张塔前全景图就用“整图 + 山门热区”，否则回退三层拼合图
     wrong:W('bank_wrong'),rank:code=>W('bank_rank.'+code)});
 }
 

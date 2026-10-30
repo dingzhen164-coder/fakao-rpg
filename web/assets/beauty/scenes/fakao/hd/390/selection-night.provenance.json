@@ -1,0 +1,12 @@
+{
+  "file": "selection-night.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 356524,
+  "sha256": "6539c5e21d3291657867bc098c618ad90850505d92d1625140d215c227bdb3ed",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "51f1d47ff7eed146e0cc740c147a692d313e628434649c3971a5dcf69a224706",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}

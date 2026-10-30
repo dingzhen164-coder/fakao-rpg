@@ -94,6 +94,7 @@ jobs:
         run: |
           node tests/ui_academy.cjs
           node tests/ui_map_fit.cjs
+          node tests/ui_art_fakao.cjs
           node tests/test_narrative_ink.cjs
           node tests/test_journey_dom.cjs
           node tests/ui_map_navigation.cjs

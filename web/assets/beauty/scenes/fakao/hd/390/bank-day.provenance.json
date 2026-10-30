@@ -1,0 +1,12 @@
+{
+  "file": "bank-day.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 440146,
+  "sha256": "744c00791a3736bb48b99e58e308d34805b70943794033d522f313f6bd0d40f8",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "33f0f68a229862e52323e71c1cba577cff32a8da36bcbe2e95036a9b3c3719de",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}

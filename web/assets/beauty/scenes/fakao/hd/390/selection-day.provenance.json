@@ -1,0 +1,12 @@
+{
+  "file": "selection-day.webp",
+  "size": [
+    1600,
+    1200
+  ],
+  "bytes": 338290,
+  "sha256": "c95d4d9b669d4d6bde323a388385f6978c6fc5cff1466385cd2c0762686c17bd",
+  "source": "OpenAI imagegen 整图生成（原生约 1448×1086），评审预览 JPG（长边 1600、质量 85，提交 71a3307）转存为 WebP 质量 90",
+  "source_jpg_sha256": "160d5b83f8006491c7b3e3d36aef36ebd559f432a129e5e9469422008b164c89",
+  "note": "不是原生 4K：原先的 3840×2880 超分成品随 Codex 工作区归档丢失；这里直接用 1600×1200 预览图，不再放大冒充 4K，由浏览器按 cover/contain 显示。"
+}
