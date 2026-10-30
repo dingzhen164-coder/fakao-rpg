@@ -20,13 +20,24 @@
   // 科目守卫用转义：申论wording会改写源码中的“行测”字面量，不能让专属场景误启用。
   const isXingce=()=>{try{return (typeof DASH!=='undefined'?DASH.subject:'')==='\u884c\u6d4b';}catch(_){return false;}};
   const isFakao=()=>{try{return (typeof DASH!=='undefined'?DASH.subject:'')==='\u6cd5\u8003';}catch(_){return false;}};
-  const nativeRooms=()=>isXingce()?ROOMS381:isFakao()?ROOMS_FAKAO:[];
+  const isShenlun=()=>{try{return (typeof DASH!=='undefined'?DASH.subject:'')==='\u7533\u8bba';}catch(_){return false;}};
+  const SL_ROOMS=['dwelling','bank','contest'];
+  const nativeRooms=()=>isXingce()?ROOMS381:isFakao()?ROOMS_FAKAO:isShenlun()?SL_ROOMS:[];
   const phase=()=>document.documentElement.dataset.scenePhase||document.documentElement.dataset.sceneTime||'day';
   const regionName = () => { try { return window.STUDY_REGIONS ? STUDY_REGIONS.title() : ''; } catch (e) { return ''; } };
   const tabLabel = () => { const t = document.querySelector('.fx-tab[aria-selected="true"]'); return t ? t.textContent.trim() : ''; };
   let view = '', applied='';
   function findHit(page, dn=document.documentElement.dataset.scenePhase==='dusk'?'dusk':document.documentElement.dataset.sceneTime || 'day') {
-    if(nativeRooms().includes(page)){
+    if(isShenlun()&&SL_ROOMS.includes(page)){
+      const other=dn==='dusk'?['day','night']:[dn==='night'?'day':'night'];
+      const tk=page==='dwelling'?TAB_KEY[tabLabel()]:'';
+      const own=[...(tk?[`beauty/page/dwelling-${tk}-${dn}.webp`,`beauty/page/dwelling-${tk}.webp`,...other.map(t=>`beauty/page/dwelling-${tk}-${t}.webp`)]:[]),`beauty/page/${page}-${dn}.webp`,`beauty/page/${page}.webp`,...other.map(t=>`beauty/page/${page}-${t}.webp`)];
+      const override=own.find(r=>custom.has(r)&&has(r));
+      if(override)return override;
+      const built=`beauty/page/${page}-${dn}.webp`;
+      if(has(built))return built;
+    }
+    if(!isShenlun()&&nativeRooms().includes(page)){
       const p=page==='bank'&&phase()==='dawn'&&isXingce()?'dawn':dn;
       // 明确的专用覆盖仍优先；旧内置洞府页签不能抢过新整体分时场景。
       const own=[`beauty/page/${page}-${p}.webp`].find(r=>custom.has(r)&&has(r));
@@ -94,8 +105,8 @@
     // 专用夜景/黄昏不重复调色；单张图与用户全局图使用程序光照。
     b.dataset.sceneRelight=(hit?(peakScene||(nativeRoom&&phaseOk)||/(?:-night|-dusk)\.webp$/.test(hit)):!b.classList.contains('has-bg')&&document.documentElement.dataset.sceneTime==='night')?'native':'synthetic';
     // 五峰自己的昼/昏/夜画面按原图显示：不再叠整页遮罩（遮罩会把浅色洗白、深色压成灰黑）。
-    if(hit&&peakScene)b.dataset.sceneArt='peak';else if(nativeRoom)b.dataset.sceneArt='room381';else delete b.dataset.sceneArt;
-    if(independent&&view==='bank'&&hit){
+    if(hit&&peakScene)b.dataset.sceneArt='peak';else if(nativeRoom)b.dataset.sceneArt=isShenlun()?'roomSL4k':'room381';else delete b.dataset.sceneArt;
+    if(isXingce()&&independent&&view==='bank'&&hit){
       const src=url(hit),img=document.querySelector('.th-panorama');
       b.style.setProperty('--scene381-tower',`url("${src}")`);
       if(img&&img.getAttribute('src')!==src)decode(src).then(ok=>{if(ok&&img.isConnected&&findHit(view)===hit){img.src=src;img.dataset.native381='true';}});

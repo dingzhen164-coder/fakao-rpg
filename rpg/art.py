@@ -122,9 +122,9 @@ def slots(subject):
         legacy = '演武场' if subject == '行测' and view == 'contest' else ''
         for suffix, rel in [('', 'beauty/page/%s.webp' % view), ('-白天', 'beauty/page/%s-day.webp' % view), ('-夜晚', 'beauty/page/%s-night.webp' % view)]:
             out.append(("子地图背景", place + suffix, rel, None, "image", (legacy + suffix,) if legacy else ()))
-        if subject == '行测' and view in ('dwelling', 'bank', 'contest', 'skeleton', 'tianji', 'settings'):
+        if (subject == '行测' and view in ('dwelling', 'bank', 'contest', 'skeleton', 'tianji', 'settings')) or (subject == '申论' and view in ('dwelling', 'bank', 'contest')):
             out.append(("子地图背景", place + '-黄昏', 'beauty/page/%s-dusk.webp' % view, None, "image", ()))
-            if view == 'bank':
+            if subject == '行测' and view == 'bank':
                 out.append(("子地图背景", place + '-清晨', 'beauty/page/bank-dawn.webp', None, "image", ()))
     if subject in ('行测', '法考'):
         # 法考的选择厅只有白天、夜晚两张（黄昏、清晨用白天图+程序调色）。
