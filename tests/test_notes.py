@@ -191,3 +191,24 @@ class PdfNotesTest(unittest.TestCase):
         lst = [x["path"] for x in notes.pdf_list(self.paths)]
         self.assertIn(self.rel, lst)
         self.assertNotIn(r["path"], lst)
+
+
+class PagePatch1111Test(unittest.TestCase):
+    """2026-11-11：手札只存改动过的页（page_patch），可以接着加一页；页号不对拒收。"""
+    def test_patch_saves_only_changed_pages(self):
+        import tempfile
+        from pathlib import Path
+        from rpg import notes, paths
+        with tempfile.TemporaryDirectory() as tmp:
+            p = paths.Paths(Path(tmp))
+            p.ensure_train_dir()
+            nb = '20261111-120000-001'
+            stroke = {'t': 'pen', 'c': '#222222', 'w': 3, 'p': [[100, 300], [140, 300]]}
+            notes.save(p, {'id': nb, 'title': '自编手札', 'pages': [{'strokes': []}, {'strokes': []}]})
+            notes.save(p, {'id': nb, 'page_patch': {'1': {'strokes': [stroke]}}})
+            got = notes.get(p, nb)
+            self.assertEqual([len(x['strokes']) for x in got['pages']], [0, 1])
+            notes.save(p, {'id': nb, 'page_patch': {'2': {'strokes': [stroke]}}})
+            self.assertEqual(len(notes.get(p, nb)['pages']), 3)
+            with self.assertRaises(notes.NotesError):
+                notes.save(p, {'id': nb, 'page_patch': {'9': {'strokes': []}}})

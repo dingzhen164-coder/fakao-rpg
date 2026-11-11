@@ -258,7 +258,11 @@
     sizePages();
     restorePos(readPos()[NB.id]);
     let posT = 0;
-    document.getElementById("ntPages").addEventListener("scroll", () => { clearTimeout(posT); posT = setTimeout(() => { savePos(); showPage(); }, 150); }, { passive: true });
+    let lastPg = (readPos()[NB.id] || {}).pg || 0;
+    document.getElementById("ntPages").addEventListener("scroll", () => { clearTimeout(posT); posT = setTimeout(() => {
+      savePos(); showPage();
+      const p = curPos(); if (p && p.pg !== lastPg) { lastPg = p.pg; if (dirty) flush(); }   // 翻到别的页：把刚写的存上
+    }, 150); }, { passive: true });
     showPage();
     const jump = document.getElementById("ntJump");
     const goPage = () => {
@@ -432,10 +436,10 @@
       NB.pages[i].strokes.push(s);
       undo.push({ page: i, stroke: s }); redo = [];
       commitLive(i, s); lastWrite = Date.now();
-      syncTools(); queueSave();
+      syncTools(); queueSave(i);
     };
     const pt = (e) => { const r = c.getBoundingClientRect(); return [Math.round((e.clientX - r.left) * PW / r.width * 10) / 10, Math.round((e.clientY - r.top) * ph(i) / r.height * 10) / 10]; };
-    const box = () => document.getElementById("ntPages");
+    const box = scrollBox;
     c.onpointerdown = (e) => {
       e.preventDefault();
       if (e.pointerType === "pen") lastPen = Date.now();
@@ -496,9 +500,18 @@
     };
   }
   let flingT = 0;
+  // 手指拖动滚哪一块：正常是本子自己（#ntPages）；万一它没被限高（旧内核不认某些样式时），就滚外面真正能滚的那一层，手指不会“滑不动”
+  function scrollBox() {
+    const b = document.getElementById("ntPages");
+    if (!b || b.scrollHeight > b.clientHeight + 1) return b;
+    for (let el = b.parentElement; el; el = el.parentElement) {
+      if (/(auto|scroll)/.test(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1) return el;
+    }
+    return document.scrollingElement || b;
+  }
   function stopFling() { cancelAnimationFrame(flingT); flingT = 0; }
   function fling(v, vx) {                                     // 松手后惯性滑一段
-    const b = document.getElementById("ntPages");
+    const b = scrollBox();
     const cap = (x) => Math.max(-4, Math.min(4, x));
     v = cap(v); vx = cap(vx);
     if (!b || (Math.abs(v) < 0.05 && Math.abs(vx) < 0.05)) return;
@@ -533,12 +546,12 @@
     const u = undo.pop(); if (!u) return;
     const arr = NB.pages[u.page].strokes, k = arr.lastIndexOf(u.stroke);
     if (k >= 0) arr.splice(k, 1);
-    redo.push(u); repaint(u.page); syncTools(); queueSave();
+    redo.push(u); repaint(u.page); syncTools(); queueSave(u.page);
   }
   function doRedo() {
     const u = redo.pop(); if (!u) return;
     NB.pages[u.page].strokes.push(u.stroke);
-    undo.push(u); repaint(u.page); syncTools(); queueSave();
+    undo.push(u); repaint(u.page); syncTools(); queueSave(u.page);
   }
   document.addEventListener("keydown", (e) => {
     if (VIEW !== "notes" || !NB || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "")) return;
@@ -548,18 +561,26 @@
   });
 
   // ---------------------------------------------------------------- 存
+  // 2026-11-11（公考那边用户反馈平板写字卡，两边同一套）：停笔 3 秒才存（原来 1.2 秒），写字过程中不存；
+  // 翻页、离开、切到后台时立刻存；只送改过的页（page_patch），不再每次整本重存。
   let ver = 0, saving = null;      // ver：每改一次加一；存的时候又写了新笔画，存完还要再存（以前会把存盘途中写的几笔当成已存，丢掉）
-  function queueSave() {
+  let dirtyPages = new Set(), wholeBook = false;
+  function queueSave(page) {        // page：改了哪一页；不给 = 加页、改名、换纸，整本存
     dirty = true; ver++;
+    if (page == null) wholeBook = true; else dirtyPages.add(page);
     clearTimeout(saveT);
-    saveT = setTimeout(flush, 1200);
+    saveT = setTimeout(flush, 3000);
   }
   async function flush() {
     clearTimeout(saveT);
     if (saving) { await saving; }
     if (!NB || !dirty) return true;
-    const v0 = ver, book = NB;
-    const body = JSON.stringify({ id: book.id, title: book.title, paper: book.paper, pages: book.pages, text: book.text });
+    const v0 = ver, book = NB, pages = [...dirtyPages], whole = wholeBook;
+    dirtyPages = new Set(); wholeBook = false;
+    const payload = { id: book.id, title: book.title, paper: book.paper, text: book.text };
+    if (whole) payload.pages = book.pages;
+    else if (pages.length) payload.page_patch = Object.fromEntries(pages.filter((i) => book.pages[i]).map((i) => [i, { strokes: book.pages[i].strokes }]));
+    const body = JSON.stringify(payload);
     let done;
     saving = new Promise((r) => (done = r));
     try {
@@ -571,8 +592,10 @@
       if (NB === book && ver !== v0) return flush();       // 存的这会儿又写了：接着存，直到存上最新的
       if (NB === book) dirty = false;
       return true;
-    } catch (e) { saving = null; done(); showError(e); return false; }
+    } catch (e) { saving = null; done(); pages.forEach((i) => dirtyPages.add(i)); if (whole) wholeBook = true; showError(e); return false; }
   }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && dirty) flush(); });   // 平板切到后台 / 锁屏：立刻存
+  addEventListener("pagehide", () => { if (dirty) flush(); });
   addEventListener("beforeunload", () => { if (NB && dirty) navigator.sendBeacon?.("/api/notes/save", new Blob([JSON.stringify({ id: NB.id, title: NB.title, paper: NB.paper, pages: NB.pages, text: NB.text })], { type: "application/json" })); });
 
   // ---------------------------------------------------------------- 📄 导出 PDF
